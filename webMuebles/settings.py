@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 #hola soy cristobal probannndoooo 123
 #hola soy brandon PROBANDO PULL TESSSSTTT ACEPTA CAMBIOOOOS UNA VEZ MASSSSS
@@ -25,8 +26,7 @@ SECRET_KEY = 'django-insecure-uh!nw6(j5v7b8%q-!l21ramynuwtl72&x#1q7tr9b=(=_atnw%
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ["server.mueblesbarguay.cl"]
-
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'server.mueblesbarguay.cl']
 
 
 # Application definition
@@ -57,13 +57,16 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'webMuebles.urls'
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -78,12 +81,17 @@ WSGI_APPLICATION = 'webMuebles.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',  # Ahora funciona
     }
 }
+
+
 
 
 # Password validation
