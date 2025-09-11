@@ -9,7 +9,7 @@ __pycache__/
 venv/
 venvweb/
 ENV/
-
+.vscode/
 # Archivos Django
 /staticfiles/
 /media/
