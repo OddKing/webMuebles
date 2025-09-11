@@ -26,3 +26,5 @@ db.sqlite3
 # Archivos de sistema
 .DS_Store
 Thumbs.db
+carlos.pub
+carlos.key
