@@ -10,6 +10,8 @@ venv/
 venvweb/
 ENV/
 .vscode/
+carlos
+carlos.pub
 # Archivos Django
 /staticfiles/
 /media/
