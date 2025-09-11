@@ -21,4 +21,5 @@ from administracion.views import vista_base
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('vistabase/', vista_base, name='vista_base'),
+    path('', vista_base, name='home'),
 ]
