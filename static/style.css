@@ -1,1 +1,114 @@
-/* ESTE CSS SERA PARA CLASES */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Contenedor del carrusel */
+#heroCarousel {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+}
+
+/* Carousel inner */
+.carousel-inner {
+    height: 100vh;
+    position: relative;
+}
+
+/* Botones flotantes centrados sobre el carrusel */
+.overlay-buttons {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 9999 !important; /* Z-index súper alto */
+    display: flex !important;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    pointer-events: all;
+}
+
+/* Responsive para botones en móviles */
+@media (max-width: 768px) {
+    .overlay-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .overlay-buttons .btn {
+        width: 200px;
+    }
+}
+
+/* Imagen del carrusel con efecto */
+.carousel-item img {
+    object-fit: cover;
+    filter: brightness(60%);
+    height: 100vh;
+    width: 100%;
+}
+
+/* Posición del texto si lo usas */
+.carousel-caption {
+    bottom: 50%;
+    transform: translateY(50%);
+    text-align: center;
+    z-index: 10;
+}
+
+/* Flechas siempre visibles */
+.carousel-control-prev,
+.carousel-control-next {
+    z-index: 1000; /* Menor que los botones pero visible */
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: rgba(0,0,0,0.7);
+    border-radius: 50%;
+    padding: 15px;
+    width: 50px;
+    height: 50px;
+}
+
+/* Animación en botones */
+.btn {
+    font-weight: 600;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.btn:hover {
+    transform: scale(1.08);
+}
+
+/* Estilos específicos para los botones flotantes */
+.overlay-buttons .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+}
+
+.overlay-buttons .btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0b5ed7;
+}
+
+.overlay-buttons .btn-outline-light {
+    border-color: white;
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.overlay-buttons .btn-outline-light:hover {
+    background-color: white;
+    border-color: white;
+    color: #212529;
+}
