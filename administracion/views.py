@@ -4,5 +4,8 @@ from django.template import loader
 
 
 # Create your views here.
-def vista_base(request):
-    return render(request, 'base.html')
+from django.shortcuts import render
+
+
+def portada(request):
+    return render(request, 'index.html')
