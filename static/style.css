@@ -49,7 +49,7 @@ html, body {
 /* Imagen del carrusel con efecto */
 .carousel-item img {
     object-fit: cover;
-    filter: brightness(60%);
+    filter: brightness(5%);
     height: 100vh;
     width: 100%;
 }
