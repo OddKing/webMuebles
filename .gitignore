@@ -9,7 +9,9 @@ __pycache__/
 venv/
 venvweb/
 ENV/
-
+.vscode/
+carlos
+carlos.pub
 # Archivos Django
 /staticfiles/
 /media/
@@ -26,3 +28,5 @@ db.sqlite3
 # Archivos de sistema
 .DS_Store
 Thumbs.db
+carlos.pub
+carlos.key
