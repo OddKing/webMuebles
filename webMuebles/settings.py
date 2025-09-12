@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'materiales',
     'cotizaciones',
     'clientes',
-    'administracion'
+    'administracion',
+    'webMuebles'
 ]
 
 MIDDLEWARE = [
