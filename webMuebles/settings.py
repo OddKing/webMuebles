@@ -59,7 +59,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'webMuebles.urls'
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 TEMPLATES = [
     {
@@ -79,7 +79,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webMuebles.wsgi.application'
 
-
+    
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
