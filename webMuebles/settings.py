@@ -18,6 +18,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR=os.path.join(BASE_DIR,'templates')
 STATIC_DIR=os.path.join(BASE_DIR,'static')
+STATIC_ROOT = '/root/django_proyectos/web/staticfiles'
 
 
 # Quick-start development settings - unsuitable for production
@@ -79,7 +80,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webMuebles.wsgi.application'
 
-    
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
