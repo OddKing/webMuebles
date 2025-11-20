@@ -21,16 +21,14 @@
                 <div class="product-card">
                     <div class="product-image-container">
                         <img src="{% static producto.imagen %}" class="product-image" alt="{{ producto.nombre }}">
-                        <div class="product-overlay">
-                            <a href="#" class="btn btn-light btn-sm">Ver Detalles</a>
-                        </div>
                     </div>
                     <div class="product-info">
                         <h3 class="product-name">{{ producto.nombre }}</h3>
                         <p class="product-description">{{ producto.descripcion }}</p>
                         <div class="product-footer">
-                            <span class="product-price">{{ producto.precio }}</span>
-                            <a href="#" class="btn btn-primary btn-sm">Cotizar</a>
+                            <a href="{% url 'solicitar_cotizacion' producto.id %}" class="btn btn-primary btn-sm w-100">
+                                <i class="bi bi-calculator"></i> Cotizar
+                            </a>
                         </div>
                     </div>
                 </div>

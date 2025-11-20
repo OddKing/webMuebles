@@ -69,8 +69,10 @@ class Cotizacion(models.Model):
     
     # Datos del cliente
     nombre_completo = models.CharField(max_length=200, verbose_name="Nombre Completo")
+    rut = models.CharField(max_length=12, verbose_name="RUT", help_text="Formato: 12.345.678-9", blank=True)
+    direccion = models.CharField(max_length=300, verbose_name="Dirección", blank=True)
     email = models.EmailField(verbose_name="Email")
-    telefono = models.CharField(max_length=17, verbose_name="Teléfono")
+    telefono = models.CharField(max_length=17, verbose_name="Teléfono", blank=True)
     
     # Requisitos del proyecto
     medidas_alto = models.DecimalField(
@@ -96,9 +98,23 @@ class Cotizacion(models.Model):
         choices=MATERIAL_CHOICES, 
         verbose_name="Material Preferido"
     )
-    descripcion_proyecto = models.TextField(verbose_name="Descripción del Proyecto")
+    descripcion_proyecto = models.TextField(verbose_name="Descripción del Proyecto", blank=True)
+    foto_lugar = models.ImageField(
+        upload_to='cotizaciones/fotos/',
+        verbose_name="Foto del Lugar",
+        blank=True,
+        null=True,
+        help_text="Foto del espacio donde se instalará el mueble"
+    )
     
     # Gestión administrativa
+    folio = models.CharField(
+        max_length=20,
+        unique=True,
+        verbose_name="Folio",
+        help_text="Número de folio único (ej: COT-001)",
+        blank=True
+    )
     estado = models.CharField(
         max_length=20, 
         choices=ESTADO_CHOICES, 

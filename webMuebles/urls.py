@@ -18,14 +18,16 @@ from django.contrib import admin
 from django.urls import path
 from administracion.views import portada, terminos_condiciones, politica_privacidad
 from productos.views import catalogo
-from cotizaciones.views import agendar_reunion, get_horarios_disponibles
+from cotizaciones.views import agendar_reunion, get_horarios_disponibles, solicitar_cotizacion, cotizacion_enviada
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', portada, name='vista_base'),
+    path('', portada, name='index'),
     path('catalogo/', catalogo, name='catalogo'),
     path('agendar/', agendar_reunion, name='agendar_reunion'),
     path('api/horarios-disponibles/', get_horarios_disponibles, name='horarios_disponibles'),
+    path('cotizacion/<int:producto_id>/', solicitar_cotizacion, name='solicitar_cotizacion'),
+    path('cotizacion/enviada/', cotizacion_enviada, name='cotizacion_enviada'),
     path('terminos/', terminos_condiciones, name='terminos'),
     path('privacidad/', politica_privacidad, name='privacidad'),
 ]
