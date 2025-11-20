@@ -88,26 +88,18 @@ WSGI_APPLICATION = 'webMuebles.wsgi.application'
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-# MySQL configuration (commented out - uncomment if you want to use MySQL)
-'''DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": 'web',
         "USER": "admin",
         "PASSWORD": "123momiaes",
-        "HOST": "localhost", 
+        "HOST": "server.mueblesbarguay.cl", 
         "OPTIONS": {
             "charset": "utf8mb4",
-            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'; SET innodb_strict_mode=ON;",
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
         }
     }
-}'''
+}
 
 
 
