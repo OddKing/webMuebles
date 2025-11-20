@@ -129,3 +129,80 @@ class Cotizacion(models.Model):
     def __str__(self):
         producto_nombre = self.producto.nombre if self.producto else "Diseño Personalizado"
         return f"{self.nombre_completo} - {producto_nombre} ({self.get_estado_display()})"
+
+
+class ConsentimientoLegal(models.Model):
+    """
+    Modelo para registrar el consentimiento de usuarios a los Términos y Condiciones
+    y Política de Privacidad. Cumple con ISO 27701 y Ley 19.628 de Chile.
+    """
+    # Relación con Cita o Cotización (uno de los dos debe estar presente)
+    cita = models.OneToOneField(
+        Cita, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True,
+        related_name='consentimiento',
+        verbose_name="Cita Relacionada"
+    )
+    cotizacion = models.OneToOneField(
+        Cotizacion, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True,
+        related_name='consentimiento',
+        verbose_name="Cotización Relacionada"
+    )
+    
+    # Información de consentimiento
+    acepto_terminos = models.BooleanField(default=False, verbose_name="Aceptó Términos y Condiciones")
+    acepto_privacidad = models.BooleanField(default=False, verbose_name="Aceptó Política de Privacidad")
+    
+    # Versiones de documentos aceptados
+    version_terminos = models.CharField(
+        max_length=20, 
+        default='1.0',
+        verbose_name="Versión de Términos y Condiciones"
+    )
+    version_privacidad = models.CharField(
+        max_length=20, 
+        default='1.0',
+        verbose_name="Versión de Política de Privacidad"
+    )
+    
+    # Información técnica para auditoría
+    ip_address = models.GenericIPAddressField(
+        verbose_name="Dirección IP",
+        help_text="IP desde donde se aceptaron los términos"
+    )
+    user_agent = models.CharField(
+        max_length=500,
+        verbose_name="User Agent",
+        help_text="Navegador y sistema operativo del usuario"
+    )
+    
+    # Timestamps
+    fecha_aceptacion = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Fecha y Hora de Aceptación"
+    )
+    
+    class Meta:
+        verbose_name = "Consentimiento Legal"
+        verbose_name_plural = "Consentimientos Legales"
+        ordering = ['-fecha_aceptacion']
+        
+    def __str__(self):
+        if self.cita:
+            return f"Consentimiento - Cita: {self.cita.nombre_completo} ({self.fecha_aceptacion.strftime('%d/%m/%Y %H:%M')})"
+        elif self.cotizacion:
+            return f"Consentimiento - Cotización: {self.cotizacion.nombre_completo} ({self.fecha_aceptacion.strftime('%d/%m/%Y %H:%M')})"
+        return f"Consentimiento - {self.fecha_aceptacion.strftime('%d/%m/%Y %H:%M')}"
+    
+    def clean(self):
+        """Validar que al menos una relación (cita o cotización) esté presente"""
+        from django.core.exceptions import ValidationError
+        if not self.cita and not self.cotizacion:
+            raise ValidationError('Debe estar relacionado con una Cita o una Cotización')
+        if self.cita and self.cotizacion:
+            raise ValidationError('No puede estar relacionado con ambos, Cita y Cotización')

@@ -162,8 +162,22 @@ button.horario-btn.occupied:hover {
                     <p><strong>Hora:</strong> <span id="resumenHora"></span></p>
                 </div>
 
+                <!-- Checkbox de Consentimiento -->
+                <div class="form-check mb-4 mt-4" style="background: rgba(13, 110, 253, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(13, 110, 253, 0.3);">
+                    <input type="checkbox" class="form-check-input" id="aceptoTerminos" name="acepto_terminos" required style="width: 20px; height: 20px; margin-top: 0.3rem;">
+                    <label class="form-check-label" for="aceptoTerminos" style="color: #e0e0e0; font-size: 1rem; margin-left: 0.5rem; cursor: pointer;">
+                        He leído y acepto los 
+                        <a href="{% url 'terminos' %}" target="_blank" style="color: #0d6efd; text-decoration: none; font-weight: 600;">Términos y Condiciones</a> 
+                        y la 
+                        <a href="{% url 'privacidad' %}" target="_blank" style="color: #0d6efd; text-decoration: none; font-weight: 600;">Política de Privacidad</a>
+                    </label>
+                    <div class="invalid-feedback" style="color: #dc3545; margin-top: 0.5rem;">
+                        Debes aceptar los términos y condiciones para continuar.
+                    </div>
+                </div>
+
                 <!-- Botón Submit -->
-                <button type="submit" class="btn btn-primary btn-lg w-100 mt-4" id="btnConfirmar">
+                <button type="submit" class="btn btn-primary btn-lg w-100 mt-2" id="btnConfirmar">
                     <i class="bi bi-calendar-check"></i> Confirmar Reunión
                 </button>
             </div>

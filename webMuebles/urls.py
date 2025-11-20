@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from administracion.views import portada
+from administracion.views import portada, terminos_condiciones, politica_privacidad
 from productos.views import catalogo
 from cotizaciones.views import agendar_reunion, get_horarios_disponibles
 
@@ -26,6 +26,8 @@ urlpatterns = [
     path('catalogo/', catalogo, name='catalogo'),
     path('agendar/', agendar_reunion, name='agendar_reunion'),
     path('api/horarios-disponibles/', get_horarios_disponibles, name='horarios_disponibles'),
+    path('terminos/', terminos_condiciones, name='terminos'),
+    path('privacidad/', politica_privacidad, name='privacidad'),
 ]
 
 # Servir archivos media en desarrollo

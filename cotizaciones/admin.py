@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Cita, Cotizacion
+from .models import Cita, Cotizacion, ConsentimientoLegal
 from django.utils.html import format_html
 
 # Register your models here.
@@ -118,3 +118,56 @@ class CotizacionAdmin(admin.ModelAdmin):
     def marcar_cotizada(self, request, queryset):
         updated = queryset.update(estado='cotizada')
         self.message_user(request, f'{updated} cotización(es) marcada(s) como cotizada.')
+
+
+@admin.register(ConsentimientoLegal)
+class ConsentimientoLegalAdmin(admin.ModelAdmin):
+    """Admin para visualizar registros de consentimiento (solo lectura)"""
+    list_display = ['get_nombre', 'get_tipo', 'acepto_terminos', 'acepto_privacidad', 'ip_address', 'fecha_aceptacion']
+    list_filter = ['acepto_terminos', 'acepto_privacidad', 'fecha_aceptacion']
+    search_fields = ['cita__nombre_completo', 'cotizacion__nombre_completo', 'ip_address']
+    date_hierarchy = 'fecha_aceptacion'
+    ordering = ['-fecha_aceptacion']
+    
+    fieldsets = [
+        ('Relación', {
+            'fields': ('cita', 'cotizacion')
+        }),
+        ('Consentimiento', {
+            'fields': ('acepto_terminos', 'acepto_privacidad', 'version_terminos', 'version_privacidad')
+        }),
+        ('Información de Auditoría', {
+            'fields': ('ip_address', 'user_agent', 'fecha_aceptacion'),
+            'classes': ('wide',)
+        }),
+    ]
+    
+    readonly_fields = ['cita', 'cotizacion', 'acepto_terminos', 'acepto_privacidad', 
+                      'version_terminos', 'version_privacidad', 'ip_address', 
+                      'user_agent', 'fecha_aceptacion']
+    
+    def has_add_permission(self, request):
+        """No permitir crear consentimientos manualmente"""
+        return False
+    
+    def has_delete_permission(self, request, obj=None):
+        """No permitir eliminar consentimientos (auditoría)"""
+        return False
+    
+    def get_nombre(self, obj):
+        """Obtener nombre del cliente"""
+        if obj.cita:
+            return obj.cita.nombre_completo
+        elif obj.cotizacion:
+            return obj.cotizacion.nombre_completo
+        return "N/A"
+    get_nombre.short_description = "Cliente"
+    
+    def get_tipo(self, obj):
+        """Obtener tipo de registro"""
+        if obj.cita:
+            return format_html('<span style="background-color: #17a2b8; color: white; padding: 3px 10px; border-radius: 15px;">Cita</span>')
+        elif obj.cotizacion:
+            return format_html('<span style="background-color: #007bff; color: white; padding: 3px 10px; border-radius: 15px;">Cotización</span>')
+        return "N/A"
+    get_tipo.short_description = "Tipo"

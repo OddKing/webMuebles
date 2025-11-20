@@ -61,6 +61,12 @@ def agendar_reunion(request):
         
         # Validar que todos los campos estén presentes
         if all([nombre_completo, telefono, direccion, email, tipo_reunion, fecha_str, hora_str]):
+            # VALIDAR CONSENTIMIENTO
+            acepto_terminos = request.POST.get('acepto_terminos')
+            if not acepto_terminos:
+                messages.error(request, 'Debes aceptar los Términos y Condiciones y la Política de Privacidad para continuar.')
+                return redirect('agendar_reunion')
+            
             try:
                 # Convertir fecha y hora
                 fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
@@ -100,6 +106,30 @@ def agendar_reunion(request):
                     tipo_reunion=tipo_reunion,
                     fecha=fecha,
                     hora=hora
+                )
+                
+                # REGISTRAR CONSENTIMIENTO LEGAL
+                from .models import ConsentimientoLegal
+                
+                # Obtener IP del cliente
+                x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+                if x_forwarded_for:
+                    ip_address = x_forwarded_for.split(',')[0]
+                else:
+                    ip_address = request.META.get('REMOTE_ADDR')
+                
+                # Obtener User-Agent
+                user_agent = request.META.get('HTTP_USER_AGENT', 'Unknown')
+                
+                # Crear registro de consentimiento
+                ConsentimientoLegal.objects.create(
+                    cita=cita,
+                    acepto_terminos=True,
+                    acepto_privacidad=True,
+                    version_terminos='1.0',
+                    version_privacidad='1.0',
+                    ip_address=ip_address,
+                    user_agent=user_agent
                 )
                 
                 # ENVIAR EMAIL DE CONFIRMACIÓN
