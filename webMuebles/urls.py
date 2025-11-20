@@ -35,18 +35,8 @@ from django.conf.urls.static import static
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# Personalizar Admin Site
-from django.contrib import admin
-
+# Personalizar títulos del Admin
 admin.site.site_header = "🪑 Muebles Barguay - Panel de Administración"
 admin.site.site_title = "Muebles Barguay Admin"
 admin.site.index_title = "Bienvenido al Panel de Gestión"
 
-# Agregar CSS personalizado globalmente
-class CustomAdminSite(admin.AdminSite):
-    class Media:
-        css = {
-            'all': ('admin/css/custom_admin.css',)
-        }
-
-# No necesitamos cambiar admin.site porque ya usamos @admin.register

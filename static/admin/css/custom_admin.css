@@ -3,7 +3,6 @@
    Tema Oscuro Moderno e Intuitivo
    ============================================ */
 
-/* COLORES PRINCIPALES */
 :root {
     --primary-bg: #0f1419;
     --secondary-bg: #16213e;
@@ -17,17 +16,15 @@
     --border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* ============================================
-   FONDO Y LAYOUT GENERAL
-   ============================================ */
-
+/* FONDO GENERAL */
 body {
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%) !important;
     font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif !important;
     color: var(--text-primary) !important;
+    font-size: 16px !important;
 }
 
-/* Header principal */
+/* HEADER */
 #header {
     background: linear-gradient(135deg, var(--secondary-bg) 0%, #0f3460 100%) !important;
     border-bottom: 3px solid var(--accent-blue) !important;
@@ -37,7 +34,7 @@ body {
 
 #branding h1 {
     color: var(--text-primary) !important;
-    font-size: 2rem !important;
+    font-size: 2.2rem !important;
     font-weight: 700 !important;
     margin: 0 !important;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -48,15 +45,9 @@ body {
     text-decoration: none !important;
 }
 
-#branding h1::before {
-    content: '🪑 ';
-    font-size: 1.8rem;
-}
-
-/* Usuario logueado */
 #user-tools {
     color: var(--text-secondary) !important;
-    font-size: 1rem !important;
+    font-size: 1.1rem !important;
     padding: 0.5rem 0 !important;
 }
 
@@ -64,7 +55,6 @@ body {
     color: var(--accent-blue) !important;
     font-weight: 600 !important;
     text-decoration: none !important;
-    transition: color 0.3s ease;
 }
 
 #user-tools a:hover {
@@ -72,10 +62,26 @@ body {
     text-decoration: underline !important;
 }
 
-/* ============================================
-   PÁGINA PRINCIPAL (INDEX)
-   ============================================ */
+/* BREADCRUMBS */
+.breadcrumbs {
+    background: var(--secondary-bg) !important;
+    color: var(--text-secondary) !important;
+    padding: 1.2rem 2rem !important;
+    font-size: 1.1rem !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
 
+.breadcrumbs a {
+    color: var(--accent-blue) !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline !important;
+}
+
+/* MÓDULOS EN PÁGINA PRINCIPAL */
 .module {
     background: var(--card-bg) !important;
     border: 1px solid var(--border-color) !important;
@@ -83,6 +89,7 @@ body {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
     margin-bottom: 2rem !important;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
 }
 
 .module:hover {
@@ -90,25 +97,16 @@ body {
     box-shadow: 0 12px 35px rgba(13, 110, 253, 0.4) !important;
 }
 
-.module h2 {
-    background: linear-gradient(135deg, var(--accent-blue) 0%, #0b5ed7 100%) !important;
-    color: var(--text-primary) !important;
-    padding: 1rem 1.5rem !important;
-    font-size: 1.4rem !important;
-    font-weight: 600 !important;
-    border-radius: 15px 15px 0 0 !important;
-    margin: 0 !important;
-    border: none !important;
-}
-
+.module h2,
 .module caption {
     background: linear-gradient(135deg, var(--accent-blue) 0%, #0b5ed7 100%) !important;
     color: var(--text-primary) !important;
-    padding: 1rem 1.5rem !important;
-    font-size: 1.4rem !important;
+    padding: 1.2rem 1.5rem !important;
+    font-size: 1.5rem !important;
     font-weight: 600 !important;
+    margin: 0 !important;
+    border: none !important;
     text-align: left !important;
-    border-radius: 15px 15px 0 0 !important;
 }
 
 .module table {
@@ -117,7 +115,6 @@ body {
 }
 
 .module th,
-.module tr.model-row,
 .module tr {
     background: transparent !important;
     border-bottom: 1px solid var(--border-color) !important;
@@ -127,8 +124,8 @@ body {
 .module td a {
     color: var(--text-primary) !important;
     text-decoration: none !important;
-    font-size: 1.1rem !important;
-    padding: 1rem !important;
+    font-size: 1.2rem !important;
+    padding: 1.2rem !important;
     display: block !important;
     transition: all 0.3s ease;
     border-radius: 8px;
@@ -141,36 +138,32 @@ body {
     transform: translateX(5px);
 }
 
-/* Botón "Agregar" */
+/* ICONOS EN ENLACES */
 .addlink::before {
     content: '➕ ';
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    margin-right: 0.5rem;
 }
 
-.addlink {
-    color: var(--accent-green) !important;
-    font-weight: 600 !important;
-}
-
-/* Botón "Cambiar" */
 .changelink::before {
     content: '✏️ ';
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    margin-right: 0.5rem;
 }
 
-.changelink {
-    color: var(--accent-blue) !important;
+.deletelink::before {
+    content: '🗑️ ';
+    font-size: 1.3rem;
+    margin-right: 0.5rem;
 }
 
-/* ============================================
-   LISTAS (CHANGELIST)
-   ============================================ */
-
+/* CONTENIDO PRINCIPAL */
 #content {
     background: transparent !important;
     padding: 2rem !important;
 }
 
+/* LISTAS DE CAMBIOS */
 #changelist {
     background: var(--card-bg) !important;
     border-radius: 15px !important;
@@ -178,6 +171,7 @@ body {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
 }
 
+/* FILTROS */
 #changelist-filter {
     background: var(--secondary-bg) !important;
     border: 1px solid var(--border-color) !important;
@@ -188,7 +182,7 @@ body {
 #changelist-filter h2,
 #changelist-filter h3 {
     color: var(--text-primary) !important;
-    font-size: 1.2rem !important;
+    font-size: 1.3rem !important;
     font-weight: 600 !important;
     margin-bottom: 1rem !important;
     padding-bottom: 0.5rem !important;
@@ -196,12 +190,13 @@ body {
 }
 
 #changelist-filter li {
-    padding: 0.5rem 0 !important;
+    padding: 0.7rem 0 !important;
 }
 
 #changelist-filter a {
     color: var(--text-secondary) !important;
     text-decoration: none !important;
+    font-size: 1.1rem !important;
     transition: color 0.3s ease;
 }
 
@@ -214,7 +209,7 @@ body {
     font-weight: 700 !important;
 }
 
-/* Tabla de resultados */
+/* TABLA DE RESULTADOS */
 #result_list {
     background: transparent !important;
     border: none !important;
@@ -224,8 +219,8 @@ body {
     background: var(--secondary-bg) !important;
     color: var(--text-primary) !important;
     font-weight: 600 !important;
-    font-size: 1.1rem !important;
-    padding: 1rem !important;
+    font-size: 1.2rem !important;
+    padding: 1.2rem !important;
     border-bottom: 2px solid var(--accent-blue) !important;
     text-align: left !important;
 }
@@ -243,8 +238,8 @@ body {
 
 #result_list tbody td {
     color: var(--text-primary) !important;
-    padding: 1rem !important;
-    font-size: 1rem !important;
+    padding: 1.2rem !important;
+    font-size: 1.1rem !important;
 }
 
 #result_list tbody th a,
@@ -259,10 +254,7 @@ body {
     text-decoration: underline !important;
 }
 
-/* ============================================
-   FORMULARIOS
-   ============================================ */
-
+/* FORMULARIOS */
 .form-row {
     background: rgba(255, 255, 255, 0.03) !important;
     border-radius: 10px !important;
@@ -274,8 +266,8 @@ body {
 .form-row label {
     color: var(--text-primary) !important;
     font-weight: 600 !important;
-    font-size: 1.1rem !important;
-    margin-bottom: 0.5rem !important;
+    font-size: 1.2rem !important;
+    margin-bottom: 0.7rem !important;
     display: block !important;
 }
 
@@ -285,14 +277,15 @@ body {
 .form-row input[type="date"],
 .form-row input[type="time"],
 .form-row input[type="url"],
+.form-row input[type="file"],
 .form-row textarea,
 .form-row select {
     background: rgba(0, 0, 0, 0.4) !important;
     border: 2px solid var(--border-color) !important;
     color: var(--text-primary) !important;
-    padding: 0.75rem !important;
+    padding: 0.9rem !important;
     border-radius: 8px !important;
-    font-size: 1rem !important;
+    font-size: 1.1rem !important;
     width: 100% !important;
     transition: all 0.3s ease;
 }
@@ -307,11 +300,11 @@ body {
 
 .form-row .help {
     color: var(--text-secondary) !important;
-    font-size: 0.9rem !important;
+    font-size: 1rem !important;
     margin-top: 0.5rem !important;
 }
 
-/* Fieldsets */
+/* FIELDSETS */
 fieldset.module {
     background: var(--card-bg) !important;
     border: 2px solid var(--border-color) !important;
@@ -323,17 +316,14 @@ fieldset.module {
 fieldset.module h2 {
     background: transparent !important;
     color: var(--text-primary) !important;
-    font-size: 1.5rem !important;
+    font-size: 1.6rem !important;
     font-weight: 700 !important;
     padding: 0 0 1rem 0 !important;
     border-bottom: 2px solid var(--accent-blue) !important;
     margin-bottom: 1.5rem !important;
 }
 
-/* ============================================
-   BOTONES
-   ============================================ */
-
+/* BOTONES */
 .button,
 input[type="submit"],
 button[type="submit"],
@@ -342,8 +332,8 @@ a.button {
     background: linear-gradient(135deg, var(--accent-blue) 0%, #0b5ed7 100%) !important;
     color: var(--text-primary) !important;
     border: none !important;
-    padding: 0.75rem 2rem !important;
-    font-size: 1.1rem !important;
+    padding: 1rem 2.5rem !important;
+    font-size: 1.2rem !important;
     font-weight: 600 !important;
     border-radius: 50px !important;
     cursor: pointer !important;
@@ -362,7 +352,6 @@ a.button:hover {
     box-shadow: 0 6px 20px rgba(13, 110, 253, 0.6) !important;
 }
 
-/* Botón de eliminar */
 .deletelink,
 a.deletelink {
     background: linear-gradient(135deg, var(--accent-red) 0%, #c82333 100%) !important;
@@ -374,16 +363,12 @@ a.deletelink:hover {
     box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6) !important;
 }
 
-/* Botón secundario */
 .default {
     background: rgba(108, 117, 125, 0.3) !important;
     box-shadow: none !important;
 }
 
-/* ============================================
-   BÚSQUEDA
-   ============================================ */
-
+/* BÚSQUEDA */
 #toolbar {
     background: var(--secondary-bg) !important;
     border-radius: 12px !important;
@@ -396,9 +381,9 @@ a.deletelink:hover {
     background: rgba(0, 0, 0, 0.4) !important;
     border: 2px solid var(--border-color) !important;
     color: var(--text-primary) !important;
-    padding: 0.75rem 1rem !important;
+    padding: 1rem 1.5rem !important;
     border-radius: 50px !important;
-    font-size: 1.1rem !important;
+    font-size: 1.2rem !important;
     width: 100% !important;
 }
 
@@ -408,15 +393,7 @@ a.deletelink:hover {
     outline: none !important;
 }
 
-input[type="submit"].button {
-    padding: 0.75rem 2rem !important;
-    margin-left: 1rem !important;
-}
-
-/* ============================================
-   ACCIONES
-   ============================================ */
-
+/* ACCIONES */
 .actions {
     background: var(--secondary-bg) !important;
     border-radius: 12px !important;
@@ -427,7 +404,7 @@ input[type="submit"].button {
 
 .actions label {
     color: var(--text-primary) !important;
-    font-size: 1.1rem !important;
+    font-size: 1.2rem !important;
     font-weight: 600 !important;
     margin-right: 1rem !important;
 }
@@ -436,16 +413,13 @@ input[type="submit"].button {
     background: rgba(0, 0, 0, 0.4) !important;
     border: 2px solid var(--border-color) !important;
     color: var(--text-primary) !important;
-    padding: 0.5rem 1rem !important;
+    padding: 0.7rem 1.2rem !important;
     border-radius: 8px !important;
-    font-size: 1rem !important;
+    font-size: 1.1rem !important;
     margin-right: 1rem !important;
 }
 
-/* ============================================
-   MENSAJES
-   ============================================ */
-
+/* MENSAJES */
 .messagelist {
     margin: 0 0 2rem 0 !important;
     padding: 0 !important;
@@ -458,7 +432,7 @@ input[type="submit"].button {
     padding: 1.5rem !important;
     margin-bottom: 1rem !important;
     border-radius: 10px !important;
-    font-size: 1.1rem !important;
+    font-size: 1.2rem !important;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
 }
 
@@ -477,24 +451,22 @@ input[type="submit"].button {
     background: rgba(220, 53, 69, 0.1) !important;
 }
 
-/* ============================================
-   PAGINACIÓN
-   ============================================ */
-
+/* PAGINACIÓN */
 .paginator {
     color: var(--text-secondary) !important;
-    font-size: 1rem !important;
+    font-size: 1.1rem !important;
     padding: 1.5rem 0 !important;
 }
 
 .paginator a {
     background: rgba(13, 110, 253, 0.2) !important;
     color: var(--accent-blue) !important;
-    padding: 0.5rem 1rem !important;
+    padding: 0.7rem 1.2rem !important;
     border-radius: 8px !important;
     text-decoration: none !important;
     margin: 0 0.25rem !important;
     transition: all 0.3s ease;
+    font-size: 1.1rem !important;
 }
 
 .paginator a:hover {
@@ -502,46 +474,29 @@ input[type="submit"].button {
     color: var(--text-primary) !important;
 }
 
-/* ============================================
-   BREADCRUMBS
-   ============================================ */
-
-.breadcrumbs {
-    background: var(--secondary-bg) !important;
-    color: var(--text-secondary) !important;
-    padding: 1rem 2rem !important;
-    font-size: 1rem !important;
-    border-bottom: 1px solid var(--border-color) !important;
+/* CHECKBOXES MÁS GRANDES */
+input[type="checkbox"] {
+    width: 20px !important;
+    height: 20px !important;
+    cursor: pointer !important;
 }
 
-.breadcrumbs a {
-    color: var(--accent-blue) !important;
-    text-decoration: none !important;
-}
-
-.breadcrumbs a:hover {
-    text-decoration: underline !important;
-}
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-
+/* RESPONSIVE */
 @media (max-width: 768px) {
     #header {
         padding: 1rem !important;
     }
-
+    
     #branding h1 {
-        font-size: 1.5rem !important;
+        font-size: 1.8rem !important;
     }
-
+    
     #content {
         padding: 1rem !important;
     }
-
+    
     .module th a,
     .module td a {
-        font-size: 1rem !important;
+        font-size: 1.1rem !important;
     }
 }
