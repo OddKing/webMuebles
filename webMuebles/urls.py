@@ -17,8 +17,36 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from administracion.views import portada
+from productos.views import catalogo
+from cotizaciones.views import agendar_reunion, get_horarios_disponibles
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home/', portada, name='vista_base'),
+    path('', portada, name='vista_base'),
+    path('catalogo/', catalogo, name='catalogo'),
+    path('agendar/', agendar_reunion, name='agendar_reunion'),
+    path('api/horarios-disponibles/', get_horarios_disponibles, name='horarios_disponibles'),
 ]
+
+# Servir archivos media en desarrollo
+from django.conf import settings
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Personalizar Admin Site
+from django.contrib import admin
+
+admin.site.site_header = "🪑 Muebles Barguay - Panel de Administración"
+admin.site.site_title = "Muebles Barguay Admin"
+admin.site.index_title = "Bienvenido al Panel de Gestión"
+
+# Agregar CSS personalizado globalmente
+class CustomAdminSite(admin.AdminSite):
+    class Media:
+        css = {
+            'all': ('admin/css/custom_admin.css',)
+        }
+
+# No necesitamos cambiar admin.site porque ya usamos @admin.register

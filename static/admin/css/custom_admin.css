@@ -1,0 +1,547 @@
+/* ============================================
+   MUEBLES BARGUAY - ADMIN PERSONALIZADO
+   Tema Oscuro Moderno e Intuitivo
+   ============================================ */
+
+/* COLORES PRINCIPALES */
+:root {
+    --primary-bg: #0f1419;
+    --secondary-bg: #16213e;
+    --card-bg: #1a1f35;
+    --accent-blue: #0d6efd;
+    --accent-green: #28a745;
+    --accent-yellow: #ffc107;
+    --accent-red: #dc3545;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   FONDO Y LAYOUT GENERAL
+   ============================================ */
+
+body {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%) !important;
+    font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif !important;
+    color: var(--text-primary) !important;
+}
+
+/* Header principal */
+#header {
+    background: linear-gradient(135deg, var(--secondary-bg) 0%, #0f3460 100%) !important;
+    border-bottom: 3px solid var(--accent-blue) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+    padding: 1.5rem 2rem !important;
+}
+
+#branding h1 {
+    color: var(--text-primary) !important;
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+#branding h1 a {
+    color: var(--text-primary) !important;
+    text-decoration: none !important;
+}
+
+#branding h1::before {
+    content: '🪑 ';
+    font-size: 1.8rem;
+}
+
+/* Usuario logueado */
+#user-tools {
+    color: var(--text-secondary) !important;
+    font-size: 1rem !important;
+    padding: 0.5rem 0 !important;
+}
+
+#user-tools a {
+    color: var(--accent-blue) !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    transition: color 0.3s ease;
+}
+
+#user-tools a:hover {
+    color: #0b5ed7 !important;
+    text-decoration: underline !important;
+}
+
+/* ============================================
+   PÁGINA PRINCIPAL (INDEX)
+   ============================================ */
+
+.module {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 15px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+    margin-bottom: 2rem !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.module:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(13, 110, 253, 0.4) !important;
+}
+
+.module h2 {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, #0b5ed7 100%) !important;
+    color: var(--text-primary) !important;
+    padding: 1rem 1.5rem !important;
+    font-size: 1.4rem !important;
+    font-weight: 600 !important;
+    border-radius: 15px 15px 0 0 !important;
+    margin: 0 !important;
+    border: none !important;
+}
+
+.module caption {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, #0b5ed7 100%) !important;
+    color: var(--text-primary) !important;
+    padding: 1rem 1.5rem !important;
+    font-size: 1.4rem !important;
+    font-weight: 600 !important;
+    text-align: left !important;
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.module table {
+    width: 100% !important;
+    border: none !important;
+}
+
+.module th,
+.module tr.model-row,
+.module tr {
+    background: transparent !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.module th a,
+.module td a {
+    color: var(--text-primary) !important;
+    text-decoration: none !important;
+    font-size: 1.1rem !important;
+    padding: 1rem !important;
+    display: block !important;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+}
+
+.module th a:hover,
+.module td a:hover {
+    background: rgba(13, 110, 253, 0.2) !important;
+    color: var(--accent-blue) !important;
+    transform: translateX(5px);
+}
+
+/* Botón "Agregar" */
+.addlink::before {
+    content: '➕ ';
+    font-size: 1.2rem;
+}
+
+.addlink {
+    color: var(--accent-green) !important;
+    font-weight: 600 !important;
+}
+
+/* Botón "Cambiar" */
+.changelink::before {
+    content: '✏️ ';
+    font-size: 1.2rem;
+}
+
+.changelink {
+    color: var(--accent-blue) !important;
+}
+
+/* ============================================
+   LISTAS (CHANGELIST)
+   ============================================ */
+
+#content {
+    background: transparent !important;
+    padding: 2rem !important;
+}
+
+#changelist {
+    background: var(--card-bg) !important;
+    border-radius: 15px !important;
+    padding: 2rem !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+}
+
+#changelist-filter {
+    background: var(--secondary-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+}
+
+#changelist-filter h2,
+#changelist-filter h3 {
+    color: var(--text-primary) !important;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 1rem !important;
+    padding-bottom: 0.5rem !important;
+    border-bottom: 2px solid var(--accent-blue) !important;
+}
+
+#changelist-filter li {
+    padding: 0.5rem 0 !important;
+}
+
+#changelist-filter a {
+    color: var(--text-secondary) !important;
+    text-decoration: none !important;
+    transition: color 0.3s ease;
+}
+
+#changelist-filter a:hover {
+    color: var(--accent-blue) !important;
+}
+
+#changelist-filter li.selected a {
+    color: var(--accent-blue) !important;
+    font-weight: 700 !important;
+}
+
+/* Tabla de resultados */
+#result_list {
+    background: transparent !important;
+    border: none !important;
+}
+
+#result_list thead th {
+    background: var(--secondary-bg) !important;
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
+    padding: 1rem !important;
+    border-bottom: 2px solid var(--accent-blue) !important;
+    text-align: left !important;
+}
+
+#result_list tbody tr {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    transition: all 0.3s ease;
+}
+
+#result_list tbody tr:hover {
+    background: rgba(13, 110, 253, 0.15) !important;
+    transform: scale(1.01);
+}
+
+#result_list tbody td {
+    color: var(--text-primary) !important;
+    padding: 1rem !important;
+    font-size: 1rem !important;
+}
+
+#result_list tbody th a,
+#result_list tbody td a {
+    color: var(--accent-blue) !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+}
+
+#result_list tbody th a:hover,
+#result_list tbody td a:hover {
+    text-decoration: underline !important;
+}
+
+/* ============================================
+   FORMULARIOS
+   ============================================ */
+
+.form-row {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-radius: 10px !important;
+    padding: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.form-row label {
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
+    margin-bottom: 0.5rem !important;
+    display: block !important;
+}
+
+.form-row input[type="text"],
+.form-row input[type="email"],
+.form-row input[type="number"],
+.form-row input[type="date"],
+.form-row input[type="time"],
+.form-row input[type="url"],
+.form-row textarea,
+.form-row select {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 2px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    padding: 0.75rem !important;
+    border-radius: 8px !important;
+    font-size: 1rem !important;
+    width: 100% !important;
+    transition: all 0.3s ease;
+}
+
+.form-row input:focus,
+.form-row textarea:focus,
+.form-row select:focus {
+    border-color: var(--accent-blue) !important;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25) !important;
+    outline: none !important;
+}
+
+.form-row .help {
+    color: var(--text-secondary) !important;
+    font-size: 0.9rem !important;
+    margin-top: 0.5rem !important;
+}
+
+/* Fieldsets */
+fieldset.module {
+    background: var(--card-bg) !important;
+    border: 2px solid var(--border-color) !important;
+    border-radius: 15px !important;
+    padding: 2rem !important;
+    margin-bottom: 2rem !important;
+}
+
+fieldset.module h2 {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    padding: 0 0 1rem 0 !important;
+    border-bottom: 2px solid var(--accent-blue) !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* ============================================
+   BOTONES
+   ============================================ */
+
+.button,
+input[type="submit"],
+button[type="submit"],
+.submit-row input,
+a.button {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, #0b5ed7 100%) !important;
+    color: var(--text-primary) !important;
+    border: none !important;
+    padding: 0.75rem 2rem !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    border-radius: 50px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4) !important;
+}
+
+.button:hover,
+input[type="submit"]:hover,
+button[type="submit"]:hover,
+.submit-row input:hover,
+a.button:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.6) !important;
+}
+
+/* Botón de eliminar */
+.deletelink,
+a.deletelink {
+    background: linear-gradient(135deg, var(--accent-red) 0%, #c82333 100%) !important;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4) !important;
+}
+
+.deletelink:hover,
+a.deletelink:hover {
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6) !important;
+}
+
+/* Botón secundario */
+.default {
+    background: rgba(108, 117, 125, 0.3) !important;
+    box-shadow: none !important;
+}
+
+/* ============================================
+   BÚSQUEDA
+   ============================================ */
+
+#toolbar {
+    background: var(--secondary-bg) !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+    margin-bottom: 2rem !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+#searchbar {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 2px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: 50px !important;
+    font-size: 1.1rem !important;
+    width: 100% !important;
+}
+
+#searchbar:focus {
+    border-color: var(--accent-blue) !important;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25) !important;
+    outline: none !important;
+}
+
+input[type="submit"].button {
+    padding: 0.75rem 2rem !important;
+    margin-left: 1rem !important;
+}
+
+/* ============================================
+   ACCIONES
+   ============================================ */
+
+.actions {
+    background: var(--secondary-bg) !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.actions label {
+    color: var(--text-primary) !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    margin-right: 1rem !important;
+}
+
+.actions select {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 2px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 8px !important;
+    font-size: 1rem !important;
+    margin-right: 1rem !important;
+}
+
+/* ============================================
+   MENSAJES
+   ============================================ */
+
+.messagelist {
+    margin: 0 0 2rem 0 !important;
+    padding: 0 !important;
+}
+
+.messagelist li {
+    background: var(--card-bg) !important;
+    border-left: 5px solid var(--accent-blue) !important;
+    color: var(--text-primary) !important;
+    padding: 1.5rem !important;
+    margin-bottom: 1rem !important;
+    border-radius: 10px !important;
+    font-size: 1.1rem !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+.messagelist li.success {
+    border-left-color: var(--accent-green) !important;
+    background: rgba(40, 167, 69, 0.1) !important;
+}
+
+.messagelist li.warning {
+    border-left-color: var(--accent-yellow) !important;
+    background: rgba(255, 193, 7, 0.1) !important;
+}
+
+.messagelist li.error {
+    border-left-color: var(--accent-red) !important;
+    background: rgba(220, 53, 69, 0.1) !important;
+}
+
+/* ============================================
+   PAGINACIÓN
+   ============================================ */
+
+.paginator {
+    color: var(--text-secondary) !important;
+    font-size: 1rem !important;
+    padding: 1.5rem 0 !important;
+}
+
+.paginator a {
+    background: rgba(13, 110, 253, 0.2) !important;
+    color: var(--accent-blue) !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    margin: 0 0.25rem !important;
+    transition: all 0.3s ease;
+}
+
+.paginator a:hover {
+    background: var(--accent-blue) !important;
+    color: var(--text-primary) !important;
+}
+
+/* ============================================
+   BREADCRUMBS
+   ============================================ */
+
+.breadcrumbs {
+    background: var(--secondary-bg) !important;
+    color: var(--text-secondary) !important;
+    padding: 1rem 2rem !important;
+    font-size: 1rem !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.breadcrumbs a {
+    color: var(--accent-blue) !important;
+    text-decoration: none !important;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline !important;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    #header {
+        padding: 1rem !important;
+    }
+
+    #branding h1 {
+        font-size: 1.5rem !important;
+    }
+
+    #content {
+        padding: 1rem !important;
+    }
+
+    .module th a,
+    .module td a {
+        font-size: 1rem !important;
+    }
+}

@@ -3,12 +3,11 @@
 
 {% block title %}Portada{% endblock %}
 
+{% block body_class %} no-scroll transparent-nav{% endblock %}
+
 {% block content %}
 <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
-    
-
     <div class="carousel-inner">
-
         <div class="carousel-item active">
             <img src="{% static 'img/1.jpeg' %}" class="d-block w-100 vh-100 object-fit-cover" alt="Imagen 1">
         </div>
@@ -57,12 +56,11 @@
     <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
         <span class="carousel-control-next-icon"></span>
     </button>
-
 </div>
 
 <!-- Botones flotantes -->
-<div class="overlay-buttons" style="position: fixed !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; z-index: 99999 !important; display: flex !important; gap: 1.5rem;">
-    <a href="#" class="btn btn-primary btn-lg px-4 rounded-pill shadow-lg">Agendar Reunión</a>
-    <a href="#" class="btn btn-outline-light btn-lg px-4 rounded-pill shadow-lg">Cotiza Aquí</a>
+<div class="overlay-buttons">
+    <a href="{% url 'agendar_reunion' %}" class="btn btn-primary btn-lg px-4 rounded-pill shadow-lg">Agendar Reunión</a>
+    <a href="{% url 'catalogo' %}" class="btn btn-outline-light btn-lg px-4 rounded-pill shadow-lg">Cotiza Aquí</a>
 </div>
 {% endblock %}

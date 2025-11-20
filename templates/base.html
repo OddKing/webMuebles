@@ -7,16 +7,23 @@
     <title>{% block title %}Muebles Barguay{% endblock %}</title>
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <header>
-        <nav class="navbar navbar-custom bg-dark" style="font-family:Verdana, Geneva, Tahoma, sans-serif; align-items: center;">
-            <div class="container" style="align-items: center;">
-                <img src="{% static 'img/logo.jpg' %}" style="max-width: 10%; margin: auto; width: 100%; border-radius: 100%;">
-            </div>
-        </nav>
-    </header> 
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    
+    <nav class="navbar navbar-custom bg-dark" style="font-family:Verdana, Geneva, Tahoma, sans-serif; align-items: center;">
+        <div class="container" style="align-items: center;">
+            <a href="{% url 'vista_base' %}" style="display: block; margin: auto; text-decoration: none;">
+                <img src="{% static 'img/logo.jpg' %}" 
+                     style="max-width: 8%; margin: auto; width: 50%; border-radius: 100%; cursor: pointer; transition: transform 0.3s ease;" 
+                     alt="Muebles Barguay - Volver al inicio"
+                     onmouseover="this.style.transform='scale(1.1)'" 
+                     onmouseout="this.style.transform='scale(1)'">
+            </a>
+        </div>
+    </nav>
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
     {% block content %}{% endblock %}
 
     <!-- Bootstrap Bundle con JS -->

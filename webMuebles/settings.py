@@ -139,3 +139,34 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ==============================================================================
+# EMAIL CONFIGURATION - Servidor Corporativo
+# ==============================================================================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# Configuración del servidor SMTP (solicitar a tu proveedor de hosting)
+EMAIL_HOST = 'mail.mueblesbarguay.cl'  # TODO: Confirmar con tu proveedor de hosting/dominio
+EMAIL_PORT = 465 # Puede ser 587 (TLS) o 465 (SSL), confirmar con proveedor
+#EMAIL_USE_TLS = False  # Si es puerto 587
+EMAIL_USE_SSL = True  # Si es puerto 465, descomentar y comentar EMAIL_USE_TLS
+
+# Credenciales del email corporativo
+EMAIL_HOST_USER = 'contacto@mueblesbarguay.cl'
+EMAIL_HOST_PASSWORD = 'barguay.2025'  # TODO: Ingresar la contraseña del email
+
+# Email de envío
+DEFAULT_FROM_EMAIL = 'Muebles Barguay <contacto@mueblesbarguay.cl>'
+EMAIL_SUBJECT_PREFIX = '[Muebles Barguay] '
+
+# Información de la empresa
+COMPANY_NAME = 'Muebles Barguay'
+COMPANY_ADDRESS = 'Av Lo Espejo 964, El Bosque, Santiago'
+COMPANY_PHONE = '+569 1234 5678'  # TODO: Actualizar con teléfono real
+COMPANY_EMAIL = 'contacto@mueblesbarguay.cl'
+
+# ==============================================================================
+# MEDIA FILES CONFIGURATION - Archivos subidos por usuarios
+# ==============================================================================
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

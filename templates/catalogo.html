@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Catálogo de Productos{% endblock %}
+
+{% block content %}
+<div class="catalogo-container">
+    <!-- Hero Section -->
+    <div class="catalogo-hero">
+        <div class="container">
+            <h1 class="catalogo-title">Nuestros Productos</h1>
+            <p class="catalogo-subtitle">Diseños exclusivos para tu hogar y oficina</p>
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="container productos-section">
+        <div class="row g-4">
+            {% for producto in productos %}
+            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="{% static producto.imagen %}" class="product-image" alt="{{ producto.nombre }}">
+                        <div class="product-overlay">
+                            <a href="#" class="btn btn-light btn-sm">Ver Detalles</a>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">{{ producto.nombre }}</h3>
+                        <p class="product-description">{{ producto.descripcion }}</p>
+                        <div class="product-footer">
+                            <span class="product-price">{{ producto.precio }}</span>
+                            <a href="#" class="btn btn-primary btn-sm">Cotizar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="cta-section">
+        <div class="container text-center">
+            <h2 class="cta-title">¿Necesitas un diseño personalizado?</h2>
+            <p class="cta-text">Contáctanos y creamos el mueble perfecto para ti</p>
+            <a href="{% url 'agendar_reunion' %}" class="btn btn-primary btn-lg px-5 rounded-pill">Agendar Reunión</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
