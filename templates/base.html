@@ -47,48 +47,119 @@
         <button onclick="adjustFontSize(-1)" aria-label="Disminuir letra" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">-</button>
         <span style="color: #fff; font-weight: bold; align-self: center; font-size: 14px; margin: 0 5px;">A</span>
         <button onclick="adjustFontSize(1)" aria-label="Aumentar letra" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">+</button>
+        
+        <!-- Divider -->
+        <div style="width: 1px; background: rgba(255,255,255,0.3); margin: 0 5px;"></div>
+        
+        <!-- Voice Toggle -->
+        <button id="voice-toggle" onclick="toggleVoice()" aria-label="Activar Narrador" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+            <i class="bi bi-volume-up-fill"></i>
+        </button>
     </div>
-    <!-- Mobile version (slightly larger/different position if needed, but flex handles it) -->
+
     <style>
         #accessibility-controls button:hover { background: #555 !important; transform: scale(1.1); }
+        #accessibility-controls button.active { background: #28a745 !important; border-color: #28a745 !important; }
+        .speaking-highlight { outline: 2px solid #ffc107 !important; background: rgba(255, 193, 7, 0.1); }
         @media (max-width: 768px) {
             #accessibility-controls { bottom: 15px; right: 15px; padding: 10px; }
             #accessibility-controls button { width: 40px; height: 40px; font-size: 20px; }
         }
-        /* Ensure d-none d-md-flex doesn't hide it on mobile if we want it everywhere. 
-           Actually user said "visible y ordenado para el celular". 
-           So I should REMOVE d-none d-md-flex and just use display: flex. 
-           Bootstrap classes might hide it. I'll use inline style override.
-        */
     </style>
+
     <script>
-        // Remove bootstrap classes that might hide it, just in case
+        // Remove bootstrap classes that might hide it
         document.getElementById('accessibility-controls').className = ''; 
 
+        // Font Size Logic
         function adjustFontSize(change) {
             const html = document.documentElement;
             let currentSize = parseFloat(window.getComputedStyle(html).fontSize);
-            
-            // Default to 16px if something is wrong
             if (isNaN(currentSize)) currentSize = 16;
-            
             let newSize = currentSize + change;
-            
-            // Limits (12px to 24px)
             if (newSize < 12) newSize = 12;
             if (newSize > 28) newSize = 28;
-            
             html.style.fontSize = newSize + 'px';
             localStorage.setItem('userFontSize', newSize);
         }
 
-        // Load saved preference
         (function() {
             const savedSize = localStorage.getItem('userFontSize');
             if (savedSize) {
                 document.documentElement.style.fontSize = savedSize + 'px';
             }
         })();
+
+        // Voice Guide Logic
+        let voiceEnabled = false;
+        let synthesis = window.speechSynthesis;
+        let currentUtterance = null;
+
+        function toggleVoice() {
+            voiceEnabled = !voiceEnabled;
+            const btn = document.getElementById('voice-toggle');
+            
+            if (voiceEnabled) {
+                btn.classList.add('active');
+                btn.innerHTML = '<i class="bi bi-mic-fill"></i>';
+                speak("Narrador activado. Pase el mouse sobre el texto para escuchar.");
+                localStorage.setItem('voiceEnabled', 'true');
+            } else {
+                btn.classList.remove('active');
+                btn.innerHTML = '<i class="bi bi-volume-mute-fill"></i>';
+                synthesis.cancel();
+                speak("Narrador desactivado.");
+                localStorage.setItem('voiceEnabled', 'false');
+                // Reset icon after speaking
+                setTimeout(() => { if(!voiceEnabled) btn.innerHTML = '<i class="bi bi-volume-up-fill"></i>'; }, 2000);
+            }
+        }
+
+        function speak(text) {
+            if (!text) return;
+            synthesis.cancel(); // Stop previous
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-ES'; // Prefer Spanish
+            synthesis.speak(utterance);
+        }
+
+        function handleInteraction(event) {
+            if (!voiceEnabled) return;
+            
+            const target = event.target;
+            // Read text from relevant elements
+            if (['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'A', 'BUTTON', 'LABEL', 'SPAN', 'LI', 'TD', 'TH'].includes(target.tagName)) {
+                let text = target.innerText || target.textContent;
+                if (target.tagName === 'IMG' && target.alt) text = "Imagen: " + target.alt;
+                
+                if (text && text.trim().length > 0) {
+                    // Visual feedback
+                    document.querySelectorAll('.speaking-highlight').forEach(el => el.classList.remove('speaking-highlight'));
+                    target.classList.add('speaking-highlight');
+                    
+                    speak(text);
+                    
+                    // Remove highlight when done (approximate) or on mouseout
+                    target.addEventListener('mouseleave', () => {
+                        target.classList.remove('speaking-highlight');
+                        synthesis.cancel();
+                    }, {once: true});
+                }
+            }
+        }
+
+        document.addEventListener('mouseover', handleInteraction);
+        document.addEventListener('focus', handleInteraction, true); // Capture phase for focus
+
+        // Restore state
+        if (localStorage.getItem('voiceEnabled') === 'true') {
+            // Don't auto-enable speech on load to avoid annoyance, but show state?
+            // Better to let user activate it. Or maybe just set the visual state but wait for interaction?
+            // For now, let's keep it off by default on reload unless we want persistent "Always On".
+            // User asked for "guide", usually implies on-demand. 
+            // Let's NOT auto-enable on reload to prevent unexpected talking, but we could.
+            // I'll leave it manual for now for better UX.
+        }
     </script>
 
     <!-- Bootstrap Bundle con JS -->
