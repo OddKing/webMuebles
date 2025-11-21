@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Agendar Reunión{% endblock %}
+{% block title %}<span data-i18n-title="meeting.title">Agendar Reunión</span>{% endblock %}
 
 <style>
 /* Horarios ocupados - Alta prioridad */
@@ -38,8 +38,8 @@ button.horario-btn.occupied:hover {
     <!-- Header Section -->
     <div class="agendar-header">
         <div class="container">
-            <h1 class="agendar-title">Agendar tu Reunión</h1>
-            <p class="agendar-subtitle">Selecciona la fecha y hora que mejor se ajuste a tu agenda</p>
+            <h1 class="agendar-title" data-i18n="meeting.hero.title">Agendar tu Reunión</h1>
+            <p class="agendar-subtitle" data-i18n="meeting.hero.subtitle">Selecciona la fecha y hora que mejor se ajuste a tu agenda</p>
         </div>
     </div>
 
@@ -51,7 +51,7 @@ button.horario-btn.occupied:hover {
             {{ message }}
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
         </div>
-        {% endfor %}
+        {% endfor %}    
     </div>
     {% endif %}
 
@@ -63,41 +63,41 @@ button.horario-btn.occupied:hover {
             <!-- Columna Izquierda: Formulario -->
             <div class="col-lg-6">
                 <div class="form-card">
-                    <h3 class="form-section-title">Información Personal</h3>
+                    <h3 class="form-section-title" data-i18n="meeting.form.personal">Información Personal</h3>
                     
                     <div class="mb-3">
-                        <label for="nombre_completo" class="form-label">Nombre Completo *</label>
+                        <label for="nombre_completo" class="form-label" data-i18n="meeting.form.name">Nombre Completo *</label>
                         <input type="text" class="form-control form-control-dark" id="nombre_completo" name="nombre_completo" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email *</label>
+                        <label for="email" class="form-label" data-i18n="meeting.form.email">Email *</label>
                         <input type="email" class="form-control form-control-dark" id="email" name="email" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="telefono" class="form-label">Teléfono *</label>
+                        <label for="telefono" class="form-label" data-i18n="meeting.form.phone">Teléfono *</label>
                         <input type="tel" class="form-control form-control-dark" id="telefono" name="telefono" placeholder="+56912345678" required>
                     </div>
 
                     <div class="mb-3">
-                        <label for="direccion" class="form-label">Dirección *</label>
+                        <label for="direccion" class="form-label" data-i18n="meeting.form.address">Dirección *</label>
                         <input type="text" class="form-control form-control-dark" id="direccion" name="direccion" required>
                     </div>
 
-                    <h3 class="form-section-title mt-4">Tipo de Reunión</h3>
+                    <h3 class="form-section-title mt-4" data-i18n="meeting.form.type">Tipo de Reunión</h3>
                     
                     <div class="tipo-reunion-group">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="tipo_reunion" id="online" value="online" required>
                             <label class="form-check-label" for="online">
-                                <i class="bi bi-camera-video"></i> Online
+                                <i class="bi bi-camera-video"></i> <span data-i18n="meeting.form.online">Online</span>
                             </label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="tipo_reunion" id="presencial" value="presencial">
                             <label class="form-check-label" for="presencial">
-                                <i class="bi bi-person"></i> Presencial
+                                <i class="bi bi-person"></i> <span data-i18n="meeting.form.inperson">Presencial</span>
                             </label>
                         </div>
                     </div>
@@ -108,7 +108,7 @@ button.horario-btn.occupied:hover {
             <div class="col-lg-6">
                 <!-- Calendario Visual -->
                 <div class="form-card mb-4">
-                    <h3 class="form-section-title">Selecciona una Fecha</h3>
+                    <h3 class="form-section-title" data-i18n="meeting.form.selectdate">Selecciona una Fecha</h3>
                     
                     <!-- Navegación del Calendario -->
                     <div class="calendar-navigation">
@@ -138,12 +138,12 @@ button.horario-btn.occupied:hover {
 
                     <!-- Input hidden para el formulario -->
                     <input type="hidden" id="fecha" name="fecha" required>
-                    <p class="form-text mt-2">Solo días laborables (Lunes a Viernes)</p>
+                    <p class="form-text mt-2" data-i18n="meeting.form.workdays">Solo días laborables (Lunes a Viernes)</p>
                 </div>
 
                 <!-- Horarios -->
                 <div class="form-card">
-                    <h3 class="form-section-title">Selecciona un Horario</h3>
+                    <h3 class="form-section-title" data-i18n="meeting.form.selecttime">Selecciona un Horario</h3>
                     <div class="horarios-grid">
                         {% for horario in horarios %}
                         <button type="button" class="horario-btn" data-hora="{{ horario }}">
@@ -152,33 +152,33 @@ button.horario-btn.occupied:hover {
                         {% endfor %}
                     </div>
                     <input type="hidden" id="hora" name="hora" required>
-                    <p class="form-text mt-2">Horario de atención: 10:00 AM - 6:00 PM</p>
+                    <p class="form-text mt-2" data-i18n="meeting.form.schedule">Horario de atención: 10:00 AM - 6:00 PM</p>
                 </div>
 
                 <!-- Resumen de Selección -->
                 <div class="seleccion-resumen" id="resumenSeleccion" style="display: none;">
-                    <h4>Resumen de tu Cita</h4>
-                    <p><strong>Fecha:</strong> <span id="resumenFecha"></span></p>
-                    <p><strong>Hora:</strong> <span id="resumenHora"></span></p>
+                    <h4 data-i18n="meeting.summary.title">Resumen de tu Cita</h4>
+                    <p><strong data-i18n="meeting.summary.date">Fecha:</strong> <span id="resumenFecha"></span></p>
+                    <p><strong data-i18n="meeting.summary.time">Hora:</strong> <span id="resumenHora"></span></p>
                 </div>
 
                 <!-- Checkbox de Consentimiento -->
                 <div class="form-check mb-4 mt-4" style="background: rgba(13, 110, 253, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(13, 110, 253, 0.3);">
                     <input type="checkbox" class="form-check-input" id="aceptoTerminos" name="acepto_terminos" required style="width: 20px; height: 20px; margin-top: 0.3rem;">
                     <label class="form-check-label" for="aceptoTerminos" style="color: #e0e0e0; font-size: 1rem; margin-left: 0.5rem; cursor: pointer;">
-                        He leído y acepto los 
-                        <a href="{% url 'terminos' %}" target="_blank" style="color: #0d6efd; text-decoration: none; font-weight: 600;">Términos y Condiciones</a> 
-                        y la 
-                        <a href="{% url 'privacidad' %}" target="_blank" style="color: #0d6efd; text-decoration: none; font-weight: 600;">Política de Privacidad</a>
+                        <span data-i18n="meeting.consent.read">He leído y acepto los</span> 
+                        <a href="{% url 'terminos' %}" target="_blank" style="color: #0d6efd; text-decoration: none; font-weight: 600;" data-i18n="footer.terms">Términos y Condiciones</a> 
+                        <span data-i18n="meeting.consent.and">y la</span> 
+                        <a href="{% url 'privacidad' %}" target="_blank" style="color: #0d6efd; text-decoration: none; font-weight: 600;" data-i18n="footer.privacy">Política de Privacidad</a>
                     </label>
-                    <div class="invalid-feedback" style="color: #dc3545; margin-top: 0.5rem;">
+                    <div class="invalid-feedback" style="color: #dc3545; margin-top: 0.5rem;" data-i18n="meeting.consent.error">
                         Debes aceptar los términos y condiciones para continuar.
                     </div>
                 </div>
 
                 <!-- Botón Submit -->
                 <button type="submit" class="btn btn-primary btn-lg w-100 mt-2" id="btnConfirmar">
-                    <i class="bi bi-calendar-check"></i> Confirmar Reunión
+                    <i class="bi bi-calendar-check"></i> <span data-i18n="meeting.btn.confirm">Confirmar Reunión</span>
                 </button>
             </div>
         </form>

@@ -28,8 +28,14 @@ from cotizaciones.views_admin import (
 )
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf.urls.i18n import i18n_patterns
+from django.urls import include
 
 urlpatterns = [
+    path('i18n/', include('django.conf.urls.i18n')),
+]
+
+urlpatterns += [
     path('admin/', admin.site.urls),
     path('', portada, name='index'),
     path('catalogo/', catalogo, name='catalogo'),

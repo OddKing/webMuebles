@@ -1,20 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Términos y Condiciones - Muebles Barguay{% endblock %}
+{% block title %}<span data-i18n-title="legal.terms.title">Términos y Condiciones</span> - Muebles Barguay{% endblock %}
 
 {% block content %}
 <div class="legal-container">
     <div class="container py-5">
         <div class="legal-header text-center mb-5">
-            <h1 class="legal-title">📜 Términos y Condiciones</h1>
-            <p class="legal-subtitle">Última actualización: 20 de Noviembre de 2025 | Versión 1.0</p>
+            <h1 class="legal-title">📜 <span data-i18n="legal.terms.title">Términos y Condiciones</span></h1>
+            <p class="legal-subtitle"><span data-i18n="legal.terms.updated">Última actualización:</span> 20 de Noviembre de 2025 | <span data-i18n="legal.terms.version">Versión</span> 1.0</p>
         </div>
 
         <div class="row">
             <div class="col-lg-3 mb-4">
                 <div class="legal-toc sticky-top">
-                    <h5 class="toc-title">Contenido</h5>
+                    <h5 class="toc-title" data-i18n="legal.toc.title">Contenido</h5>
                     <nav class="toc-nav">
                         <a href="#seccion1" class="toc-link">1. Información General</a>
                         <a href="#seccion2" class="toc-link">2. Uso del Sitio Web</a>
@@ -220,10 +220,10 @@
                     <!-- Botones de Acción -->
                     <div class="legal-actions mt-4 text-center">
                         <button onclick="window.print()" class="btn btn-outline-light me-2">
-                            <i class="bi bi-printer"></i> Imprimir
+                            <i class="bi bi-printer"></i> <span data-i18n="legal.btn.print">Imprimir</span>
                         </button>
                         <a href="{% url 'index' %}" class="btn btn-primary">
-                            <i class="bi bi-house"></i> Volver al Inicio
+                            <i class="bi bi-house"></i> <span data-i18n="legal.btn.home">Volver al Inicio</span>
                         </a>
                     </div>
 

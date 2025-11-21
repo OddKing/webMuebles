@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Catálogo de Productos{% endblock %}
+{% block title %}<span data-i18n-title="catalog.title">Catálogo de Productos</span>{% endblock %}
 
 {% block content %}
 <div class="catalogo-container">
     <!-- Hero Section -->
     <div class="catalogo-hero">
         <div class="container">
-            <h1 class="catalogo-title">Nuestros Productos</h1>
-            <p class="catalogo-subtitle">Diseños exclusivos para tu hogar y oficina</p>
+            <h1 class="catalogo-title" data-i18n="catalog.hero.title">Nuestros Productos</h1>
+            <p class="catalogo-subtitle" data-i18n="catalog.hero.subtitle">Diseños exclusivos para tu hogar y oficina</p>
         </div>
     </div>
 
@@ -29,7 +29,7 @@
                         <p class="product-price">${{ producto.precio|floatformat:0 }}</p>
                         <div class="product-footer">
                             <a href="{% url 'solicitar_cotizacion' producto.id %}" class="btn btn-primary btn-sm w-100">
-                                <i class="bi bi-calculator"></i> Cotizar
+                                <i class="bi bi-calculator"></i> <span data-i18n="catalog.btn.quote">Cotizar</span>
                             </a>
                         </div>
                     </div>
@@ -41,8 +41,8 @@
         <!-- Empty State -->
         <div class="empty-catalog">
             <i class="bi bi-inbox" style="font-size: 4rem; color: #6c757d;"></i>
-            <h3>No hay productos disponibles</h3>
-            <p>Pronto agregaremos nuevos productos a nuestro catálogo.</p>
+            <h3 data-i18n="catalog.empty.title">No hay productos disponibles</h3>
+            <p data-i18n="catalog.empty.message">Pronto agregaremos nuevos productos a nuestro catálogo.</p>
         </div>
         {% endif %}
     </div>
@@ -50,9 +50,9 @@
     <!-- Call to Action -->
     <div class="cta-section">
         <div class="container text-center">
-            <h2 class="cta-title">¿Necesitas un diseño personalizado?</h2>
-            <p class="cta-text">Contáctanos y creamos el mueble perfecto para ti</p>
-            <a href="{% url 'agendar_reunion' %}" class="btn btn-primary btn-lg px-5 rounded-pill">Agendar Reunión</a>
+            <h2 class="cta-title" data-i18n="catalog.cta.title">¿Necesitas un diseño personalizado?</h2>
+            <p class="cta-text" data-i18n="catalog.cta.message">Contáctanos y creamos el mueble perfecto para ti</p>
+            <a href="{% url 'agendar_reunion' %}" class="btn btn-primary btn-lg px-5 rounded-pill" data-i18n="catalog.cta.button">Agendar Reunión</a>
         </div>
     </div>
 </div>

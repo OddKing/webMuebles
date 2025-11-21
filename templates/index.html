@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Portada{% endblock %}
+{% block title %}<span data-i18n-title="home.title">Portada</span>{% endblock %}
 
 {% block body_class %} no-scroll transparent-nav{% endblock %}
 
@@ -60,7 +60,7 @@
 
 <!-- Botones flotantes -->
 <div class="overlay-buttons">
-    <a href="{% url 'agendar_reunion' %}" class="btn btn-primary btn-lg px-4 rounded-pill shadow-lg">Agendar Reunión</a>
-    <a href="{% url 'catalogo' %}" class="btn btn-outline-light btn-lg px-4 rounded-pill shadow-lg">Cotiza Aquí</a>
+    <a href="{% url 'agendar_reunion' %}" class="btn btn-primary btn-lg px-4 rounded-pill shadow-lg" data-i18n="home.schedule">Agendar Reunión</a>
+    <a href="{% url 'catalogo' %}" class="btn btn-outline-light btn-lg px-4 rounded-pill shadow-lg" data-i18n="home.quote">Cotiza Aquí</a>
 </div>
 {% endblock %}
