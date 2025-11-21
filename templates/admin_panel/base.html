@@ -146,23 +146,27 @@
 
         /* Override Bootstrap text-muted */
         .text-muted {
-            color: #ffffff !important;
-            opacity: 0.8;
+            color: #b0b0b0 !important;
+            opacity: 1;
         }
         
         /* Cards */
         .card {
-            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
-            border: 1px solid rgba(139, 69, 19, 0.3);
+            background: transparent;
+            border: 2px solid rgba(139, 69, 19, 0.5);
             border-radius: 10px;
             color: #e0e0e0;
         }
         
         .card-header {
-            background-color: rgba(139, 69, 19, 0.2);
-            border-bottom: 1px solid rgba(139, 69, 19, 0.3);
+            background-color: rgba(139, 69, 19, 0.15);
+            border-bottom: 2px solid rgba(139, 69, 19, 0.5);
             color: var(--admin-secondary);
             font-weight: 600;
+        }
+        
+        .card-body {
+            background: rgba(0, 0, 0, 0.2);
         }
         
         /* Buttons */
@@ -193,15 +197,82 @@
         /* Tables */
         .table {
             color: #e0e0e0;
+            background: transparent;
         }
         
         .table thead {
-            background-color: rgba(139, 69, 19, 0.2);
+            background-color: rgba(139, 69, 19, 0.25);
             color: var(--admin-secondary);
+            border-bottom: 2px solid rgba(139, 69, 19, 0.6);
+        }
+        
+        .table thead th {
+            border-bottom: 2px solid rgba(139, 69, 19, 0.6);
+            padding: 1rem;
+            font-weight: 600;
+        }
+        
+        .table tbody td {
+            border-bottom: 1px solid rgba(139, 69, 19, 0.3);
+            padding: 1rem;
+        }
+        
+        .table-hover tbody tr {
+            background: transparent;
         }
         
         .table-hover tbody tr:hover {
-            background-color: rgba(139, 69, 19, 0.1);
+            background-color: rgba(139, 69, 19, 0.15);
+        }
+        
+        /* Form Controls */
+        .form-control, .form-select {
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(139, 69, 19, 0.4);
+            color: #e0e0e0;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background-color: rgba(0, 0, 0, 0.4);
+            border-color: var(--admin-secondary);
+            color: #e0e0e0;
+            box-shadow: 0 0 0 0.25rem rgba(139, 69, 19, 0.25);
+        }
+        
+        .form-control::placeholder {
+            color: #888;
+        }
+        
+        /* Badges */
+        .badge {
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+        }
+        
+        /* Alerts */
+        .alert {
+            border: 2px solid;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .alert-success {
+            border-color: #198754;
+            color: #75b798;
+        }
+        
+        .alert-warning {
+            border-color: #ffc107;
+            color: #ffd966;
+        }
+        
+        .alert-danger {
+            border-color: #dc3545;
+            color: #ea868f;
+        }
+        
+        .alert-info {
+            border-color: #0dcaf0;
+            color: #6edff6;
         }
         
         /* Responsive */
@@ -256,6 +327,12 @@
                         {% if citas_count %}
                         <span class="badge-count">{{ citas_count }}</span>
                         {% endif %}
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'admin_lista_productos' %}" class="{% if 'producto' in request.resolver_match.url_name %}active{% endif %}">
+                        <i class="bi bi-box-seam"></i>
+                        Productos
                     </a>
                 </li>
             </ul>

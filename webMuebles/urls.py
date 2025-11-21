@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from administracion.views import portada, terminos_condiciones, politica_privacidad
+from administracion.views_productos import lista_productos, crear_producto, editar_producto, eliminar_producto
 from productos.views import catalogo
 from cotizaciones.views import agendar_reunion, get_horarios_disponibles, solicitar_cotizacion, cotizacion_enviada
 from cotizaciones.views_admin import (
@@ -50,6 +51,12 @@ urlpatterns = [
     path('admin-panel/cotizacion/<int:cotizacion_id>/pdf/', preview_quote_pdf, name='preview_quote_pdf'),
     path('admin-panel/cita/<int:cita_id>/aprobar/', aprobar_cita, name='aprobar_cita'),
     path('admin-panel/cita/<int:cita_id>/rechazar/', rechazar_cita, name='rechazar_cita'),
+    
+    # Product Management Routes
+    path('admin-panel/productos/', lista_productos, name='admin_lista_productos'),
+    path('admin-panel/productos/crear/', crear_producto, name='admin_crear_producto'),
+    path('admin-panel/productos/editar/<int:producto_id>/', editar_producto, name='admin_editar_producto'),
+    path('admin-panel/productos/eliminar/<int:producto_id>/', eliminar_producto, name='admin_eliminar_producto'),
 ]
 
 # Servir archivos media en desarrollo

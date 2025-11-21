@@ -44,9 +44,13 @@ def admin_logout(request):
 @login_required(login_url='admin_login')
 def admin_dashboard(request):
     """Dashboard principal del panel de administración"""
+    from productos.models import Producto
+    
     # Contar elementos pendientes
     cotizaciones_pendientes = Cotizacion.objects.filter(estado='pendiente_aprobacion').count()
     citas_pendientes = Cita.objects.filter(estado='pendiente_aprobacion').count()
+    productos_total = Producto.objects.count()
+    productos_activos = Producto.objects.filter(activo=True).count()
     
     # Obtener registros recientes
     cotizaciones_recientes = Cotizacion.objects.filter(estado='pendiente_aprobacion').order_by('-fecha_solicitud')[:5]
@@ -55,6 +59,8 @@ def admin_dashboard(request):
     context = {
         'cotizaciones_pendientes_count': cotizaciones_pendientes,
         'citas_pendientes_count': citas_pendientes,
+        'productos_total': productos_total,
+        'productos_activos': productos_activos,
         'admin_cotizaciones': cotizaciones_recientes,
         'citas_recientes': citas_recientes,
     }
