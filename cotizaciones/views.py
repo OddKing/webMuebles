@@ -140,65 +140,8 @@ def agendar_reunion(request):
                     user_agent=user_agent
                 )
                 
-                # ENVIAR EMAIL DE CONFIRMACIÓN
-                try:
-                    from django.core.mail import EmailMultiAlternatives
-                    from django.template.loader import render_to_string
-                    from django.conf import settings
-                    from email.mime.image import MIMEImage
-                    import os
-                    
-                    # Formatear fecha en español
-                    meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-                            'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
-                    dias_semana = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo']
-                    
-                    dia_semana = dias_semana[fecha.weekday()]
-                    fecha_formateada = f"{dia_semana.capitalize()}, {fecha.day} de {meses[fecha.month-1]} de {fecha.year}"
-                    
-                    tipo_reunion_display = 'Online' if tipo_reunion == 'online' else 'Presencial'
-                    
-                    # Contexto para el template
-                    context = {
-                        'nombre_completo': nombre_completo,
-                        'fecha_formateada': fecha_formateada,
-                        'hora': hora.strftime('%H:%M'),
-                        'tipo_reunion': tipo_reunion,
-                        'tipo_reunion_display': tipo_reunion_display,
-                    }
-                    
-                    # Renderizar templates
-                    html_content = render_to_string('emails/confirmacion_cita.html', context)
-                    text_content = render_to_string('emails/confirmacion_cita.txt', context)
-                    
-                    # Crear email
-                    subject = f'Confirmación de Reunión - {fecha_formateada} a las {hora.strftime("%H:%M")}'
-                    from_email = settings.DEFAULT_FROM_EMAIL
-                    to_email = [email]
-                    
-                    msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
-                    msg.attach_alternative(html_content, "text/html")
-                    
-                    # Adjuntar logo como imagen embebida
-                    logo_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'logo.jpg')
-                    if os.path.exists(logo_path):
-                        with open(logo_path, 'rb') as f:
-                            logo_img = MIMEImage(f.read())
-                            logo_img.add_header('Content-ID', '<logo>')
-                            logo_img.add_header('Content-Disposition', 'inline', filename='logo.jpg')
-                            msg.attach(logo_img)
-                    
-                    # Enviar email
-                    msg.send(fail_silently=False)
-                    
-                    messages.success(request, f'¡Reunión agendada exitosamente! Hemos enviado un email de confirmación a {email}')
-                    
-                except Exception as e:
-                    # Si falla el email, la cita ya fue creada, pero notificamos el error
-                    import logging
-                    logger = logging.getLogger(__name__)
-                    logger.error(f'Error al enviar email de confirmación: {str(e)}')
-                    messages.warning(request, f'Reunión agendada para el {fecha.strftime("%d/%m/%Y")} a las {hora.strftime("%H:%M")}, pero hubo un problema al enviar el email de confirmación.')
+                # Email será enviado después de la aprobación del administrador
+                messages.success(request, f'¡Solicitud de reunión recibida! Nuestro equipo revisará su solicitud y le enviará una confirmación a {email}')
                 
                 return redirect('agendar_reunion')
                 
@@ -290,52 +233,11 @@ def solicitar_cotizacion(request, producto_id):
                 user_agent=request.META.get('HTTP_USER_AGENT', '')[:500]
             )
             
-            # Generar PDF y enviar email
-            try:
-                pdf_buffer = generate_quote_pdf(cotizacion)
-                
-                # Preparar contexto para email
-                email_context = {
-                    'cotizacion': cotizacion,
-                    'producto_nombre': producto_dict['nombre'],
-                    'producto_descripcion': producto_dict['descripcion'],
-                    'folio': cotizacion.folio
-                }
-                
-                html_message = render_to_string(
-                    'emails/confirmacion_cotizacion.html',
-                    email_context
-                )
-                
-                email = EmailMessage(
-                    subject=f'Cotización {cotizacion.folio} - Muebles Barguay',
-                    body=html_message,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[cotizacion.email],
-                )
-                email.content_subtype = 'html'
-                
-                # Adjuntar PDF
-                email.attach(
-                    f'Cotizacion_{cotizacion.folio}.pdf',
-                    pdf_buffer.getvalue(),
-                    'application/pdf'
-                )
-                
-                email.send(fail_silently=False)
-                
-                messages.success(
-                    request,
-                    f'¡Cotización enviada! Revisa tu email para ver los detalles. Folio: {cotizacion.folio}'
-                )
-                
-            except Exception as e:
-                # Si falla el envío del email, igual guardamos la cotización
-                messages.warning(
-                    request,
-                    f'Cotización guardada (Folio: {cotizacion.folio}), pero hubo un problema al enviar el email. Nos contactaremos contigo pronto.'
-                )
-                print(f"Error enviando email: {e}")
+            # PDF y email serán generados después de la aprobación del administrador
+            messages.success(
+                request,
+                f'¡Solicitud de cotización recibida! Folio: {cotizacion.folio}. Nuestro equipo revisará su solicitud y le enviará la cotización a {cotizacion.email}'
+            )
             
             return redirect('cotizacion_enviada')
     else:

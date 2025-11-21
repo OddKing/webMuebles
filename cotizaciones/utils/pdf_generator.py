@@ -67,7 +67,7 @@ def generate_quote_pdf(cotizacion):
     
     # ===== ENCABEZADO =====
     # Logo (si existe)
-    logo_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'logo.png')
+    logo_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'logo.jpg')
     if os.path.exists(logo_path):
         try:
             logo = Image(logo_path, width=3*cm, height=3*cm)
@@ -255,9 +255,7 @@ def generate_quote_pdf(cotizacion):
     condiciones del espacio, materiales seleccionados y complejidad de la instalación. 
     Validez de la cotización: 30 días.
     """
-    elements.append(Paragraph(nota_texto, nota_style))
-    
-   # ===== PIE DE PÁGINA =====
+    # ===== PIE DE PÁGINA =====
     elements.append(Spacer(1, 1.5*cm))
     footer_text = """
     <para align=center>

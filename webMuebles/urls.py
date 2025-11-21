@@ -19,6 +19,14 @@ from django.urls import path
 from administracion.views import portada, terminos_condiciones, politica_privacidad
 from productos.views import catalogo
 from cotizaciones.views import agendar_reunion, get_horarios_disponibles, solicitar_cotizacion, cotizacion_enviada
+from cotizaciones.views_admin import (
+    admin_login, admin_logout, admin_dashboard,
+    admin_cotizaciones_pendientes, admin_citas_pendientes,
+    aprobar_cotizacion, rechazar_cotizacion,
+    aprobar_cita, rechazar_cita, preview_quote_pdf
+)
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,12 +38,21 @@ urlpatterns = [
     path('cotizacion/enviada/', cotizacion_enviada, name='cotizacion_enviada'),
     path('terminos/', terminos_condiciones, name='terminos'),
     path('privacidad/', politica_privacidad, name='privacidad'),
+    
+    # Admin Panel Routes
+    path('admin-panel/login/', admin_login, name='admin_login'),
+    path('admin-panel/logout/', admin_logout, name='admin_logout'),
+    path('admin-panel/', admin_dashboard, name='admin_dashboard'),
+    path('admin-panel/cotizaciones/', admin_cotizaciones_pendientes, name='admin_cotizaciones'),
+    path('admin-panel/citas/', admin_citas_pendientes, name='admin_citas'),
+    path('admin-panel/cotizacion/<int:cotizacion_id>/aprobar/', aprobar_cotizacion, name='aprobar_cotizacion'),
+    path('admin-panel/cotizacion/<int:cotizacion_id>/rechazar/', rechazar_cotizacion, name='rechazar_cotizacion'),
+    path('admin-panel/cotizacion/<int:cotizacion_id>/pdf/', preview_quote_pdf, name='preview_quote_pdf'),
+    path('admin-panel/cita/<int:cita_id>/aprobar/', aprobar_cita, name='aprobar_cita'),
+    path('admin-panel/cita/<int:cita_id>/rechazar/', rechazar_cita, name='rechazar_cita'),
 ]
 
 # Servir archivos media en desarrollo
-from django.conf import settings
-from django.conf.urls.static import static
-
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
@@ -43,4 +60,3 @@ if settings.DEBUG:
 admin.site.site_header = "🪑 Muebles Barguay - Panel de Administración"
 admin.site.site_title = "Muebles Barguay Admin"
 admin.site.index_title = "Bienvenido al Panel de Gestión"
-

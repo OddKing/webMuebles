@@ -10,8 +10,9 @@ class Cita(models.Model):
     ]
     
     ESTADO_CHOICES = [
-        ('pendiente', 'Pendiente'),
-        ('confirmada', 'Confirmada'),
+        ('pendiente_aprobacion', 'Pendiente de Aprobación'),
+        ('aprobada', 'Aprobada'),
+        ('rechazada', 'Rechazada'),
         ('cancelada', 'Cancelada'),
     ]
     
@@ -28,8 +29,10 @@ class Cita(models.Model):
     tipo_reunion = models.CharField(max_length=20, choices=TIPO_REUNION_CHOICES, verbose_name="Tipo de Reunión")
     fecha = models.DateField(verbose_name="Fecha de Reunión")
     hora = models.TimeField(verbose_name="Hora de Reunión")
-    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente', verbose_name="Estado")
+    estado = models.CharField(max_length=25, choices=ESTADO_CHOICES, default='pendiente_aprobacion', verbose_name="Estado")
     fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
+    fecha_aprobacion = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de Aprobación")
+    admin_notas = models.TextField(blank=True, verbose_name="Notas del Administrador", help_text="Razón de rechazo o notas internas")
     
     class Meta:
         verbose_name = "Cita"
@@ -51,11 +54,12 @@ class Cotizacion(models.Model):
     ]
     
     ESTADO_CHOICES = [
-        ('pendiente', 'Pendiente'),
+        ('pendiente_aprobacion', 'Pendiente de Aprobación'),
+        ('aprobada', 'Aprobada'),
+        ('rechazada', 'Rechazada'),
         ('en_revision', 'En Revisión'),
         ('cotizada', 'Cotizada'),
         ('aceptada', 'Aceptada'),
-        ('rechazada', 'Rechazada'),
     ]
     
     # Producto relacionado (opcional)
@@ -116,9 +120,9 @@ class Cotizacion(models.Model):
         blank=True
     )
     estado = models.CharField(
-        max_length=20, 
+        max_length=25, 
         choices=ESTADO_CHOICES, 
-        default='pendiente', 
+        default='pendiente_aprobacion', 
         verbose_name="Estado"
     )
     precio_cotizado = models.DecimalField(
@@ -129,13 +133,14 @@ class Cotizacion(models.Model):
         verbose_name="Precio Cotizado ($)",
         help_text="Precio en pesos chilenos"
     )
-    notas_admin = models.TextField(
+    admin_notas = models.TextField(
         blank=True, 
         verbose_name="Notas Administrativas",
         help_text="Notas internas, no visibles para el cliente"
     )
     fecha_solicitud = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Solicitud")
     fecha_actualizacion = models.DateTimeField(auto_now=True, verbose_name="Última Actualización")
+    fecha_aprobacion = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de Aprobación")
     
     class Meta:
         verbose_name = "Cotización"

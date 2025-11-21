@@ -1,0 +1,198 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block page_title %}Cotizaciones Pendientes{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-file-earmark-text"></i> Cotizaciones Pendientes de Aprobación</span>
+        <span class="badge bg-warning text-dark">{{ cotizaciones.count }} pendientes</span>
+    </div>
+    <div class="card-body">
+        {% if admin_cotizaciones %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Folio</th>
+                        <th>Cliente</th>
+                        <th>Producto</th>
+                        <th>Fecha Solicitud</th>
+                        <th>Dimensiones</th>
+                        <th>Material</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cotizacion in admin_cotizaciones %}
+                    <tr>
+                        <td><strong style="color: var(--admin-secondary);">{{ cotizacion.folio }}</strong></td>
+                        <td>
+                            {{ cotizacion.nombre_completo }}<br>
+                            <small class="text-muted">{{ cotizacion.email }}</small>
+                        </td>
+                        <td>
+                            {% if cotizacion.producto %}
+                                {{ cotizacion.producto.nombre }}
+                            {% else %}
+                                <em>Diseño Personalizado</em>
+                            {% endif %}
+                        </td>
+                        <td>{{ cotizacion.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <small>
+                                A: {{ cotizacion.medidas_alto }}cm<br>
+                                An: {{ cotizacion.medidas_ancho }}cm<br>
+                                P: {{ cotizacion.medidas_profundidad }}cm
+                            </small>
+                        </td>
+                        <td>{{ cotizacion.get_material_preferido_display }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-admin-primary" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#detailModal{{ cotizacion.id }}">
+                                <i class="bi bi-eye"></i> Ver
+                            </button>
+                            <a href="{% url 'preview_quote_pdf' cotizacion.id %}" target="_blank" class="btn btn-sm btn-info text-white ms-1">
+                                <i class="bi bi-file-pdf"></i> PDF
+                            </a>
+                        </td>
+                    </tr>
+                    
+                    <!-- Modal de Detalles -->
+                    <div class="modal fade" id="detailModal{{ cotizacion.id }}" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content bg-dark text-light">
+                                <div class="modal-header" style="border-color: var(--admin-primary);">
+                                    <h5 class="modal-title" style="color: var(--admin-secondary);">
+                                        Detalle de Cotización - {{ cotizacion.folio }}
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6 style="color: var(--admin-secondary);">Datos del Cliente</h6>
+                                            <p><strong>Nombre:</strong> {{ cotizacion.nombre_completo }}</p>
+                                            <p><strong>RUT:</strong> {{ cotizacion.rut|default:"No proporcionado" }}</p>
+                                            <p><strong>Email:</strong> {{ cotizacion.email }}</p>
+                                            <p><strong>Teléfono:</strong> {{ cotizacion.telefono|default:"No proporcionado" }}</p>
+                                            <p><strong>Dirección:</strong> {{ cotizacion.direccion|default:"No proporcionada" }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6 style="color: var(--admin-secondary);">Especificaciones del Proyecto</h6>
+                                            <p><strong>Producto:</strong> 
+                                                {% if cotizacion.producto %}
+                                                    {{ cotizacion.producto.nombre }}
+                                                {% else %}
+                                                    Diseño Personalizado
+                                                {% endif %}
+                                            </p>
+                                            <p><strong>Material:</strong> {{ cotizacion.get_material_preferido_display }}</p>
+                                            <p><strong>Dimensiones:</strong></p>
+                                            <ul>
+                                                <li>Alto: {{ cotizacion.medidas_alto }} cm</li>
+                                                <li>Ancho: {{ cotizacion.medidas_ancho }} cm</li>
+                                                <li>Profundidad: {{ cotizacion.medidas_profundidad }} cm</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
+                                    {% if cotizacion.descripcion_proyecto %}
+                                    <div class="mt-3">
+                                        <h6 style="color: var(--admin-secondary);">Descripción del Proyecto</h6>
+                                        <p>{{ cotizacion.descripcion_proyecto }}</p>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    {% if cotizacion.foto_lugar %}
+                                    <div class="mt-3">
+                                        <h6 style="color: var(--admin-secondary);">Foto del Lugar</h6>
+                                        <img src="{{ cotizacion.foto_lugar.url }}" class="img-fluid rounded" alt="Foto del lugar">
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <div class="mt-3">
+                                        <h6 style="color: var(--admin-secondary);">Información Adicional</h6>
+                                        <p><strong>Fecha de Solicitud:</strong> {{ cotizacion.fecha_solicitud|date:"d/m/Y H:i" }}</p>
+                                        <p><strong>Estado:</strong> {{ cotizacion.get_estado_display }}</p>
+                                    </div>
+                                </div>
+                                <div class="modal-footer" style="border-color: var(--admin-primary);">
+                                    <form method="post" action="{% url 'rechazar_cotizacion' cotizacion.id %}" class="d-inline" id="formRechazar{{ cotizacion.id }}">
+                                        {% csrf_token %}
+                                        <div class="mb-3">
+                                            <label for="admin_notas{{ cotizacion.id }}" class="form-label">Motivo de Rechazo (opcional)</label>
+                                            <textarea class="form-control bg-dark text-light" 
+                                                      id="admin_notas{{ cotizacion.id }}" 
+                                                      name="admin_notas" 
+                                                      rows="2"
+                                                      placeholder="Escriba el motivo del rechazo..."></textarea>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" 
+                                                   type="checkbox" 
+                                                   id="enviar_email{{ cotizacion.id }}" 
+                                                   name="enviar_email" 
+                                                   value="si">
+                                            <label class="form-check-label" for="enviar_email{{ cotizacion.id }}">
+                                                Enviar email de notificación al cliente
+                                            </label>
+                                        </div>
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class="bi bi-x-circle"></i> Rechazar
+                                        </button>
+                                    </form>
+                                    
+                                    <a href="{% url 'preview_quote_pdf' cotizacion.id %}" target="_blank" class="btn btn-info text-white">
+                                        <i class="bi bi-file-pdf"></i> Ver PDF
+                                    </a>
+
+                                    <form method="post" action="{% url 'aprobar_cotizacion' cotizacion.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="bi bi-check-circle"></i> Aprobar y Enviar Email
+                                        </button>
+                                    </form>
+                                    
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        Cerrar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-inbox" style="font-size: 4rem; color: #666;"></i>
+            <p class="text-muted mt-3">No hay cotizaciones pendientes de aprobación</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .modal-content {
+        background-color: #2a2a2a !important;
+        border: 2px solid var(--admin-primary);
+    }
+    
+    .form-control {
+        background-color: #0d0d0d;
+        border: 1px solid rgba(139, 69, 19, 0.3);
+        color: #e0e0e0;
+    }
+    
+    .form-control:focus {
+        background-color: #0d0d0d;
+        border-color: var(--admin-primary);
+        color: #e0e0e0;
+    }
+</style>
+{% endblock %}

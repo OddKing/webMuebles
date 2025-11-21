@@ -6,9 +6,9 @@ Gracias por agendar una reunión con Muebles Barguay. Hemos confirmado tu cita.
 
 DETALLES DE TU REUNIÓN:
 ========================
-Fecha: {{ fecha_formateada }}
+Fecha: {{ fecha_solicitada }}
 Hora: {{ hora }}
-Tipo: {{ tipo_reunion_display }}
+Tipo: {{ tipo_reunion }}
 
 {% if tipo_reunion == 'online' %}
 REUNIÓN ONLINE

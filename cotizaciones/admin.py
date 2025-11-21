@@ -20,22 +20,27 @@ class CitaAdmin(admin.ModelAdmin):
         ('Detalles de la Reunión', {
             'fields': ('tipo_reunion', 'fecha', 'hora', 'estado')
         }),
+        ('Gestión Administrativa', {
+            'fields': ('admin_notas', 'fecha_aprobacion'),
+            'classes': ('collapse',)
+        }),
         ('Información del Sistema', {
             'fields': ('fecha_creacion',),
             'classes': ('collapse',)
         }),
     ]
     
-    readonly_fields = ['fecha_creacion']
+    readonly_fields = ['fecha_creacion', 'fecha_aprobacion']
     
-    actions = ['marcar_confirmada', 'marcar_cancelada']
+    actions = ['marcar_aprobada', 'marcar_rechazada', 'marcar_cancelada']
     
     def estado_badge(self, obj):
         """Badge colorido para el estado"""
         colors = {
-            'pendiente': '#ffc107',
-            'confirmada': '#28a745',
-            'cancelada': '#dc3545'
+            'pendiente_aprobacion': '#ffc107',
+            'aprobada': '#28a745',
+            'rechazada': '#dc3545',
+            'cancelada': '#6c757d'
         }
         color = colors.get(obj.estado, '#6c757d')
         return format_html(
@@ -45,10 +50,16 @@ class CitaAdmin(admin.ModelAdmin):
         )
     estado_badge.short_description = "Estado"
     
-    @admin.action(description='Marcar como Confirmada')
-    def marcar_confirmada(self, request, queryset):
-        updated = queryset.update(estado='confirmada')
-        self.message_user(request, f'{updated} cita(s) marcada(s) como confirmada.')
+    @admin.action(description='Marcar como Aprobada')
+    def marcar_aprobada(self, request, queryset):
+        from django.utils import timezone
+        updated = queryset.update(estado='aprobada', fecha_aprobacion=timezone.now())
+        self.message_user(request, f'{updated} cita(s) marcada(s) como aprobada.')
+    
+    @admin.action(description='Marcar como Rechazada')
+    def marcar_rechazada(self, request, queryset):
+        updated = queryset.update(estado='rechazada')
+        self.message_user(request, f'{updated} cita(s) marcada(s) como rechazada.')
     
     @admin.action(description='Marcar como Cancelada')
     def marcar_cancelada(self, request, queryset):
@@ -58,19 +69,19 @@ class CitaAdmin(admin.ModelAdmin):
 
 @admin.register(Cotizacion)
 class CotizacionAdmin(admin.ModelAdmin):
-    list_display = ['nombre_completo', 'producto', 'material_preferido', 'estado_badge', 'precio_cotizado', 'fecha_solicitud']
+    list_display = ['nombre_completo', 'folio', 'producto', 'material_preferido', 'estado_badge', 'precio_cotizado', 'fecha_solicitud']
     list_display_links = ['nombre_completo']
     list_filter = ['estado', 'material_preferido', 'fecha_solicitud']
-    search_fields = ['nombre_completo', 'email', 'descripcion_proyecto']
-    date_hierarchy = 'fecha_solicitud'
+    search_fields = ['nombre_completo', 'email', 'descripcion_proyecto', 'folio']
+    # date_hierarchy = 'fecha_solicitud'  # Comentado temporalmente por error
     ordering = ['-fecha_solicitud']
     
     fieldsets = [
         ('Cliente', {
-            'fields': ('nombre_completo', 'email', 'telefono')
+            'fields': ('nombre_completo', 'rut', 'email', 'telefono', 'direccion')
         }),
         ('Proyecto', {
-            'fields': ('producto', 'descripcion_proyecto')
+            'fields': ('producto', 'descripcion_proyecto', 'foto_lugar')
         }),
         ('Medidas (cm)', {
             'fields': ('medidas_alto', 'medidas_ancho', 'medidas_profundidad')
@@ -79,7 +90,7 @@ class CotizacionAdmin(admin.ModelAdmin):
             'fields': ('material_preferido',)
         }),
         ('Gestión Administrativa', {
-            'fields': ('estado', 'precio_cotizado', 'notas_admin'),
+            'fields': ('folio', 'estado', 'precio_cotizado', 'admin_notas', 'fecha_aprobacion'),
             'classes': ('wide',)
         }),
         ('Fechas', {
@@ -88,18 +99,19 @@ class CotizacionAdmin(admin.ModelAdmin):
         }),
     ]
     
-    readonly_fields = ['fecha_solicitud', 'fecha_actualizacion']
+    readonly_fields = ['fecha_solicitud', 'fecha_actualizacion', 'fecha_aprobacion']
     
-    actions = ['marcar_en_revision', 'marcar_cotizada']
+    actions = ['marcar_aprobada', 'marcar_rechazada', 'marcar_en_revision', 'marcar_cotizada']
     
     def estado_badge(self, obj):
         """Badge colorido para el estado"""
         colors = {
-            'pendiente': '#ffc107',
+            'pendiente_aprobacion': '#ffc107',
+            'aprobada': '#28a745',
+            'rechazada': '#dc3545',
             'en_revision': '#17a2b8',
             'cotizada': '#007bff',
-            'aceptada': '#28a745',
-            'rechazada': '#dc3545'
+            'aceptada': '#198754'
         }
         color = colors.get(obj.estado, '#6c757d')
         return format_html(
@@ -108,6 +120,17 @@ class CotizacionAdmin(admin.ModelAdmin):
             obj.get_estado_display()
         )
     estado_badge.short_description = "Estado"
+    
+    @admin.action(description='Marcar como Aprobada')
+    def marcar_aprobada(self, request, queryset):
+        from django.utils import timezone
+        updated = queryset.update(estado='aprobada', fecha_aprobacion=timezone.now())
+        self.message_user(request, f'{updated} cotización(es) marcada(s) como aprobada.')
+    
+    @admin.action(description='Marcar como Rechazada')
+    def marcar_rechazada(self, request, queryset):
+        updated = queryset.update(estado='rechazada')
+        self.message_user(request, f'{updated} cotización(es) marcada(s) como rechazada.')
     
     @admin.action(description='Marcar como En Revisión')
     def marcar_en_revision(self, request, queryset):
@@ -126,7 +149,7 @@ class ConsentimientoLegalAdmin(admin.ModelAdmin):
     list_display = ['get_nombre', 'get_tipo', 'acepto_terminos', 'acepto_privacidad', 'ip_address', 'fecha_aceptacion']
     list_filter = ['acepto_terminos', 'acepto_privacidad', 'fecha_aceptacion']
     search_fields = ['cita__nombre_completo', 'cotizacion__nombre_completo', 'ip_address']
-    date_hierarchy = 'fecha_aceptacion'
+    # date_hierarchy = 'fecha_aceptacion'
     ordering = ['-fecha_aceptacion']
     
     fieldsets = [
