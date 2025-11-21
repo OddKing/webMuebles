@@ -42,6 +42,55 @@
         </div>
     </footer>
 
+    <!-- Accessibility Widget -->
+    <div id="accessibility-controls" class="d-none d-md-flex" style="position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; gap: 5px; background: rgba(0,0,0,0.85); padding: 8px; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2);">
+        <button onclick="adjustFontSize(-1)" aria-label="Disminuir letra" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">-</button>
+        <span style="color: #fff; font-weight: bold; align-self: center; font-size: 14px; margin: 0 5px;">A</span>
+        <button onclick="adjustFontSize(1)" aria-label="Aumentar letra" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">+</button>
+    </div>
+    <!-- Mobile version (slightly larger/different position if needed, but flex handles it) -->
+    <style>
+        #accessibility-controls button:hover { background: #555 !important; transform: scale(1.1); }
+        @media (max-width: 768px) {
+            #accessibility-controls { bottom: 15px; right: 15px; padding: 10px; }
+            #accessibility-controls button { width: 40px; height: 40px; font-size: 20px; }
+        }
+        /* Ensure d-none d-md-flex doesn't hide it on mobile if we want it everywhere. 
+           Actually user said "visible y ordenado para el celular". 
+           So I should REMOVE d-none d-md-flex and just use display: flex. 
+           Bootstrap classes might hide it. I'll use inline style override.
+        */
+    </style>
+    <script>
+        // Remove bootstrap classes that might hide it, just in case
+        document.getElementById('accessibility-controls').className = ''; 
+
+        function adjustFontSize(change) {
+            const html = document.documentElement;
+            let currentSize = parseFloat(window.getComputedStyle(html).fontSize);
+            
+            // Default to 16px if something is wrong
+            if (isNaN(currentSize)) currentSize = 16;
+            
+            let newSize = currentSize + change;
+            
+            // Limits (12px to 24px)
+            if (newSize < 12) newSize = 12;
+            if (newSize > 28) newSize = 28;
+            
+            html.style.fontSize = newSize + 'px';
+            localStorage.setItem('userFontSize', newSize);
+        }
+
+        // Load saved preference
+        (function() {
+            const savedSize = localStorage.getItem('userFontSize');
+            if (savedSize) {
+                document.documentElement.style.fontSize = savedSize + 'px';
+            }
+        })();
+    </script>
+
     <!-- Bootstrap Bundle con JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -6,3 +6,38 @@
     {{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% static 'admin/css/custom_admin.css' %}">
 {% endblock %}
+
+{% block footer %}
+    {{ block.super }}
+    <!-- Accessibility Widget for Admin -->
+    <div id="accessibility-controls-admin" style="position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; gap: 5px; background: rgba(0,0,0,0.85); padding: 8px; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2);">
+        <button type="button" onclick="adjustFontSize(-1)" title="Disminuir letra" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">-</button>
+        <span style="color: #fff; font-weight: bold; align-self: center; font-size: 14px; margin: 0 5px;">A</span>
+        <button type="button" onclick="adjustFontSize(1)" title="Aumentar letra" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">+</button>
+    </div>
+    <style>
+        #accessibility-controls-admin button:hover { background: #555 !important; transform: scale(1.1); }
+        @media (max-width: 768px) {
+            #accessibility-controls-admin { bottom: 15px; right: 15px; padding: 10px; }
+            #accessibility-controls-admin button { width: 40px; height: 40px; font-size: 20px; }
+        }
+    </style>
+    <script>
+        function adjustFontSize(change) {
+            const html = document.documentElement;
+            let currentSize = parseFloat(window.getComputedStyle(html).fontSize);
+            if (isNaN(currentSize)) currentSize = 16;
+            let newSize = currentSize + change;
+            if (newSize < 12) newSize = 12;
+            if (newSize > 28) newSize = 28;
+            html.style.fontSize = newSize + 'px';
+            localStorage.setItem('userFontSize', newSize);
+        }
+        (function() {
+            const savedSize = localStorage.getItem('userFontSize');
+            if (savedSize) {
+                document.documentElement.style.fontSize = savedSize + 'px';
+            }
+        })();
+    </script>
+{% endblock %}
