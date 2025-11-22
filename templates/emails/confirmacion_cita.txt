@@ -11,11 +11,21 @@ Hora: {{ hora }}
 Tipo: {{ tipo_reunion }}
 
 {% if tipo_reunion == 'online' %}
-REUNIÓN ONLINE
---------------
-Tu reunión será de manera virtual. Recibirás un email adicional con el link de la reunión (Google Meet o Zoom) antes de la fecha programada.
+REUNIÓN ONLINE - GOOGLE MEET
+-----------------------------
+Tu reunión será de manera virtual a través de Google Meet.
 
-Por favor, asegúrate de tener una conexión estable a internet y tu cámara/micrófono funcionando.
+{% if meeting_link %}
+LINK DE LA REUNIÓN:
+{{ meeting_link }}
+
+Puedes hacer clic en el link o copiarlo y pegarlo en tu navegador.
+
+CONSEJOS:
+- Asegúrate de tener una conexión estable a internet
+- Prueba tu cámara y micrófono antes de la reunión
+- Únete 5 minutos antes del horario programado
+{% endif %}
 
 {% else %}
 REUNIÓN PRESENCIAL

@@ -29,6 +29,13 @@ class Cita(models.Model):
     tipo_reunion = models.CharField(max_length=20, choices=TIPO_REUNION_CHOICES, verbose_name="Tipo de Reunión")
     fecha = models.DateField(verbose_name="Fecha de Reunión")
     hora = models.TimeField(verbose_name="Hora de Reunión")
+    meeting_link = models.URLField(
+        max_length=500,
+        blank=True,
+        null=True,
+        verbose_name="Link de Reunión Online",
+        help_text="Link de Google Meet generado automáticamente para reuniones online"
+    )
     estado = models.CharField(max_length=25, choices=ESTADO_CHOICES, default='pendiente_aprobacion', verbose_name="Estado")
     fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
     fecha_aprobacion = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de Aprobación")

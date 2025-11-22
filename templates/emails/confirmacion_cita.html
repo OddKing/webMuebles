@@ -195,16 +195,36 @@
             </div>
 
             <!-- Conditional Info -->
-            {% if tipo_reunion == 'online' %}
+            {% if tipo_reunion == 'Online' %}
             <div class="info-box online">
                 <h3>💻 Reunión Online</h3>
                 <p>
-                    Tu reunión será de manera virtual. <strong>Recibirás un email adicional con el link de la reunión</strong> 
-                    (Google Meet o Zoom) antes de la fecha programada.
+                    Tu reunión será de manera virtual a través de <strong>Google Meet</strong>.
                 </p>
-                <p style="margin-top: 10px;">
-                    Por favor, asegúrate de tener una conexión estable a internet y tu cámara/micrófono funcionando.
+                {% if meeting_link %}
+                <div style="margin: 20px 0; text-align: center;">
+                    <a href="{{ meeting_link }}" 
+                       style="display: inline-block; background-color: #1976d2; color: #ffffff; 
+                              padding: 15px 30px; text-decoration: none; border-radius: 8px; 
+                              font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);">
+                        🎥 Unirse a la Reunión
+                    </a>
+                </div>
+                <div style="background-color: #f0f8ff; padding: 15px; border-radius: 6px; margin-top: 15px;">
+                    <p style="margin: 0; font-size: 14px; color: #333;">
+                        <strong>Link de la reunión:</strong><br>
+                        <a href="{{ meeting_link }}" style="color: #1976d2; word-break: break-all;">{{ meeting_link }}</a>
+                    </p>
+                </div>
+                {% endif %}
+                <p style="margin-top: 15px; font-size: 14px;">
+                    <strong>💡 Consejos:</strong>
                 </p>
+                <ul style="margin: 5px 0; padding-left: 20px; font-size: 14px;">
+                    <li>Asegúrate de tener una conexión estable a internet</li>
+                    <li>Prueba tu cámara y micrófono antes de la reunión</li>
+                    <li>Únete 5 minutos antes del horario programado</li>
+                </ul>
             </div>
             {% else %}
             <div class="info-box presencial">

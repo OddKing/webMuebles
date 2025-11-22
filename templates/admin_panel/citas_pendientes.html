@@ -69,7 +69,7 @@
                                         <div class="col-md-6">
                                             <h6 style="color: var(--admin-secondary);">Detalles de la Reunión</h6>
                                             <p><strong>Tipo de Reunión:</strong> {{ cita.get_tipo_reunion_display }}</p>
-                                            <p><strong>Fecha:</strong> {{ cita.fecha|date:"l, d \\d\\e F \\d\\e Y" }}</p>
+                                            <p><strong>Fecha:</strong> {{ cita.fecha|date:"d \\d\\e F \\d\\e Y" }}</p>
                                             <p><strong>Hora:</strong> {{ cita.hora|time:"H:i" }} hrs</p>
                                             <p><strong>Estado:</strong> {{ cita.get_estado_display }}</p>
                                         </div>
@@ -81,7 +81,7 @@
                                         {% if cita.tipo_reunion == 'presencial' %}
                                         <div class="alert alert-info">
                                             <i class="bi bi-info-circle"></i> <strong>Reunión Presencial</strong><br>
-                                            Ubicación: {{ cita.direccion }}
+                                            Ubicación: Av Lo Espejo 964, El Bosque, Santiago
                                         </div>
                                         {% else %}
                                         <div class="alert alert-info">
@@ -119,6 +119,19 @@
                                     
                                     <form method="post" action="{% url 'aprobar_cita' cita.id %}" class="d-inline">
                                         {% csrf_token %}
+                                        {% if cita.tipo_reunion == 'online' %}
+                                        <div class="mb-3 text-start">
+                                            <label for="meeting_link{{ cita.id }}" class="form-label text-warning">
+                                                <i class="bi bi-link-45deg"></i> Link de Google Meet (Requerido)
+                                            </label>
+                                            <input type="url" class="form-control bg-dark text-light" 
+                                                   id="meeting_link{{ cita.id }}" 
+                                                   name="meeting_link" 
+                                                   placeholder="https://meet.google.com/..."
+                                                   required>
+                                            <div class="form-text text-muted">Pega aquí el link de la reunión que creaste.</div>
+                                        </div>
+                                        {% endif %}
                                         <button type="submit" class="btn btn-success">
                                             <i class="bi bi-check-circle"></i> Aprobar y Enviar Confirmación
                                         </button>

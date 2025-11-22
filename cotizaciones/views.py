@@ -12,6 +12,8 @@ from datetime import datetime, timedelta, time
 from email.mime.image import MIMEImage
 import json
 import os
+import secrets
+import string
 
 # Create your views here.
 

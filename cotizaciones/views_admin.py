@@ -231,6 +231,12 @@ def aprobar_cita(request, cita_id):
     # Actualizar estado
     cita.estado = 'aprobada'
     cita.fecha_aprobacion = timezone.now()
+    
+    # Capturar link de reunión manual si existe
+    meeting_link = request.POST.get('meeting_link')
+    if meeting_link and cita.tipo_reunion == 'online':
+        cita.meeting_link = meeting_link
+        
     cita.save()
     
     # Enviar email de confirmación
@@ -241,6 +247,7 @@ def aprobar_cita(request, cita_id):
             'fecha': cita.fecha.strftime('%d/%m/%Y'),
             'hora': cita.hora.strftime('%H:%M'),
             'direccion': cita.direccion if cita.tipo_reunion == 'presencial' else 'Online',
+            'meeting_link': cita.meeting_link,  # Agregamos el link al contexto
         })
         
         email = EmailMessage(
