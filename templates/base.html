@@ -21,19 +21,19 @@
                      onmouseout="this.style.transform='scale(1)'">
             </a>
             
-            <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2 gap-md-3 flex-wrap justify-content-end">
                 
-
-                <div class="legal-links d-none d-md-flex">
-                    <a href="{% url 'terminos' %}" class="legal-link text-light" data-i18n="nav.terms">Términos & Condiciones</a>
-                    <a href="{% url 'privacidad' %}" class="legal-link text-light" data-i18n="nav.privacy">Política de Privacidad</a>
+                <div class="legal-links d-flex gap-2">
+                    <a href="{% url 'terminos' %}" class="legal-link text-light" data-i18n="nav.terms" style="font-size: 0.75rem;">Términos</a>
+                    <a href="{% url 'privacidad' %}" class="legal-link text-light" data-i18n="nav.privacy" style="font-size: 0.75rem;">Privacidad</a>
                 </div>
+                
                 <!-- Language Switcher -->
                 <div class="dropdown">
                     <button class="btn btn-sm" id="languageSelector" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.85rem;">
                         🇪🇸 Español
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" style="background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2)">
+                    <ul class="dropdown-menu dropdown-menu-end" style="background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
                         <li><a class="dropdown-item lang-option active" href="#" data-lang="es" onclick="setLanguage('es'); return false;" style="color: white;">🇪🇸 Español</a></li>
                         <li><a class="dropdown-item lang-option" href="#" data-lang="en" onclick="setLanguage('en'); return false;" style="color: white;">🇬🇧 English</a></li>
                         <li><a class="dropdown-item lang-option" href="#" data-lang="de" onclick="setLanguage('de'); return false;" style="color: white;">🇩🇪 Deutsch</a></li>
