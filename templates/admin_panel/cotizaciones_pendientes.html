@@ -156,17 +156,56 @@
                                             </label>
                                             
                                             <!-- Sugerencia de Precio -->
-                                            <div class="d-flex justify-content-between align-items-center mb-2 p-2 rounded" 
-                                                 style="background-color: rgba(25, 135, 84, 0.1); border: 1px dashed #198754;">
-                                                <small class="text-success">
-                                                    <i class="bi bi-robot"></i> Sugerido por IA: 
-                                                    <strong>${{ cotizacion.precio_sugerido }}</strong>
-                                                </small>
-                                                <button type="button" class="btn btn-sm btn-outline-success py-0" 
-                                                        onclick="document.getElementById('precio_cotizado{{ cotizacion.id }}').value = '{{ cotizacion.precio_sugerido }}'">
-                                                    Usar
-                                                </button>
+                                            {% if cotizacion.precio_sugerido %}
+                                            <div class="mb-3 p-2 rounded" style="background-color: rgba(25, 135, 84, 0.1); border: 1px dashed #198754;">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <small class="text-success">
+                                                        <i class="bi bi-calculator"></i> Cálculo Estimado: 
+                                                        <strong>${{ cotizacion.precio_sugerido.precio_final }}</strong>
+                                                    </small>
+                                                    <div>
+                                                        <button type="button" class="btn btn-sm btn-link text-success p-0 me-2" 
+                                                                data-bs-toggle="collapse" 
+                                                                data-bs-target="#desglose{{ cotizacion.id }}">
+                                                            <i class="bi bi-info-circle"></i> Ver detalle
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-outline-success py-0" 
+                                                                onclick="document.getElementById('precio_cotizado{{ cotizacion.id }}').value = '{{ cotizacion.precio_sugerido.precio_final }}'">
+                                                            Usar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Desglose Colapsable -->
+                                                <div class="collapse mt-2" id="desglose{{ cotizacion.id }}">
+                                                    <div class="card card-body bg-dark border-success p-2">
+                                                        <ul class="list-unstyled mb-0 small text-muted">
+                                                            <li>• Material: {{ cotizacion.precio_sugerido.material_nombre }} (${{ cotizacion.precio_sugerido.precio_base_m2 }}/m²)</li>
+                                                            <li>• Superficie: <span id="area{{ cotizacion.id }}">{{ cotizacion.precio_sugerido.area_m2 }}</span> m² (aprox)</li>
+                                                            <li>• Costo Material: $<span id="costoMat{{ cotizacion.id }}">{{ cotizacion.precio_sugerido.costo_material }}</span></li>
+                                                            <li>• Factor Complejidad: x<span id="factor{{ cotizacion.id }}">{{ cotizacion.precio_sugerido.factor }}</span></li>
+                                                            <li>• Mano de Obra Base: $<span id="manoObra{{ cotizacion.id }}">{{ cotizacion.precio_sugerido.mano_obra }}</span></li>
+                                                        </ul>
+                                                        
+                                                        <!-- Buscador de Precios -->
+                                                        <div class="mt-3 border-top border-secondary pt-2">
+                                                            <h6 class="text-success small mb-2"><i class="bi bi-search"></i> Buscar Precio Real en Tiendas</h6>
+                                                            <div class="input-group input-group-sm mb-2">
+                                                                <input type="text" class="form-control bg-dark text-light border-secondary" 
+                                                                       id="searchQuery{{ cotizacion.id }}" 
+                                                                       value="{{ cotizacion.precio_sugerido.material_nombre }}"
+                                                                       placeholder="Ej: Melamina Blanca 15mm">
+                                                                <button class="btn btn-outline-success" type="button" 
+                                                                        onclick="buscarPrecios('{{ cotizacion.id }}')">
+                                                                    Buscar
+                                                                </button>
+                                                            </div>
+                                                            <div id="searchResults{{ cotizacion.id }}" class="small"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
+                                            {% endif %}
                                             
                                             <input type="number" class="form-control bg-dark text-light" 
                                                    id="precio_cotizado{{ cotizacion.id }}" 
@@ -220,4 +259,87 @@
         color: #e0e0e0;
     }
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function buscarPrecios(id) {
+        const query = document.getElementById(`searchQuery${id}`).value;
+        const resultsDiv = document.getElementById(`searchResults${id}`);
+        
+        if (!query) return;
+        
+        resultsDiv.innerHTML = '<div class="text-center text-success my-2"><div class="spinner-border spinner-border-sm" role="status"></div> Buscando...</div>';
+        
+        fetch(`/api/search-prices/?query=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    resultsDiv.innerHTML = `<div class="text-danger my-2">Error: ${data.error}</div>`;
+                    return;
+                }
+                
+                if (data.results.length === 0) {
+                    resultsDiv.innerHTML = '<div class="text-muted my-2">No se encontraron resultados.</div>';
+                    return;
+                }
+                
+                let html = '<ul class="list-group list-group-flush mt-2 bg-dark">';
+                data.results.forEach(item => {
+                    html += `
+                        <li class="list-group-item bg-dark text-light border-secondary d-flex justify-content-between align-items-center p-2">
+                            <div class="d-flex align-items-center">
+                                <img src="${item.imagen}" style="width: 30px; height: 30px; object-fit: cover;" class="rounded me-2">
+                                <div>
+                                    <div class="fw-bold" style="font-size: 0.8rem;">${item.nombre}</div>
+                                    <div class="small text-muted">${item.tienda}</div>
+                                </div>
+                            </div>
+                            <div class="text-end ms-2">
+                                <div class="fw-bold text-success">${item.precio_formateado}</div>
+                                <button class="btn btn-sm btn-outline-success py-0 mt-1" style="font-size: 0.7rem;"
+                                        onclick="seleccionarPrecio(${item.precio}, ${id})">
+                                    Usar
+                                </button>
+                            </div>
+                        </li>
+                    `;
+                });
+                html += '</ul>';
+                resultsDiv.innerHTML = html;
+            })
+            .catch(error => {
+                resultsDiv.innerHTML = `<div class="text-danger my-2">Error de conexión</div>`;
+                console.error(error);
+            });
+    }
+    
+    function seleccionarPrecio(precioBase, id) {
+        // Obtener factores del DOM
+        const area = parseFloat(document.getElementById(`area${id}`).innerText.replace(',', '.'));
+        const factor = parseFloat(document.getElementById(`factor${id}`).innerText.replace(',', '.'));
+        const manoObra = parseInt(document.getElementById(`manoObra${id}`).innerText.replace(/\D/g, ''));
+        
+        // Calcular nuevo precio
+        // Formula: (PrecioBase * Area * Factor) + ManoObra
+        // Nota: Area ya incluye desperdicio (x1.2) según pricing.py
+        
+        const costoMaterial = precioBase * area;
+        const precioEstimado = (costoMaterial * factor) + manoObra;
+        
+        // Redondear a miles
+        const precioFinal = Math.round(precioEstimado / 1000) * 1000;
+        
+        // Actualizar input
+        document.getElementById(`precio_cotizado${id}`).value = precioFinal;
+        
+        // Actualizar desglose visualmente (opcional)
+        document.getElementById(`costoMat${id}`).innerText = Math.round(costoMaterial);
+        
+        // Feedback visual
+        const input = document.getElementById(`precio_cotizado${id}`);
+        input.classList.add('is-valid');
+        setTimeout(() => input.classList.remove('is-valid'), 2000);
+    }
+</script>
 {% endblock %}

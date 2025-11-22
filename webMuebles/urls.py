@@ -26,6 +26,7 @@ from cotizaciones.views_admin import (
     aprobar_cotizacion, rechazar_cotizacion,
     aprobar_cita, rechazar_cita, preview_quote_pdf
 )
+from cotizaciones.views_api import api_search_material_prices
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
@@ -57,6 +58,9 @@ urlpatterns += [
     path('admin-panel/cotizacion/<int:cotizacion_id>/pdf/', preview_quote_pdf, name='preview_quote_pdf'),
     path('admin-panel/cita/<int:cita_id>/aprobar/', aprobar_cita, name='aprobar_cita'),
     path('admin-panel/cita/<int:cita_id>/rechazar/', rechazar_cita, name='rechazar_cita'),
+    
+    # API Routes
+    path('api/search-prices/', api_search_material_prices, name='api_search_prices'),
     
     # Product Management Routes
     path('admin-panel/productos/', lista_productos, name='admin_lista_productos'),
