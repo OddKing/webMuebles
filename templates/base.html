@@ -58,7 +58,7 @@
     <div id="whatsapp-widget" style="position: fixed; bottom: 100px; right: 20px; z-index: 10000;">
         <div id="whatsapp-options" style="display: none; margin-bottom: 10px; background: rgba(255, 255, 255, 0.98); border-radius: 15px; padding: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); min-width: 280px;">
             <div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #e0e0e0;">
-                <p style="margin: 0; font-size: 0.85rem; font-weight: 600; color: #333;">Contáctanos por WhatsApp</p>
+                <p style="margin: 0; font-size: 0.85rem; font-weight: 600; color: #333;" data-i18n="whatsapp.menu.title">Contáctanos por WhatsApp</p>
             </div>
             
             <a href="https://wa.me/56995322154?text=Hola,%20necesito%20resolver%20una%20duda%20sobre%20una%20cotización." target="_blank" style="display: flex; align-items: center; padding: 10px; border-radius: 10px; text-decoration: none; color: #333; transition: background 0.2s; margin-bottom: 8px;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='transparent'">
@@ -66,8 +66,8 @@
                     <i class="bi bi-whatsapp" style="color: white; font-size: 24px;"></i>
                 </div>
                 <div style="flex: 1;">
-                    <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 2px;">Taylor Barrera</div>
-                    <div style="font-size: 0.75rem; color: #666;">Cotizaciones y dudas</div>
+                    <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 2px;" data-i18n="whatsapp.taylor.name">Taylor Barrera</div>
+                    <div style="font-size: 0.75rem; color: #666;" data-i18n="whatsapp.taylor.desc">Cotizaciones y dudas</div>
                 </div>
             </a>
             
@@ -76,8 +76,8 @@
                     <i class="bi bi-whatsapp" style="color: white; font-size: 24px;"></i>
                 </div>
                 <div style="flex: 1;">
-                    <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 2px;">Michael Barrera</div>
-                    <div style="font-size: 0.75rem; color: #666;">Medidas y diseños</div>
+                    <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 2px;" data-i18n="whatsapp.michael.name">Michael Barrera</div>
+                    <div style="font-size: 0.75rem; color: #666;" data-i18n="whatsapp.michael.desc">Medidas y diseños</div>
                 </div>
             </a>
         </div>
@@ -200,41 +200,70 @@
         function toggleVoice() {
             voiceEnabled = !voiceEnabled;
             const btn = document.getElementById('voice-toggle');
+            const currentLang = getCurrentLanguage();
             
             if (voiceEnabled) {
                 btn.classList.add('active');
                 btn.innerHTML = '<i class="bi bi-mic-fill"></i>';
-                speak("Narrador activado. Pase el mouse sobre el texto para escuchar.");
+                const activatedMsg = translations[currentLang]['voice.activated'] || 'Narrador activado. Pase el mouse sobre el texto para escuchar.';
+                speak(activatedMsg, currentLang);
                 localStorage.setItem('voiceEnabled', 'true');
             } else {
                 btn.classList.remove('active');
                 btn.innerHTML = '<i class="bi bi-volume-mute-fill"></i>';
                 synthesis.cancel();
-                speak("Narrador desactivado.");
+                const deactivatedMsg = translations[currentLang]['voice.deactivated'] || 'Narrador desactivado.';
+                speak(deactivatedMsg, currentLang);
                 localStorage.setItem('voiceEnabled', 'false');
                 setTimeout(() => { if(!voiceEnabled) btn.innerHTML = '<i class="bi bi-volume-up-fill"></i>'; }, 2000);
             }
         }
 
-        function speak(text) {
+        function speak(text, lang) {
             if (!text) return;
             synthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'es-ES';
+            
+            // Map language codes to speech synthesis locales
+            const langMap = {
+                'es': 'es-ES',
+                'en': 'en-US',
+                'de': 'de-DE'
+            };
+            
+            const currentLang = lang || getCurrentLanguage();
+            utterance.lang = langMap[currentLang] || 'es-ES';
             synthesis.speak(utterance);
         }
 
         function handleInteraction(event) {
             if (!voiceEnabled) return;
             const target = event.target;
-            if (['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'A', 'BUTTON', 'LABEL', 'SPAN', 'LI', 'TD', 'TH'].includes(target.tagName)) {
+            
+            // Expandir tags para incluir DIV (para calendario) y otros elementos interactivos
+            const readableTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'A', 'BUTTON', 'LABEL', 'SPAN', 'LI', 'TD', 'TH', 'DIV'];
+            
+            if (readableTags.includes(target.tagName)) {
                 let text = target.innerText || target.textContent;
                 if (target.tagName === 'IMG' && target.alt) text = "Imagen: " + target.alt;
                 
-                if (text && text.trim().length > 0) {
+                // Filtrar DIVs vacíos o con demasiado contenido (como contenedores)
+                if (target.tagName === 'DIV') {
+                    // Solo leer DIVs del calendario o con poco texto
+                    const isCalendarElement = target.classList.contains('calendar-day') || 
+                                            target.classList.contains('calendar-header') ||
+                                            target.classList.contains('calendar-month-title');
+                    
+                    if (!isCalendarElement && text.length > 100) {
+                        return; // Skip large containers
+                    }
+                }
+                
+                if (text && text.trim().length > 0 && text.trim().length < 200) {
+                    const currentLang = getCurrentLanguage();
                     document.querySelectorAll('.speaking-highlight').forEach(el => el.classList.remove('speaking-highlight'));
                     target.classList.add('speaking-highlight');
-                    speak(text);
+                    speak(text, currentLang);
                     target.addEventListener('mouseleave', () => {
                         target.classList.remove('speaking-highlight');
                         synthesis.cancel();

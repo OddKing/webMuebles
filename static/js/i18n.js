@@ -88,6 +88,25 @@ const translations = {
         // Legal Pages - Privacy
         'legal.privacy.title': 'Política de Privacidad',
 
+        // WhatsApp Widget
+        'whatsapp.menu.title': 'Contáctanos por WhatsApp',
+        'whatsapp.taylor.name': 'Taylor Barrera',
+        'whatsapp.taylor.desc': 'Cotizaciones y dudas',
+        'whatsapp.michael.name': 'Michael Barrera',
+        'whatsapp.michael.desc': 'Medidas y diseños',
+
+        // Voice Assistant
+        'voice.activated': 'Narrador activado. Pase el mouse sobre el texto para escuchar.',
+        'voice.deactivated': 'Narrador desactivado.',
+
+        // Calendar availability
+        'calendar.available': 'Disponible',
+        'calendar.notavailable': 'No disponible',
+        'calendar.past': 'Fecha pasada, no disponible',
+        'calendar.weekend': 'Fin de semana, no disponible',
+        'calendar.holiday': 'Festivo, no disponible',
+        'calendar.outofrange': 'Fuera del rango disponible',
+
         // Meta
         'meta.backToHome': 'Volver al inicio'
     },
@@ -174,6 +193,25 @@ const translations = {
 
         // Legal Pages - Privacy
         'legal.privacy.title': 'Privacy Policy',
+
+        // WhatsApp Widget
+        'whatsapp.menu.title': 'Contact us via WhatsApp',
+        'whatsapp.taylor.name': 'Taylor Barrera',
+        'whatsapp.taylor.desc': 'Quotes and general questions',
+        'whatsapp.michael.name': 'Michael Barrera',
+        'whatsapp.michael.desc': 'Measurements and designs',
+
+        // Voice Assistant
+        'voice.activated': 'Narrator activated. Hover over text to listen.',
+        'voice.deactivated': 'Narrator deactivated.',
+
+        // Calendar availability
+        'calendar.available': 'Available',
+        'calendar.notavailable': 'Not available',
+        'calendar.past': 'Past date, not available',
+        'calendar.weekend': 'Weekend, not available',
+        'calendar.holiday': 'Holiday, not available',
+        'calendar.outofrange': 'Out of available range',
 
         // Meta
         'meta.backToHome': 'Back to home'
@@ -262,6 +300,25 @@ const translations = {
         // Legal Pages - Privacy
         'legal.privacy.title': 'Datenschutzerklärung',
 
+        // WhatsApp Widget
+        'whatsapp.menu.title': 'Kontaktieren Sie uns über WhatsApp',
+        'whatsapp.taylor.name': 'Taylor Barrera',
+        'whatsapp.taylor.desc': 'Angebote und allgemeine Fragen',
+        'whatsapp.michael.name': 'Michael Barrera',
+        'whatsapp.michael.desc': 'Maße und Entwürfe',
+
+        // Voice Assistant
+        'voice.activated': 'Erzähler aktiviert. Bewegen Sie die Maus über den Text, um ihn anzuhören.',
+        'voice.deactivated': 'Erzähler deaktiviert.',
+
+        // Calendar availability
+        'calendar.available': 'Verfügbar',
+        'calendar.notavailable': 'Nicht verfügbar',
+        'calendar.past': 'Vergangenes Datum, nicht verfügbar',
+        'calendar.weekend': 'Wochenende, nicht verfügbar',
+        'calendar.holiday': 'Feiertag, nicht verfügbar',
+        'calendar.outofrange': 'Außerhalb des verfügbaren Bereichs',
+
         // Meta
         'meta.backToHome': 'Zurück zur Startseite'
     }
@@ -282,6 +339,9 @@ function setLanguage(lang) {
     localStorage.setItem('siteLanguage', lang);
     translatePage(lang);
     updateLanguageSelector(lang);
+
+    // Dispatch custom event for other components to react to language change
+    window.dispatchEvent(new CustomEvent('languageChanged', { detail: { language: lang } }));
 }
 
 // Translate all elements with data-i18n attribute

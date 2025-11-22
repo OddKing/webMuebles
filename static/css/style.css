@@ -601,7 +601,9 @@ body {
     }
 
     .overlay-buttons .btn {
-        width: 200px;
+        width: 170px;
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
     }
 
     .calendar-month-title {
@@ -796,7 +798,9 @@ body {
     }
 
     .overlay-buttons .btn {
-        width: 200px;
+        width: 170px;
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
     }
 
     .calendar-month-title {

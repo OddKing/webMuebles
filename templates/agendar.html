@@ -124,13 +124,13 @@ button.horario-btn.occupied:hover {
                     <!-- Grid del Calendario -->
                     <div class="calendar-grid">
                         <!-- Headers de días de la semana -->
-                        <div class="calendar-header">Lun</div>
-                        <div class="calendar-header">Mar</div>
-                        <div class="calendar-header">Mié</div>
-                        <div class="calendar-header">Jue</div>
-                        <div class="calendar-header">Vie</div>
-                        <div class="calendar-header weekend-header">Sáb</div>
-                        <div class="calendar-header weekend-header">Dom</div>
+                        <div class="calendar-header" data-i18n="calendar.mon">Lun</div>
+                        <div class="calendar-header" data-i18n="calendar.tue">Mar</div>
+                        <div class="calendar-header" data-i18n="calendar.wed">Mié</div>
+                        <div class="calendar-header" data-i18n="calendar.thu">Jue</div>
+                        <div class="calendar-header" data-i18n="calendar.fri">Vie</div>
+                        <div class="calendar-header weekend-header" data-i18n="calendar.sat">Sáb</div>
+                        <div class="calendar-header weekend-header" data-i18n="calendar.sun">Dom</div>
                     </div>
 
                     <!-- Días del mes (generados por JavaScript) -->
@@ -229,14 +229,21 @@ document.addEventListener('DOMContentLoaded', function() {
         return holidays.includes(dateStr);
     }
 
-    function renderCalendar() {
+   function renderCalendar() {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
         
-        // Actualizar título del mes
-        const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                           'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-        document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+        // Obtener idioma actual y traducciones
+        const currentLang = getCurrentLanguage();
+        const monthKeys = [
+            'month.january', 'month.february', 'month.march', 'month.april',
+            'month.may', 'month.june', 'month.july', 'month.august',
+            'month.september', 'month.october', 'month.november', 'month.december'
+        ];
+        
+        // Obtener nombre del mes traducido
+        const monthName = translations[currentLang][monthKeys[month]];
+        document.getElementById('currentMonth').textContent = `${monthName} ${year}`;
 
         // Obtener primer y último día del mes
         const firstDay = new Date(year, month, 1);
@@ -277,21 +284,26 @@ document.addEventListener('DOMContentLoaded', function() {
             // Verificar si es festivo
             const isFestivo = isHoliday(date);
 
-            // Aplicar clases
+            // Aplicar clases y estado para voz
             if (isPast) {
                 dayElement.classList.add('past');
                 dayElement.title = 'Fecha pasada';
+                dayElement.setAttribute('data-status', 'calendar.past');
             } else if (isTooFar) {
                 dayElement.classList.add('disabled');
                 dayElement.title = 'Fuera del rango disponible';
+                dayElement.setAttribute('data-status', 'calendar.outofrange');
             } else if (isWeekend) {
                 dayElement.classList.add('weekend');
                 dayElement.title = 'Fin de semana - No disponible';
+                dayElement.setAttribute('data-status', 'calendar.weekend');
             } else if (isFestivo) {
                 dayElement.classList.add('holiday');
                 dayElement.title = 'Festivo - No disponible';
+                dayElement.setAttribute('data-status', 'calendar.holiday');
             } else {
                 dayElement.classList.add('available');
+                dayElement.setAttribute('data-status', 'calendar.available');
                 dayElement.addEventListener('click', () => selectDate(date, dayElement));
             }
 
@@ -417,7 +429,17 @@ document.addEventListener('DOMContentLoaded', function() {
         if (fechaInput.value && horaInput.value) {
             const fecha = new Date(fechaInput.value + 'T00:00:00');
             const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            resumenFecha.textContent = fecha.toLocaleDateString('es-ES', opciones);
+            
+            // Obtener idioma actual y mapear a locale
+            const currentLang = getCurrentLanguage();
+            const localeMap = {
+                'es': 'es-ES',
+                'en': 'en-US',
+                'de': 'de-DE'
+            };
+            const locale = localeMap[currentLang] || 'es-ES';
+            
+            resumenFecha.textContent = fecha.toLocaleDateString(locale, opciones);
             resumenHora.textContent = horaInput.value;
             resumenDiv.style.display = 'block';
         }
@@ -440,6 +462,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Renderizar calendario inicial
     renderCalendar();
+    
+    // Re-renderizar calendario cuando cambie el idioma
+    window.addEventListener('languageChanged', function() {
+        renderCalendar();
+        // También actualizar el resumen si hay una fecha seleccionada
+        if (fechaInput.value && horaInput.value) {
+            actualizarResumen();
+        }
+    });
+    
+    // Voice feedback para días del calendario
+    document.getElementById('calendarDays').addEventListener('mouseover', function(e) {
+        // Solo si el narrador está activado (verificar si existe la variable global)
+        if (typeof voiceEnabled !== 'undefined' && voiceEnabled && e.target.classList.contains('calendar-day')) {
+            const status = e.target.getAttribute('data-status');
+            if (status) {
+                const currentLang = getCurrentLanguage();
+                const dayNumber = e.target.textContent;
+                const statusText = translations[currentLang][status];
+                
+                // Decir el número del día y su estado
+                const message = `${dayNumber}, ${statusText}`;
+                
+                // Usar la función speak de base.html si está disponible
+                if (typeof speak === 'function') {
+                    speak(message, currentLang);
+                }
+            }
+        }
+    });
 });
 </script>
 {% endblock %}
