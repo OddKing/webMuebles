@@ -142,6 +142,21 @@ def agendar_reunion(request):
                     user_agent=user_agent
                 )
                 
+                # Notificar al administrador por email
+                print(f"📧 Intentando enviar notificación de cita al admin...")
+                try:
+                    email_admin = EmailMessage(
+                        subject=f'Nueva Cita Agendada - {cita.nombre_completo}',
+                        body=f'Se ha agendado una nueva cita.\n\nCliente: {cita.nombre_completo}\nEmail Cliente: {cita.email}\nTeléfono: {cita.telefono}\nFecha: {cita.fecha}\nHora: {cita.hora}\nTipo: {cita.get_tipo_reunion_display()}\n\nPor favor revisa el panel de administración para aprobarla.',
+                        from_email='contacto@mueblesbarguay.cl',
+                        to=['contacto@mueblesbarguay.cl'],
+                        reply_to=[cita.email]
+                    )
+                    email_admin.send(fail_silently=False)
+                    print("✅ Notificación de cita enviada al admin")
+                except Exception as e:
+                    print(f"❌ Error enviando notificación al admin: {e}")
+                
                 # Email será enviado después de la aprobación del administrador
                 messages.success(request, f'¡Solicitud de reunión recibida! Nuestro equipo revisará su solicitud y le enviará una confirmación a {email}')
                 
@@ -234,6 +249,21 @@ def solicitar_cotizacion(request, producto_id):
                 ip_address=get_client_ip(request),
                 user_agent=request.META.get('HTTP_USER_AGENT', '')[:500]
             )
+            
+            # Notificar al administrador por email
+            print(f"📧 Intentando enviar notificación de cotización al admin...")
+            try:
+                email_admin = EmailMessage(
+                    subject=f'Nueva Cotización Solicitada - Folio {cotizacion.folio}',
+                    body=f'Se ha solicitado una nueva cotización.\n\nFolio: {cotizacion.folio}\nCliente: {cotizacion.nombre_completo}\nEmail Cliente: {cotizacion.email}\nProducto: {cotizacion.producto.nombre if cotizacion.producto else "Personalizado"}\n\nPor favor revisa el panel de administración para gestionarla.',
+                    from_email='contacto@mueblesbarguay.cl',
+                    to=['contacto@mueblesbarguay.cl'],
+                    reply_to=[cotizacion.email]
+                )
+                email_admin.send(fail_silently=False)
+                print("✅ Notificación de cotización enviada al admin")
+            except Exception as e:
+                print(f"❌ Error enviando notificación al admin: {e}")
             
             # PDF y email serán generados después de la aprobación del administrador
             messages.success(
