@@ -190,11 +190,24 @@
                                                         <!-- Buscador de Precios -->
                                                         <div class="mt-3 border-top border-secondary pt-2">
                                                             <h6 class="text-success small mb-2"><i class="bi bi-search"></i> Buscar Precio Real en Tiendas</h6>
+                                                            
                                                             <div class="input-group input-group-sm mb-2">
+                                                                <select class="form-select bg-dark text-light border-secondary" 
+                                                                        id="storeSelect{{ cotizacion.id }}" style="max-width: 120px;">
+                                                                    <option value="sodimac">Sodimac</option>
+                                                                    <option value="imperial">Imperial</option>
+                                                                    <option value="provelcar">Provelcar</option>
+                                                                    <option value="hbt">Hbt</option>
+                                                                    <option value="ledstudio">Led Studio</option>
+                                                                    <option value="stonecenter">Stone Center</option>
+                                                                    <option value="casamura">Casa Mura</option>
+                                                                    <option value="forpec">Forpec</option>
+                                                                    <option value="dph">Dph</option>
+                                                                </select>
                                                                 <input type="text" class="form-control bg-dark text-light border-secondary" 
                                                                        id="searchQuery{{ cotizacion.id }}" 
                                                                        value="{{ cotizacion.precio_sugerido.material_nombre }}"
-                                                                       placeholder="Ej: Melamina Blanca 15mm">
+                                                                       placeholder="Ej: Melamina Blanca">
                                                                 <button class="btn btn-outline-success" type="button" 
                                                                         onclick="buscarPrecios('{{ cotizacion.id }}')">
                                                                     Buscar
@@ -265,13 +278,14 @@
 <script>
     function buscarPrecios(id) {
         const query = document.getElementById(`searchQuery${id}`).value;
+        const store = document.getElementById(`storeSelect${id}`).value;
         const resultsDiv = document.getElementById(`searchResults${id}`);
         
         if (!query) return;
         
         resultsDiv.innerHTML = '<div class="text-center text-success my-2"><div class="spinner-border spinner-border-sm" role="status"></div> Buscando...</div>';
         
-        fetch(`/api/search-prices/?query=${encodeURIComponent(query)}`)
+        fetch(`/api/search-prices/?query=${encodeURIComponent(query)}&store=${store}`)
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
