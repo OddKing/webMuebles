@@ -71,7 +71,17 @@ def admin_dashboard(request):
 @login_required(login_url='admin_login')
 def admin_cotizaciones_pendientes(request):
     """Vista de cotizaciones pendientes de aprobación"""
+    from .utils.pricing import calcular_precio_estimado
+    
     cotizaciones = Cotizacion.objects.filter(estado='pendiente_aprobacion').order_by('-fecha_solicitud')
+    
+    # Calcular precio sugerido para cada cotización
+    for cot in cotizaciones:
+        try:
+            cot.precio_sugerido = calcular_precio_estimado(cot)
+        except Exception as e:
+            print(f"Error en cálculo de precio para cotización {cot.id}: {e}")
+            cot.precio_sugerido = 0
     
     context = {
         'admin_cotizaciones': cotizaciones,
@@ -103,6 +113,12 @@ def aprobar_cotizacion(request, cotizacion_id):
     # Actualizar estado
     cotizacion.estado = 'aprobada'
     cotizacion.fecha_aprobacion = timezone.now()
+    
+    # Capturar precio cotizado si existe
+    precio_cotizado = request.POST.get('precio_cotizado')
+    if precio_cotizado:
+        cotizacion.precio_cotizado = precio_cotizado
+        
     cotizacion.save()
     
     # Generar PDF
