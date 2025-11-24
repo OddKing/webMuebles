@@ -250,7 +250,7 @@ def solicitar_cotizacion(request, producto_id):
                 user_agent=request.META.get('HTTP_USER_AGENT', '')[:500]
             )
             
-            # Notificar al administrador por email
+            # Notificar al administrador por email a contacto@mueblesbarguay.cl
             print(f"📧 Intentando enviar notificación de cotización al admin...")
             try:
                 email_admin = EmailMessage(
