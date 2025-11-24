@@ -1,0 +1,569 @@
+/* Custom Django Admin Styles - Dark Theme High Contrast */
+:root {
+    --primary: #8B4513;
+    --secondary: #D2691E;
+    --accent: #FF7F50;
+    /* Brighter accent */
+    --primary-fg: #fff;
+    --body-bg: #1a1a1a;
+    --body-fg: #ffffff;
+    --body-quiet-color: #f0f0f0;
+    /* Much brighter for "quiet" text */
+    --dark-bg: #0d0d0d;
+    --header-color: #FF8C00;
+    /* Brighter orange for header */
+    --header-bg: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    --link-fg: #FF8C00;
+    /* Brighter orange for links */
+    --link-hover-color: #FFD700;
+    /* Gold for hover */
+    --link-selected-fg: #ffffff;
+
+    /* Borders */
+    --border-color: rgba(139, 69, 19, 0.8);
+    /* More visible border */
+    --border-radius: 10px;
+
+    /* Modules/Cards */
+    --module-bg: rgba(0, 0, 0, 0.4);
+    /* Darker background for better text contrast */
+    --module-border: 2px solid rgba(139, 69, 19, 0.6);
+
+    /* Tables */
+    --table-bg: rgba(0, 0, 0, 0.2);
+    --table-header-bg: rgba(139, 69, 19, 0.4);
+    /* Darker header background */
+    --table-row-hover: rgba(139, 69, 19, 0.3);
+
+    /* Inputs */
+    --input-bg: #000000;
+    /* Black background for inputs */
+    --input-border: 1px solid #8B4513;
+    --input-text: #ffffff;
+}
+
+/* General Body */
+body {
+    background-color: var(--body-bg);
+    color: var(--body-fg);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Force white text globally */
+body,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+span,
+div,
+td,
+th {
+    color: #ffffff;
+}
+
+/* Force bright text on usually gray elements */
+.quiet,
+.mini,
+.help,
+p.help,
+.small,
+.meta,
+.time {
+    color: #f0f0f0 !important;
+    opacity: 1 !important;
+}
+
+/* Links */
+a:link,
+a:visited {
+    color: var(--link-fg) !important;
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--link-hover-color) !important;
+    text-decoration: underline;
+}
+
+/* Header */
+#header {
+    background: var(--header-bg);
+    color: var(--header-color);
+    border-bottom: 2px solid var(--border-color);
+    padding: 15px 40px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#branding h1 {
+    color: var(--header-color) !important;
+    font-weight: 700;
+}
+
+#branding h1 a:link,
+#branding h1 a:visited {
+    color: var(--header-color) !important;
+}
+
+#user-tools {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+/* Breadcrumbs */
+div.breadcrumbs {
+    background: rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 40px;
+}
+
+div.breadcrumbs a {
+    color: var(--link-fg) !important;
+}
+
+/* Modules / Dashboard Widgets */
+.module {
+    background: var(--module-bg);
+    border: var(--module-border);
+    border-radius: var(--border-radius);
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    width: 100%;
+}
+
+.module caption,
+.module h2 {
+    background: rgba(139, 69, 19, 0.3);
+    color: #ffffff !important;
+    border-bottom: 2px solid var(--border-color);
+    font-size: 15px;
+    font-weight: 700;
+    padding: 12px 15px;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.module caption a.section:link,
+.module caption a.section:visited {
+    color: #ffffff !important;
+}
+
+/* Dashboard Tables */
+#content-related .module {
+    background: var(--module-bg);
+}
+
+#content-related h3 {
+    color: #ffffff;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+/* Main Tables (ChangeList) */
+#changelist {
+    background: transparent;
+    width: 100%;
+}
+
+#changelist table {
+    background: var(--table-bg);
+    border: var(--module-border);
+    border-radius: var(--border-radius);
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+#changelist table thead th {
+    background: var(--table-header-bg);
+    color: #ffffff !important;
+    border-bottom: 2px solid var(--border-color);
+    vertical-align: middle;
+    padding: 15px;
+    text-align: left;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 13px;
+}
+
+#changelist table thead th a {
+    color: #ffffff !important;
+}
+
+#changelist table tbody tr {
+    background: transparent;
+}
+
+#changelist table tbody tr:hover {
+    background: var(--table-row-hover);
+}
+
+#changelist table tbody td,
+#changelist table tbody th {
+    border-bottom: 1px solid rgba(139, 69, 19, 0.3);
+    color: #ffffff !important;
+    padding: 15px;
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+#changelist table tbody th a {
+    color: var(--link-fg) !important;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+/* Forms */
+.form-row {
+    border-bottom: 1px solid rgba(139, 69, 19, 0.2);
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+label {
+    color: #ffffff !important;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=url],
+input[type=number],
+textarea,
+select,
+.vTextField {
+    background-color: var(--input-bg);
+    border: var(--input-border);
+    color: #ffffff !important;
+    border-radius: 4px;
+    padding: 10px 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.4);
+    color: #ffffff !important;
+    outline: none;
+}
+
+/* Fieldsets */
+fieldset.module {
+    background: transparent;
+    border: var(--module-border);
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+fieldset.collapsed {
+    border-bottom-width: 2px;
+}
+
+/* Buttons */
+.button,
+input[type=submit],
+input[type=button],
+.submit-row input,
+a.button {
+    background: var(--primary);
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.button:hover,
+input[type=submit]:hover,
+input[type=button]:hover,
+.submit-row input:hover,
+a.button:hover {
+    background: var(--secondary);
+    border-color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.submit-row {
+    background: rgba(139, 69, 19, 0.15);
+    border: var(--module-border);
+    border-radius: var(--border-radius);
+
+    .change-list .filtered .results,
+    .change-list .filtered .paginator,
+    .filtered #toolbar,
+    .filtered div.xfull {
+        margin-right: 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    #header {
+        padding: 15px 20px;
+    }
+
+    div.breadcrumbs {
+        padding: 15px 20px;
+    }
+
+    .object-tools {
+        float: none;
+        margin-bottom: 20px;
+    }
+
+    .object-tools li {
+        display: block;
+        float: none;
+        margin-bottom: 10px;
+    }
+
+    .object-tools a {
+        display: block;
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    #changelist table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .submit-row {
+        text-align: center;
+    }
+
+    .submit-row input {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+}
+
+/* Login Page Refined */
+.login #container {
+    background: transparent;
+    width: 100%;
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+.login #content {
+    background: transparent;
+    padding: 0;
+}
+
+.login #content-main {
+    float: none;
+    width: 100%;
+}
+
+input[type=number],
+textarea,
+select,
+.vTextField {
+    background-color: var(--input-bg);
+    border: var(--input-border);
+    color: #ffffff !important;
+    border-radius: 4px;
+    padding: 10px 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.4);
+    color: #ffffff !important;
+    outline: none;
+}
+
+/* Fieldsets */
+fieldset.module {
+    background: transparent;
+    border: var(--module-border);
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+fieldset.collapsed {
+    border-bottom-width: 2px;
+}
+
+/* Buttons */
+.button,
+input[type=submit],
+input[type=button],
+.submit-row input,
+a.button {
+    background: var(--primary);
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.button:hover,
+input[type=submit]:hover,
+input[type=button]:hover,
+.submit-row input:hover,
+a.button:hover {
+    background: var(--secondary);
+    border-color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.submit-row {
+    background: rgba(139, 69, 19, 0.15);
+    border: var(--module-border);
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+}
+
+#toolbar form #searchbar {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    /* Semi-transparent dark */
+    color: #ffffff !important;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 14px;
+    width: auto;
+}
+
+#toolbar form input[type="submit"] {
+    background: var(--primary);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 15px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+#toolbar form input[type="submit"]:hover {
+    background: var(--secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    #changelist-filter {
+        position: static;
+        width: 100%;
+        margin: 20px 0;
+        border-left: none;
+        border: var(--module-border);
+        border-radius: var(--border-radius);
+    }
+
+    .change-list .filtered .results,
+    .change-list .filtered .paginator,
+    .filtered #toolbar,
+    .filtered div.xfull {
+        margin-right: 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    #header {
+        padding: 15px 20px;
+    }
+
+    div.breadcrumbs {
+        padding: 15px 20px;
+    }
+
+    .object-tools {
+        float: none;
+        margin-bottom: 20px;
+    }
+
+    .object-tools li {
+        display: block;
+        float: none;
+        margin-bottom: 10px;
+    }
+
+    .object-tools a {
+        display: block;
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    #changelist table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .submit-row {
+        text-align: center;
+    }
+
+    .submit-row input {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+}
+
+/* Login Page Refined */
+.login #container {
+    background: transparent;
+    width: 100%;
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+.login #content {
+    background: transparent;
+    padding: 0;
+}
+
+.login #content-main {
+    float: none;
+    width: 100%;
+}
+
+.login .form-row {
+    border-bottom: none;
+    padding: 15px 0;
+}
+
+.login #site-name a {
+    color: var(--link-fg) !important;
+    font-size: 24px;
+}

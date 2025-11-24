@@ -1,0 +1,293 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Muebles Barguay{% endblock %}</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <nav class="navbar navbar-custom" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{% url 'index' %}" style="text-decoration: none;">
+                <img src="{% static 'img/logo.jpg' %}" 
+                     style="max-width: 80px; border-radius: 100%; cursor: pointer; transition: transform 0.3s ease;" 
+                     alt="Muebles Barguay - Volver al inicio"
+                     onmouseover="this.style.transform='scale(1.1)'" 
+                     onmouseout="this.style.transform='scale(1)'">
+            </a>
+            
+            <div class="d-flex align-items-center gap-2 gap-md-3 flex-wrap justify-content-end">
+                <div class="legal-links d-flex gap-2">
+                    <a href="{% url 'terminos' %}" class="legal-link text-light" data-i18n="nav.terms" style="font-size: 0.75rem;">Términos</a>
+                    <a href="{% url 'privacidad' %}" class="legal-link text-light" data-i18n="nav.privacy" style="font-size: 0.75rem;">Privacidad</a>
+                </div>
+                
+                <div class="dropdown">
+                    <button class="btn btn-sm" id="languageSelector" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.85rem;">
+                        🇪🇸 Español
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" style="background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                        <li><a class="dropdown-item lang-option active" href="#" data-lang="es" onclick="setLanguage('es'); return false;" style="color: white;">🇪🇸 Español</a></li>
+                        <li><a class="dropdown-item lang-option" href="#" data-lang="en" onclick="setLanguage('en'); return false;" style="color: white;">🇬🇧 English</a></li>
+                        <li><a class="dropdown-item lang-option" href="#" data-lang="de" onclick="setLanguage('de'); return false;" style="color: white;">🇩🇪 Deutsch</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    {% block content %}{% endblock %}
+
+    <footer class="legal-footer">
+        <div class="container text-center">
+            <p class="mb-2">© 2025 Muebles Barguay - <span data-i18n="footer.rights">Todos los derechos reservados</span></p>
+            <p class="mb-0">
+                <a href="{% url 'terminos' %}" class="footer-link" data-i18n="footer.terms">Términos y Condiciones</a> | 
+                <a href="{% url 'privacidad' %}" class="footer-link" data-i18n="footer.privacy">Política de Privacidad</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Floating Button (DERECHA, ARRIBA DE ACCESIBILIDAD) -->
+    <div id="whatsapp-widget" style="position: fixed; bottom: 100px; right: 20px; z-index: 10000; display: flex; flex-direction: column; align-items: flex-end;">
+        <div id="whatsapp-options" style="display: none; margin-bottom: 10px; background: rgba(255, 255, 255, 0.98); border-radius: 15px; padding: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); min-width: 280px;">
+            <div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #e0e0e0;">
+                <p style="margin: 0; font-size: 0.85rem; font-weight: 600; color: #333;" data-i18n="whatsapp.menu.title">Contáctanos por WhatsApp</p>
+            </div>
+            
+            <a href="https://wa.me/56995322154?text=Hola,%20necesito%20resolver%20una%20duda%20sobre%20una%20cotización." target="_blank" style="display: flex; align-items: center; padding: 10px; border-radius: 10px; text-decoration: none; color: #333; transition: background 0.2s; margin-bottom: 8px;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='transparent'">
+                <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #25D366, #128C7E); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;">
+                    <i class="bi bi-whatsapp" style="color: white; font-size: 24px;"></i>
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 2px;" data-i18n="whatsapp.taylor.name">Taylor Barrera</div>
+                    <div style="font-size: 0.75rem; color: #666;" data-i18n="whatsapp.taylor.desc">Cotizaciones y dudas</div>
+                </div>
+            </a>
+            
+            <a href="https://wa.me/56966893329?text=Hola,%20necesito%20resolver%20una%20duda%20sobre%20un%20diseño%20y/o%20medida." target="_blank" style="display: flex; align-items: center; padding: 10px; border-radius: 10px; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='transparent'">
+                <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #25D366, #128C7E); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;">
+                    <i class="bi bi-whatsapp" style="color: white; font-size: 24px;"></i>
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 2px;" data-i18n="whatsapp.michael.name">Michael Barrera</div>
+                    <div style="font-size: 0.75rem; color: #666;" data-i18n="whatsapp.michael.desc">Medidas y diseños</div>
+                </div>
+            </a>
+        </div>
+        
+        <button type="button" id="whatsapp-btn" style="width: 60px; height: 60px; border-radius: 50%; border: none; background: linear-gradient(135deg, #25D366, #128C7E); color: white; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); display: flex; align-items: center; justify-content: center; transition: all 0.3s; position: relative;" onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 6px 20px rgba(37, 211, 102, 0.6)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 15px rgba(37, 211, 102, 0.4)'">
+            <i class="bi bi-whatsapp" style="font-size: 32px;"></i>
+            <span style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: bold; display: flex; align-items: center; justify-content: center;">2</span>
+        </button>
+    </div>
+
+    <!-- Accessibility Widget (DERECHA, ABAJO) -->
+    <div id="accessibility-controls" class="d-none d-md-flex" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; gap: 5px; background: rgba(0,0,0,0.85); padding: 8px; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2);">
+        <button onclick="adjustFontSize(-1)" aria-label="Disminuir letra" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">-</button>
+        <span style="color: #fff; font-weight: bold; align-self: center; font-size: 14px; margin: 0 5px;">A</span>
+        <button onclick="adjustFontSize(1)" aria-label="Aumentar letra" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">+</button>
+        
+        <div style="width: 1px; background: rgba(255,255,255,0.3); margin: 0 5px;"></div>
+        
+        <button id="voice-toggle" onclick="toggleVoice()" aria-label="Activar Narrador" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+            <i class="bi bi-volume-up-fill"></i>
+        </button>
+    </div>
+
+    <style>
+        #accessibility-controls button:hover { background: #555 !important; transform: scale(1.1); }
+        #accessibility-controls button.active { background: #28a745 !important; border-color: #28a745 !important; }
+        .speaking-highlight { outline: 2px solid #ffc107 !important; background: rgba(255, 193, 7, 0.1); }
+        .lang-option.active { background: rgba(13, 110, 253, 0.3) !important; }
+        .lang-option:hover { background: rgba(255, 255, 255, 0.9) !important; color: #000 !important; }
+        
+        @media (max-width: 768px) {
+            #accessibility-controls { bottom: 15px; right: 15px; padding: 10px; }
+            #accessibility-controls button { width: 40px; height: 40px; font-size: 20px; }
+            #whatsapp-widget { bottom: 90px; right: 15px; }
+            #whatsapp-options { min-width: 260px; }
+        }
+    </style>
+
+    <script>
+        document.getElementById('accessibility-controls').className = ''; 
+
+        function toggleWhatsAppMenu() {
+            const menu = document.getElementById('whatsapp-options');
+            const btn = document.getElementById('whatsapp-btn');
+            if (!menu) return;
+            const isHidden = menu.style.display === 'none' || menu.style.display === '';
+            
+            if (isHidden) {
+                menu.style.display = 'block';
+                if (btn) btn.style.opacity = '0.5';
+            } else {
+                menu.style.display = 'none';
+                if (btn) btn.style.opacity = '1';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const whatsappBtn = document.getElementById('whatsapp-btn');
+            if (whatsappBtn) {
+                whatsappBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleWhatsAppMenu();
+                });
+            }
+        });
+
+        document.addEventListener('click', function(event) {
+            const widget = document.getElementById('whatsapp-widget');
+            const menu = document.getElementById('whatsapp-options');
+            const btn = document.getElementById('whatsapp-btn');
+            if (widget && menu && !widget.contains(event.target) && menu.style.display === 'block') {
+                menu.style.display = 'none';
+                if (btn) btn.style.opacity = '1';
+            }
+        });
+
+        function adjustFloatingWidgets() {
+            const footer = document.querySelector('.legal-footer');
+            const whatsappWidget = document.getElementById('whatsapp-widget');
+            const accessibilityWidget = document.getElementById('accessibility-controls');
+            
+            if (!footer) return;
+            
+            const footerRect = footer.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            
+            if (footerRect.top < windowHeight) {
+                const offset = windowHeight - footerRect.top + 20;
+                
+                if (whatsappWidget) {
+                    const whatsappBottom = window.innerWidth <= 768 ? 90 : 100;
+                    whatsappWidget.style.bottom = (offset + whatsappBottom - 20) + 'px';
+                }
+                if (accessibilityWidget) {
+                    accessibilityWidget.style.bottom = offset + 'px';
+                }
+            } else {
+                if (whatsappWidget) {
+                    whatsappWidget.style.bottom = window.innerWidth <= 768 ? '90px' : '100px';
+                }
+                if (accessibilityWidget) {
+                    accessibilityWidget.style.bottom = window.innerWidth <= 768 ? '15px' : '20px';
+                }
+            }
+        }
+
+        window.addEventListener('scroll', adjustFloatingWidgets);
+        window.addEventListener('resize', adjustFloatingWidgets);
+        adjustFloatingWidgets();
+
+        function adjustFontSize(change) {
+            const html = document.documentElement;
+            let currentSize = parseFloat(window.getComputedStyle(html).fontSize);
+            if (isNaN(currentSize)) currentSize = 16;
+            let newSize = currentSize + change;
+            if (newSize < 12) newSize = 12;
+            if (newSize > 28) newSize = 28;
+            html.style.fontSize = newSize + 'px';
+            localStorage.setItem('userFontSize', newSize);
+        }
+
+        (function() {
+            const savedSize = localStorage.getItem('userFontSize');
+            if (savedSize) document.documentElement.style.fontSize = savedSize + 'px';
+        })();
+
+        let voiceEnabled = false;
+        let synthesis = window.speechSynthesis;
+
+        function toggleVoice() {
+            voiceEnabled = !voiceEnabled;
+            const btn = document.getElementById('voice-toggle');
+            const currentLang = getCurrentLanguage();
+            
+            if (voiceEnabled) {
+                btn.classList.add('active');
+                btn.innerHTML = '<i class="bi bi-mic-fill"></i>';
+                const activatedMsg = translations[currentLang]['voice.activated'] || 'Narrador activado. Pase el mouse sobre el texto para escuchar.';
+                speak(activatedMsg, currentLang);
+                localStorage.setItem('voiceEnabled', 'true');
+            } else {
+                btn.classList.remove('active');
+                btn.innerHTML = '<i class="bi bi-volume-mute-fill"></i>';
+                synthesis.cancel();
+                const deactivatedMsg = translations[currentLang]['voice.deactivated'] || 'Narrador desactivado.';
+                speak(deactivatedMsg, currentLang);
+                localStorage.setItem('voiceEnabled', 'false');
+                setTimeout(() => { if(!voiceEnabled) btn.innerHTML = '<i class="bi bi-volume-up-fill"></i>'; }, 2000);
+            }
+        }
+
+        function speak(text, lang) {
+            if (!text) return;
+            synthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            // Map language codes to speech synthesis locales
+            const langMap = {
+                'es': 'es-ES',
+                'en': 'en-US',
+                'de': 'de-DE'
+            };
+            
+            const currentLang = lang || getCurrentLanguage();
+            utterance.lang = langMap[currentLang] || 'es-ES';
+            synthesis.speak(utterance);
+        }
+
+        function handleInteraction(event) {
+            if (!voiceEnabled) return;
+            const target = event.target;
+            
+            // Expandir tags para incluir DIV (para calendario) y otros elementos interactivos
+            const readableTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'A', 'BUTTON', 'LABEL', 'SPAN', 'LI', 'TD', 'TH', 'DIV'];
+            
+            if (readableTags.includes(target.tagName)) {
+                let text = target.innerText || target.textContent;
+                if (target.tagName === 'IMG' && target.alt) text = "Imagen: " + target.alt;
+                
+                // Filtrar DIVs vacíos o con demasiado contenido (como contenedores)
+                if (target.tagName === 'DIV') {
+                    // Solo leer DIVs del calendario o con poco texto
+                    const isCalendarElement = target.classList.contains('calendar-day') || 
+                                            target.classList.contains('calendar-header') ||
+                                            target.classList.contains('calendar-month-title');
+                    
+                    if (!isCalendarElement && text.length > 100) {
+                        return; // Skip large containers
+                    }
+                }
+                
+                if (text && text.trim().length > 0 && text.trim().length < 200) {
+                    const currentLang = getCurrentLanguage();
+                    document.querySelectorAll('.speaking-highlight').forEach(el => el.classList.remove('speaking-highlight'));
+                    target.classList.add('speaking-highlight');
+                    speak(text, currentLang);
+                    target.addEventListener('mouseleave', () => {
+                        target.classList.remove('speaking-highlight');
+                        synthesis.cancel();
+                    }, {once: true});
+                }
+            }
+        }
+
+        document.addEventListener('mouseover', handleInteraction);
+        document.addEventListener('focus', handleInteraction, true);
+    </script>
+
+    <script src="{% static 'js/i18n.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

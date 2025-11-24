@@ -1,0 +1,216 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}{{ cliente.nombre_completo }} - Admin Panel{% endblock %}
+{% block page_title %}Detalle del Cliente{% endblock %}
+
+{% block content %}
+<!-- Header con acciones -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <a href="{% url 'admin_clientes' %}" class="btn btn-admin-secondary">
+                <i class="bi bi-arrow-left"></i> Volver a Lista
+            </a>
+            <div>
+                <a href="{% url 'admin_cliente_editar' cliente.id %}" class="btn btn-admin-primary me-2">
+                    <i class="bi bi-pencil"></i> Editar Cliente
+                </a>
+                <a href="{% url 'admin_crear_cotizacion' %}?cliente={{ cliente.id }}" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Nueva Cotización
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Información del Cliente -->
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-person"></i> Información del Cliente
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small">Nombre Completo</label>
+                        <p class="mb-0"><strong>{{ cliente.nombre_completo }}</strong></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small">RUT</label>
+                        <p class="mb-0">{{ cliente.rut }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small">Email</label>
+                        <p class="mb-0">
+                            <a href="mailto:{{ cliente.email }}" class="text-decoration-none">{{ cliente.email }}</a>
+                        </p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small">Teléfono</label>
+                        <p class="mb-0">
+                            {% if cliente.telefono %}
+                            <a href="tel:{{ cliente.telefono }}" class="text-decoration-none">{{ cliente.telefono }}</a>
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label class="text-muted small">Dirección</label>
+                        <p class="mb-0">{{ cliente.direccion|default:"-" }}</p>
+                    </div>
+                    {% if cliente.empresa %}
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small">Empresa</label>
+                        <p class="mb-0">{{ cliente.empresa }}</p>
+                    </div>
+                    {% endif %}
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small">Descuento Habitual</label>
+                        <p class="mb-0">
+                            <span class="badge bg-success">{{ cliente.descuento_habitual }}%</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small">Estado</label>
+                        <p class="mb-0">
+                            {% if cliente.activo %}
+                            <span class="badge bg-success">Activo</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Inactivo</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small">Fecha de Registro</label>
+                        <p class="mb-0">{{ cliente.fecha_registro|date:"d/m/Y H:i" }}</p>
+                    </div>
+                    {% if cliente.notas %}
+                    <div class="col-md-12">
+                        <label class="text-muted small">Notas Internas</label>
+                        <p class="mb-0">{{ cliente.notas }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-body text-center">
+                <i class="bi bi-file-earmark-text" style="font-size: 2rem; color: var(--admin-secondary);"></i>
+                <h3 class="mb-0 mt-2">{{ total_cotizaciones }}</h3>
+                <p class="text-muted mb-0">Total Cotizaciones</p>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-body text-center">
+                <i class="bi bi-check-circle" style="font-size: 2rem; color: #28a745;"></i>
+                <h3 class="mb-0 mt-2">{{ cotizaciones_aprobadas }}</h3>
+                <p class="text-muted mb-0">Aprobadas</p>
+            </div>
+        </div>
+        <div class="card mb-3">
+            <div class="card-body text-center">
+                <i class="bi bi-clock" style="font-size: 2rem; color: #ffc107;"></i>
+                <h3 class="mb-0 mt-2">{{ cotizaciones_pendientes }}</h3>
+                <p class="text-muted mb-0">Pendientes</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-currency-dollar" style="font-size: 2rem; color: var(--admin-secondary);"></i>
+                <h3 class="mb-0 mt-2">${{ total_cotizado|floatformat:0 }}</h3>
+                <p class="text-muted mb-0">Total Cotizado</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Historial de Cotizaciones -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-clock-history"></i> Historial de Cotizaciones (Últimas 10)
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if cotizaciones %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Folio</th>
+                                <th>Producto</th>
+                                <th>Medidas</th>
+                                <th>Material</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cot in cotizaciones %}
+                            <tr>
+                                <td><strong>{{ cot.folio }}</strong></td>
+                                <td>{{ cot.producto.nombre|default:"Diseño Personalizado" }}</td>
+                                <td>
+                                    <small>
+                                        {{ cot.medidas_ancho }}×{{ cot.medidas_alto }}×{{ cot.medidas_profundidad }} cm
+                                    </small>
+                                </td>
+                                <td>{{ cot.get_material_preferido_display }}</td>
+                                <td>
+                                    {% if cot.precio_cotizado %}
+                                    ${{ cot.precio_cotizado|floatformat:0 }}
+                                    {% else %}
+                                    <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if cot.estado == 'pendiente_aprobacion' %}
+                                    <span class="badge bg-warning">Pendiente</span>
+                                    {% elif cot.estado == 'aprobada' %}
+                                    <span class="badge bg-success">Aprobada</span>
+                                    {% elif cot.estado == 'rechazada' %}
+                                    <span class="badge bg-danger">Rechazada</span>
+                                    {% elif cot.estado == 'en_revision' %}
+                                    <span class="badge bg-info">En Revisión</span>
+                                    {% elif cot.estado == 'cotizada' %}
+                                    <span class="badge bg-primary">Cotizada</span>
+                                    {% elif cot.estado == 'aceptada' %}
+                                    <span class="badge bg-success">Aceptada</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ cot.fecha_solicitud|date:"d/m/Y" }}</td>
+                                <td class="text-center">
+                                    <a href="{% url 'admin_cotizacion_detalle' cot.id %}"
+                                        class="btn btn-sm btn-admin-secondary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info text-center">
+                    <i class="bi bi-info-circle"></i>
+                    Este cliente no tiene cotizaciones aún.
+                    <a href="{% url 'admin_crear_cotizacion' %}?cliente={{ cliente.id }}">Crear la primera</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

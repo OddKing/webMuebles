@@ -1,0 +1,50 @@
+Hola {{ nombre_completo }},
+
+¡REUNIÓN CONFIRMADA!
+
+Gracias por agendar una reunión con Muebles Barguay. Hemos confirmado tu cita.
+
+DETALLES DE TU REUNIÓN:
+========================
+Fecha: {{ fecha_solicitada }}
+Hora: {{ hora }}
+Tipo: {{ tipo_reunion }}
+
+{% if tipo_reunion == 'online' %}
+REUNIÓN ONLINE - GOOGLE MEET
+-----------------------------
+Tu reunión será de manera virtual a través de Google Meet.
+
+{% if meeting_link %}
+LINK DE LA REUNIÓN:
+{{ meeting_link }}
+
+Puedes hacer clic en el link o copiarlo y pegarlo en tu navegador.
+
+CONSEJOS:
+- Asegúrate de tener una conexión estable a internet
+- Prueba tu cámara y micrófono antes de la reunión
+- Únete 5 minutos antes del horario programado
+{% endif %}
+
+{% else %}
+REUNIÓN PRESENCIAL
+------------------
+Nos reuniremos en nuestras oficinas ubicadas en:
+
+📍 Av Lo Espejo 964, El Bosque, Santiago
+
+Referencia: El Metro mas cercano es El Bosque. Te esperamos con café y mucho entusiasmo para conocer tus ideas.
+{% endif %}
+
+Si necesitas reprogramar o cancelar tu reunión, por favor contáctanos lo antes posible.
+
+¡Nos vemos pronto!
+
+---
+Muebles Barguay
+Av Lo Espejo 964, El Bosque, Santiago
+Teléfono: +569 1234 5678
+Email: contacto@mueblesbarguay.cl
+
+© 2025 Muebles Barguay. Todos los derechos reservados.

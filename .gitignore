@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Entornos virtuales
+venv/
+venvweb/
+ENV/
+.vscode/
+carlos
+carlos.pub
+# Archivos Django
+/staticfiles/
+/media/
+
+# Archivos de configuración sensibles
+*.log
+*.pot
+*.py[co]
+
+# Configuración local
+.env
+db.sqlite3
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+carlos.pub
+carlos.key

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualización de Cotización</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #1a1a1a; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%); padding: 30px; text-align: center;">
+                            <img src="cid:logo" alt="Muebles Barguay" style="width: 100px; height: auto; border-radius: 50%; border: 3px solid white; margin-bottom: 10px;">
+                            <h1 style="color: white; margin: 0; font-size: 28px;">Muebles Barguay</h1>
+                            <p style="color: #f0f0f0; margin: 10px 0 0 0; font-size: 14px;">Actualización de su Cotización</p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding: 40px 30px; color: #e0e0e0;">
+                            <h2 style="color: #D2691E; margin-top: 0;">Estimado/a {{ nombre_cliente }},</h2>
+                            
+                            <p style="line-height: 1.6; font-size: 16px;">
+                                Gracias por su interés en nuestros productos. Lamentamos informarle que su solicitud de cotización 
+                                <strong style="color: #D2691E;">{{ folio }}</strong> no puede ser procesada en este momento.
+                            </p>
+                            
+                            {% if motivo_rechazo %}
+                            <div style="background-color: #2a2a2a; border-left: 4px solid #dc3545; padding: 15px; margin: 20px 0; border-radius: 5px;">
+                                <h3 style="color: #ff6b6b; margin-top: 0; font-size: 16px;">
+                                    <i style="font-style: normal;">ℹ️</i> Motivo:
+                                </h3>
+                                <p style="margin: 0; color: #e0e0e0; line-height: 1.6;">
+                                    {{ motivo_rechazo }}
+                                </p>
+                            </div>
+                            {% endif %}
+                            
+                            <p style="line-height: 1.6; font-size: 16px;">
+                                No dude en contactarnos si desea realizar una nueva solicitud con ajustes o si tiene alguna pregunta sobre el proceso.
+                            </p>
+                            
+                            <div style="background-color: #2a2a2a; padding: 20px; border-radius: 8px; margin-top: 30px;">
+                                <h3 style="color: #D2691E; margin-top: 0;">¿Necesita Ayuda?</h3>
+                                <p style="margin: 10px 0; color: #c0c0c0;">
+                                    📧 Email: <a href="mailto:contacto@mueblesbarguay.cl" style="color: #D2691E; text-decoration: none;">contacto@mueblesbarguay.cl</a>
+                                </p>
+                                <p style="margin: 10px 0; color: #c0c0c0;">
+                                    📱 Teléfono: <a href="tel:+56912345678" style="color: #D2691E; text-decoration: none;">+56 9 1234 5678</a>
+                                </p>
+                                <p style="margin: 10px 0; color: #c0c0c0;">
+                                    🏢 Dirección: Av. Ejemplo 123, Santiago, Chile
+                                </p>
+                            </div>
+                            
+                            <p style="margin-top: 30px; font-size: 14px; color: #999;">
+                                Atentamente,<br>
+                                <strong style="color: #D2691E;">Equipo Muebles Barguay</strong>
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #0d0d0d; padding: 20px; text-align: center; color: #999; font-size: 12px;">
+                            <p style="margin: 0;">© 2025 Muebles Barguay. Todos los derechos reservados.</p>
+                            <p style="margin: 10px 0 0 0;">Fabricando calidad y diseño desde 1995</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

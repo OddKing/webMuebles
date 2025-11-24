@@ -1,0 +1,127 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Buscar Precios de Materiales - Admin Panel{% endblock %}
+{% block page_title %}Buscar Precios de Materiales{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <p class="text-muted">Busca precios de materiales en tiendas externas para cotizar con información actualizada.
+        </p>
+    </div>
+</div>
+
+<!-- Formulario de Búsqueda -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-search"></i> Buscar Materiales</h5>
+    </div>
+    <div class="card-body">
+        <form method="GET" action="{% url 'admin_scraper' %}" class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Buscar</label>
+                <input type="text" name="q" class="form-control" placeholder="Ej: madera pino, tornillos, bisagras..."
+                    value="{{ query }}" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Tienda</label>
+                <select name="store" class="form-select">
+                    {% for key, config in stores.items %}
+                    <option value="{{ key }}" {% if store==key %}selected{% endif %}>{{ config.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-admin-primary w-100">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Resultados -->
+{% if query %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">
+            <i class="bi bi-list-ul"></i>
+            Resultados para "{{ query }}"
+            <span class="badge bg-info">{{ resultados|length }} resultados</span>
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if resultados %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">Imagen</th>
+                        <th>Producto</th>
+                        <th>Tienda</th>
+                        <th class="text-end">Precio</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for resultado in resultados %}
+                    <tr>
+                        <td>
+                            {% if resultado.imagen %}
+                            <img src="{{ resultado.imagen }}" alt="{{ resultado.nombre }}"
+                                style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
+                            {% else %}
+                            <div
+                                style="width: 50px; height: 50px; background: var(--admin-darker); border-radius: 5px; display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-image text-muted"></i>
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ resultado.nombre }}</strong>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">{{ resultado.tienda }}</span>
+                        </td>
+                        <td class="text-end">
+                            <strong class="text-success">{{ resultado.precio_formateado }}</strong>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-sm btn-admin-secondary"
+                                    onclick="copyPrice({{ resultado.precio }})" title="Copiar Precio">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                                {% if resultado.url %}
+                                <a href="{{ resultado.url }}" class="btn btn-sm btn-admin-primary" target="_blank"
+                                    title="Ver en Tienda">
+                                    <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle"></i>
+            No se encontraron resultados para "{{ query }}". Prueba con otros términos de búsqueda.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function copyPrice(price) {
+        navigator.clipboard.writeText(price).then(() => {
+            alert('Precio copiado: $' + price.toLocaleString('es-CL'));
+        });
+    }
+</script>
+{% endblock %}

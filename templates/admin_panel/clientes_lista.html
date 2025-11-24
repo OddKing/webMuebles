@@ -1,0 +1,150 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Clientes Habituales - Admin Panel{% endblock %}
+{% block page_title %}Clientes Habituales{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <p class="text-muted mb-0">Gestiona tus clientes recurrentes y su información</p>
+            </div>
+            <a href="{% url 'admin_cliente_crear' %}" class="btn btn-admin-primary">
+                <i class="bi bi-plus-circle"></i> Nuevo Cliente
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Buscador -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card bg-dark text-light">
+            <div class="card-body">
+                <form method="GET" action="{% url 'admin_clientes' %}" class="row g-3">
+                    <div class="col-md-10">
+                        <input type="text" name="q" class="form-control" placeholder="Buscar por nombre, RUT, email o empresa..." value="{{ search_query }}">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-admin-primary w-100">
+                            <i class="bi bi-search"></i> Buscar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Estadísticas -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-dark text-light">
+            <div class="card-body text-center">
+                <h5 class="text-muted">Total Clientes Activos</h5>
+                <h2 class="mb-0">{{ total_clientes }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-dark text-light">
+            <div class="card-body text-center">
+                <h5 class="text-muted">Resultados de Búsqueda</h5>
+                <h2 class="mb-0">{{ clientes_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-dark text-light">
+            <div class="card-body text-center">
+                <h5 class="text-muted">Clientes Nuevos (Este Mes)</h5>
+                <h2 class="mb-0">{{ clientes.count }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla de Clientes -->
+<div class="card bg-dark text-light">
+    <div class="card-header bg-dark">
+        <h5 class="mb-0">
+            <i class="bi bi-people-fill"></i>
+            Lista de Clientes
+            {% if search_query %}
+            - Resultados para: "{{ search_query }}"
+            {% endif %}
+        </h5>
+    </div>
+    <div class="card-body">
+        {% if clientes %}
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>RUT</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Empresa</th>
+                        <th class="text-center">Cotizaciones</th>
+                        <th class="text-center">Última Cotización</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in clientes %}
+                    <tr>
+                        <td>
+                            <strong>{{ cliente.nombre_completo }}</strong>
+                        </td>
+                        <td>{{ cliente.rut }}</td>
+                        <td>{{ cliente.email }}</td>
+                        <td>{{ cliente.telefono|default:"-" }}</td>
+                        <td>{{ cliente.empresa|default:"-" }}</td>
+                        <td class="text-center">
+                            <span class="badge bg-info">{{ cliente.num_cotizaciones }}</span>
+                        </td>
+                        <td class="text-center">
+                            {% if cliente.ultima_cotizacion %}
+                            {{ cliente.ultima_cotizacion|date:"d/m/Y" }}
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if cliente.activo %}
+                            <span class="badge bg-success">Activo</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Inactivo</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'admin_cliente_detalle' cliente.id %}" class="btn btn-sm btn-admin-secondary" title="Ver Detalle">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{% url 'admin_cliente_editar' cliente.id %}" class="btn btn-sm btn-admin-primary" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle"></i>
+            {% if search_query %}
+            No se encontraron clientes que coincidan con "{{ search_query }}"
+            {% else %}
+            No hay clientes registrados aún. <a href="{% url 'admin_cliente_crear' %}">Crear el primero</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

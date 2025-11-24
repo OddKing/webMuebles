@@ -1,0 +1,157 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <!-- Cotizaciones Pendientes Card -->
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-file-earmark-text" style="font-size: 3rem; color: var(--admin-secondary);"></i>
+                <h2 class="mt-3" style="color: var(--admin-secondary);">{{ cotizaciones_pendientes_count }}</h2>
+                <p class="mb-3">Cotizaciones Pendientes</p>
+                <a href="{% url 'admin_cotizaciones' %}" class="btn btn-admin-primary">
+                    <i class="bi bi-eye"></i> Ver Cotizaciones
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Citas Pendientes Card -->
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-calendar-check" style="font-size: 3rem; color: var(--admin-secondary);"></i>
+                <h2 class="mt-3" style="color: var(--admin-secondary);">{{ citas_pendientes_count }}</h2>
+                <p class="mb-3">Citas Pendientes</p>
+                <a href="{% url 'admin_citas' %}" class="btn btn-admin-primary">
+                    <i class="bi bi-eye"></i> Ver Citas
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Productos Card -->
+    <div class="col-md-4 mb-3 color-white">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-box-seam" style="font-size: 3rem; color: var(--admin-secondary);"></i>
+                <h2 class="mt-3" style="color: var(--admin-secondary);">{{ productos_activos }}/{{ productos_total }}</h2>
+                <p class="mb-3">Productos Activos</p>
+                <a href="{% url 'admin_lista_productos' %}" class="btn btn-admin-primary">
+                    <i class="bi bi-eye"></i> Ver Productos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Cotizaciones Recientes -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-clock-history"></i> Cotizaciones Recientes
+            </div>
+            <div class="card-body text-white">
+                {% if admin_cotizaciones %}
+                <div class="list-group list-group-flush">
+                    {% for cotizacion in admin_cotizaciones %}
+                    <div class="list-group-item bg-transparent border-bottom border-secondary">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1" style="color: var(--admin-secondary);">{{ cotizacion.folio }}</h6>
+                                <p class="mb-1 text-light">{{ cotizacion.nombre_completo }}</p>
+                                <small class="text-light">
+                                    <i class="bi bi-calendar"></i> {{ cotizacion.fecha_solicitud|date:"d/m/Y H:i" }}
+                                </small>
+                            </div>
+                            <div>           
+                                <a href="{% url 'preview_quote_pdf' cotizacion.id %}" target="_blank" class="btn btn-sm btn-info text-white ms-1">
+                                    <i class="bi bi-file-pdf"></i> PDF
+                                </a>
+                                <span class="badge bg-warning text-dark">Pendiente</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">No hay cotizaciones pendientes</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Citas Recientes -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-clock-history"></i> Citas Recientes
+            </div>
+            <div class="card-body">
+                {% if citas_recientes %}
+                <div class="list-group list-group-flush">
+                    {% for cita in citas_recientes %}
+                    <div class="list-group-item bg-transparent border-bottom border-secondary">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1" style="color: var(--admin-secondary);">{{ cita.nombre_completo }}</h6>
+                                 <small class="text-muted">
+                                    <i class="bi bi-geo-alt"></i> {{ cita.get_tipo_reunion_display }}
+                                </small>
+                                <p class="mb-1 text-light">
+                                    <i class="bi bi-calendar "></i> {{ cita.fecha|date:"d/m/Y" }}
+                                    <i class="bi bi-clock ms-2"></i> {{ cita.hora|time:"H:i" }}
+                                </p>
+                            </div>
+                            <span class="badge bg-warning text-dark">Pendiente</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">No hay citas pendientes</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-lightning"></i> Acciones Rápidas
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-3 mb-3">
+                <a href="{% url 'admin_cotizaciones' %}" class="btn btn-admin-secondary w-100 py-3">
+                    <i class="bi bi-file-earmark-text" style="font-size: 2rem;"></i>
+                    <br>Gestionar Cotizaciones
+                </a>
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="{% url 'admin_citas' %}" class="btn btn-admin-secondary w-100 py-3">
+                    <i class="bi bi-calendar-check" style="font-size: 2rem;"></i>
+                    <br>Gestionar Citas
+                </a>
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="{% url 'admin_lista_productos' %}" class="btn btn-admin-secondary w-100 py-3">
+                    <i class="bi bi-box-seam" style="font-size: 2rem;"></i>
+                    <br>Gestionar Productos
+                </a>
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="{% url 'index' %}" target="_blank" class="btn btn-admin-secondary w-100 py-3">
+                    <i class="bi bi-house-door" style="font-size: 2rem;"></i>
+                    <br>Ver Sitio Web
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

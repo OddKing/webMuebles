@@ -1,0 +1,108 @@
+{% extends "admin/base.html" %}
+
+{% load static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/custom_admin.css' %}">
+{% endblock %}
+
+{% block footer %}
+    {{ block.super }}
+    <!-- Accessibility Widget for Admin -->
+    <div id="accessibility-controls-admin" style="position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; gap: 5px; background: rgba(0,0,0,0.85); padding: 8px; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2);">
+        <button type="button" onclick="adjustFontSize(-1)" title="Disminuir letra" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">-</button>
+        <span style="color: #fff; font-weight: bold; align-self: center; font-size: 14px; margin: 0 5px;">A</span>
+        <button type="button" onclick="adjustFontSize(1)" title="Aumentar letra" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">+</button>
+        
+        <!-- Divider -->
+        <div style="width: 1px; background: rgba(255,255,255,0.3); margin: 0 5px;"></div>
+        
+        <!-- Voice Toggle -->
+        <button type="button" id="voice-toggle-admin" onclick="toggleVoice()" title="Activar Narrador" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+            <!-- Use text icon if bootstrap icons not available in admin, but we added custom css so maybe? 
+                 Admin doesn't have bootstrap icons by default. I'll use an emoji or text if needed, 
+                 but let's assume I can use a simple SVG or text. 
+                 Actually, I'll use an SVG for safety. -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z"/>
+                <path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.483 5.483 0 0 1 11.025 8a5.483 5.483 0 0 1-1.61 3.89l.706.706z"/>
+                <path d="M8.707 11.182A4.486 4.486 0 0 0 10.025 8a4.486 4.486 0 0 0-1.318-3.182L8 5.525A3.489 3.489 0 0 1 9.025 8 3.49 3.49 0 0 1 8 10.475l.707.707zM6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06z"/>
+            </svg>
+        </button>
+    </div>
+    <style>
+        #accessibility-controls-admin button:hover { background: #555 !important; transform: scale(1.1); }
+        #accessibility-controls-admin button.active { background: #28a745 !important; border-color: #28a745 !important; }
+        .speaking-highlight { outline: 2px solid #ffc107 !important; background: rgba(255, 193, 7, 0.1); }
+        @media (max-width: 768px) {
+            #accessibility-controls-admin { bottom: 15px; right: 15px; padding: 10px; }
+            #accessibility-controls-admin button { width: 40px; height: 40px; font-size: 20px; }
+        }
+    </style>
+    <script>
+        function adjustFontSize(change) {
+            const html = document.documentElement;
+            let currentSize = parseFloat(window.getComputedStyle(html).fontSize);
+            if (isNaN(currentSize)) currentSize = 16;
+            let newSize = currentSize + change;
+            if (newSize < 12) newSize = 12;
+            if (newSize > 28) newSize = 28;
+            html.style.fontSize = newSize + 'px';
+            localStorage.setItem('userFontSize', newSize);
+        }
+        (function() {
+            const savedSize = localStorage.getItem('userFontSize');
+            if (savedSize) {
+                document.documentElement.style.fontSize = savedSize + 'px';
+            }
+        })();
+
+        // Voice Guide Logic
+        let voiceEnabled = false;
+        let synthesis = window.speechSynthesis;
+
+        function toggleVoice() {
+            voiceEnabled = !voiceEnabled;
+            const btn = document.getElementById('voice-toggle-admin');
+            
+            if (voiceEnabled) {
+                btn.classList.add('active');
+                btn.style.color = '#fff'; // Ensure visibility
+                speak("Narrador activado.");
+            } else {
+                btn.classList.remove('active');
+                synthesis.cancel();
+                speak("Narrador desactivado.");
+            }
+        }
+
+        function speak(text) {
+            if (!text) return;
+            synthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-ES';
+            synthesis.speak(utterance);
+        }
+
+        function handleInteraction(event) {
+            if (!voiceEnabled) return;
+            const target = event.target;
+            if (['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'A', 'BUTTON', 'LABEL', 'SPAN', 'LI', 'TD', 'TH', 'TR'].includes(target.tagName)) {
+                let text = target.innerText || target.textContent;
+                if (text && text.trim().length > 0) {
+                    document.querySelectorAll('.speaking-highlight').forEach(el => el.classList.remove('speaking-highlight'));
+                    target.classList.add('speaking-highlight');
+                    speak(text);
+                    target.addEventListener('mouseleave', () => {
+                        target.classList.remove('speaking-highlight');
+                        synthesis.cancel();
+                    }, {once: true});
+                }
+            }
+        }
+
+        document.addEventListener('mouseover', handleInteraction);
+        document.addEventListener('focus', handleInteraction, true);
+    </script>
+{% endblock %}

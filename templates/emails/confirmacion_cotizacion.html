@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotización Recibida - Muebles Barguay</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background-color: #f4f4f4;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        .header {
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .logo {
+            width: 120px;
+            height: auto;
+            border-radius: 50%;
+            border: 4px solid #ffffff;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .header p {
+            color: #e0e0e0;
+            margin: 10px 0 0 0;
+            font-size: 16px;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #333333;
+            margin-bottom: 20px;
+        }
+        .message {
+            font-size: 16px;
+            color: #666666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .folio-badge {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 700;
+            padding: 15px 25px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        .details-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-left: 4px solid #0d6efd;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+        .details-box h2 {
+            color: #16213e;
+            font-size: 20px;
+            margin: 0 0 20px 0;
+        }
+        .detail-row {
+            display: table;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .detail-label {
+            display: table-cell;
+            font-weight: 700;
+            color: #333333;
+            padding-right: 15px;
+            width: 140px;
+        }
+        .detail-value {
+            display: table-cell;
+            color: #0d6efd;
+            font-weight: 600;
+        }
+        .info-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            color: #856404;
+            font-size: 18px;
+        }
+        .info-box p {
+            margin: 0;
+            color: #856404;
+            line-height: 1.6;
+        }
+        .footer {
+            background-color: #16213e;
+            padding: 30px 20px;
+            text-align: center;
+            color: #ffffff;
+        }
+        .footer p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .footer a {
+            color: #0d6efd;
+            text-decoration: none;
+        }
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #0d6efd, transparent);
+            margin: 30px 0;
+        }
+        .attachment-notice {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        .attachment-notice p {
+            margin: 0;
+            color: #0c5460;
+            font-weight: 600;
+        }
+        @media only screen and (max-width: 600px) {
+            .content {
+                padding: 20px 15px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .detail-row {
+                display: block;
+            }
+            .detail-label {
+                display: block;
+                margin-bottom: 5px;
+            }
+            .detail-value {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <img src="cid:logo" alt="Muebles Barguay" class="logo">
+            <h1>¡Cotización Recibida!</h1>
+            <p>Muebles Barguay - Tu hogar, nuestro arte</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <p class="greeting">Hola <strong>{{ cotizacion.nombre_completo }}</strong>,</p>
+            
+            <p class="message">
+                ¡Gracias por solicitar una cotización con nosotros! Hemos recibido tu solicitud y estamos emocionados de poder ayudarte con tu proyecto de mueblería a medida.
+            </p>
+
+            <!-- Folio Badge -->
+            <div class="folio-badge">
+                📋 FOLIO: {{ folio }}
+            </div>
+
+            <p class="message">
+                Adjunto a este email encontrarás la cotización REFERENCIAL en formato PDF con todos los detalles de tu solicitud. 
+                Por favor guarda este número de folio para futuras referencias.
+            </p>
+
+            <!-- Attachment Notice -->
+            <div class="attachment-notice">
+                <p>📎 Cotización adjunta: <strong>Cotizacion_{{ folio }}.pdf</strong></p>
+            </div>
+
+            <!-- Product Details -->
+            <div class="details-box">
+                <h2>📋 Resumen de tu Solicitud</h2>
+                
+                <div class="detail-row">
+                    <div class="detail-label">🛋️ Producto:</div>
+                    <div class="detail-value">{{ producto_nombre|default:"Diseño Personalizado" }}</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">📏 Dimensiones:</div>
+                    <div class="detail-value">{{ cotizacion.medidas_ancho }}cm (Ancho) x {{ cotizacion.medidas_alto }}cm (Alto) x {{ cotizacion.medidas_profundidad }}cm (Fondo)</div>
+                </div>
+                
+                <div class="detail-row">
+                    <div class="detail-label">🪵 Material:</div>
+                    <div class="detail-value">{{ material }}</div>
+                </div>
+            </div>
+
+            <!-- Important Info -->
+            <div class="info-box">
+                <h3>⚠️ Importante - Cotización Referencial</h3>
+                <p>
+                    Esta cotización es de carácter <strong>REFERENCIAL</strong> y está sujeta a evaluación en terreno 
+                    por parte de nuestro equipo técnico. Nuestro equipo revisará tu solicitud y se pondrá en contacto 
+                    contigo en las próximas <strong>24-48 horas</strong> para coordinar una visita técnica y ajustar 
+                    los detalles finales.
+                </p>
+            </div>
+
+            <div class="divider"></div>
+
+            <p class="message">
+                Si tienes alguna pregunta o necesitas modificar algo de tu solicitud, no dudes en contactarnos 
+                mencionando tu número de folio <strong>{{ folio }}</strong>.
+            </p>
+
+            <p class="message" style="margin-top: 30px; font-weight: 600; color: #0d6efd;">
+                ¡Gracias por confiar en nosotros! 🎉
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Muebles Barguay</strong></p>
+            <p>Av Lo Espejo 964, El Bosque, Santiago</p>
+            <p>📞 Teléfono: <a href="tel:+56912345678">+569 1234 5678</a></p>
+            <p>📧 Email: <a href="mailto:contacto@mueblesbarguay.cl">contacto@mueblesbarguay.cl</a></p>
+            <p style="margin-top: 15px; font-size: 12px; color: #999999;">
+                © 2025 Muebles Barguay. Todos los derechos reservados.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

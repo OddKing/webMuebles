@@ -1,0 +1,359 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block page_title %}Cotizaciones Pendientes{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-file-earmark-text"></i> Cotizaciones Pendientes de Aprobación</span>
+        <span class="badge bg-warning text-dark">{{ cotizaciones.count }} pendientes</span>
+    </div>
+    <div class="card-body">
+        {% if admin_cotizaciones %}
+        <div class="table-responsive">
+            <table class="table table-dark">
+                <thead>
+                    <tr>
+                        <th>Folio</th>
+                        <th>Cliente</th>
+                        <th>Producto</th>
+                        <th>Fecha Solicitud</th>
+                        <th>Dimensiones</th>
+                        <th>Material</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cotizacion in admin_cotizaciones %}
+                    <tr>
+                        <td><strong style="color: var(--admin-secondary);">{{ cotizacion.folio }}</strong></td>
+                        <td>
+                            {{ cotizacion.nombre_completo }}<br>
+                            <small class="text-muted">{{ cotizacion.email }}</small>
+                        </td>
+                        <td>
+                            {% if cotizacion.producto %}
+                                {{ cotizacion.producto.nombre }}
+                            {% else %}
+                                <em>Diseño Personalizado</em>
+                            {% endif %}
+                        </td>
+                        <td>{{ cotizacion.fecha_solicitud|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <small>
+                                A: {{ cotizacion.medidas_alto }}cm<br>
+                                An: {{ cotizacion.medidas_ancho }}cm<br>
+                                P: {{ cotizacion.medidas_profundidad }}cm
+                            </small>
+                        </td>
+                        <td>{{ cotizacion.get_material_preferido_display }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-admin-primary" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#detailModal{{ cotizacion.id }}">
+                                <i class="bi bi-eye"></i> Ver
+                            </button>
+                            <a href="{% url 'preview_quote_pdf' cotizacion.id %}" target="_blank" class="btn btn-sm btn-info text-white ms-1">
+                                <i class="bi bi-file-pdf"></i> PDF
+                            </a>
+                        </td>
+                    </tr>
+                    
+                    <!-- Modal de Detalles -->
+                    <div class="modal fade" id="detailModal{{ cotizacion.id }}" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content bg-dark text-light">
+                                <div class="modal-header" style="border-color: var(--admin-primary);">
+                                    <h5 class="modal-title" style="color: var(--admin-secondary);">
+                                        Detalle de Cotización - {{ cotizacion.folio }}
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6 style="color: var(--admin-secondary);">Datos del Cliente</h6>
+                                            <p><strong>Nombre:</strong> {{ cotizacion.nombre_completo }}</p>
+                                            <p><strong>RUT:</strong> {{ cotizacion.rut|default:"No proporcionado" }}</p>
+                                            <p><strong>Email:</strong> {{ cotizacion.email }}</p>
+                                            <p><strong>Teléfono:</strong> {{ cotizacion.telefono|default:"No proporcionado" }}</p>
+                                            <p><strong>Dirección:</strong> {{ cotizacion.direccion|default:"No proporcionada" }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6 style="color: var(--admin-secondary);">Especificaciones del Proyecto</h6>
+                                            <p><strong>Producto:</strong> 
+                                                {% if cotizacion.producto %}
+                                                    {{ cotizacion.producto.nombre }}
+                                                {% else %}
+                                                    Diseño Personalizado
+                                                {% endif %}
+                                            </p>
+                                            <p><strong>Material:</strong> {{ cotizacion.get_material_preferido_display }}</p>
+                                            <p><strong>Dimensiones:</strong></p>
+                                            <ul>
+                                                <li>Alto: {{ cotizacion.medidas_alto }} cm</li>
+                                                <li>Ancho: {{ cotizacion.medidas_ancho }} cm</li>
+                                                <li>Profundidad: {{ cotizacion.medidas_profundidad }} cm</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
+                                    {% if cotizacion.descripcion_proyecto %}
+                                    <div class="mt-3">
+                                        <h6 style="color: var(--admin-secondary);">Descripción del Proyecto</h6>
+                                        <p>{{ cotizacion.descripcion_proyecto }}</p>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    {% if cotizacion.foto_lugar %}
+                                    <div class="mt-3">
+                                        <h6 style="color: var(--admin-secondary);">Foto del Lugar</h6>
+                                        <img src="{{ cotizacion.foto_lugar.url }}" class="img-fluid rounded" alt="Foto del lugar">
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <div class="mt-3">
+                                        <h6 style="color: var(--admin-secondary);">Información Adicional</h6>
+                                        <p><strong>Fecha de Solicitud:</strong> {{ cotizacion.fecha_solicitud|date:"d/m/Y H:i" }}</p>
+                                        <p><strong>Estado:</strong> {{ cotizacion.get_estado_display }}</p>
+                                    </div>
+                                </div>
+                                <div class="modal-footer" style="border-color: var(--admin-primary);">
+                                    <form method="post" action="{% url 'rechazar_cotizacion' cotizacion.id %}" class="d-inline" id="formRechazar{{ cotizacion.id }}">
+                                        {% csrf_token %}
+                                        <div class="mb-3">
+                                            <label for="admin_notas{{ cotizacion.id }}" class="form-label">Motivo de Rechazo (opcional)</label>
+                                            <textarea class="form-control bg-dark text-light" 
+                                                      id="admin_notas{{ cotizacion.id }}" 
+                                                      name="admin_notas" 
+                                                      rows="2"
+                                                      placeholder="Escriba el motivo del rechazo..."></textarea>
+                                        </div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" 
+                                                   type="checkbox" 
+                                                   id="enviar_email{{ cotizacion.id }}" 
+                                                   name="enviar_email" 
+                                                   value="si">
+                                            <label class="form-check-label" for="enviar_email{{ cotizacion.id }}">
+                                                Enviar email de notificación al cliente
+                                            </label>
+                                        </div>
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class="bi bi-x-circle"></i> Rechazar
+                                        </button>
+                                    </form>
+                                    
+                                    <a href="{% url 'preview_quote_pdf' cotizacion.id %}" target="_blank" class="btn btn-info text-white">
+                                        <i class="bi bi-file-pdf"></i> Ver PDF
+                                    </a>
+
+                                    <form method="post" action="{% url 'aprobar_cotizacion' cotizacion.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <div class="mb-3 text-start">
+                                            <label for="precio_cotizado{{ cotizacion.id }}" class="form-label text-success">
+                                                <i class="bi bi-currency-dollar"></i> Precio Neto a Cotizar
+                                            </label>
+                                            
+                                            <!-- Sugerencia de Precio -->
+                                            {% if cotizacion.precio_sugerido %}
+                                            <div class="mb-3 p-2 rounded" style="background-color: rgba(25, 135, 84, 0.1); border: 1px dashed #198754;">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <small class="text-success">
+                                                        <i class="bi bi-calculator"></i> Cálculo Estimado: 
+                                                        <strong>${{ cotizacion.precio_sugerido.precio_final }}</strong>
+                                                    </small>
+                                                    <div>
+                                                        <button type="button" class="btn btn-sm btn-link text-success p-0 me-2" 
+                                                                data-bs-toggle="collapse" 
+                                                                data-bs-target="#desglose{{ cotizacion.id }}">
+                                                            <i class="bi bi-info-circle"></i> Ver detalle
+                                                        </button>
+                                                        <button type="button" class="btn btn-sm btn-outline-success py-0" 
+                                                                onclick="document.getElementById('precio_cotizado{{ cotizacion.id }}').value = '{{ cotizacion.precio_sugerido.precio_final }}'">
+                                                            Usar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Desglose Colapsable -->
+                                                <div class="collapse mt-2" id="desglose{{ cotizacion.id }}">
+                                                    <div class="card card-body bg-dark border-success p-2">
+                                                        <ul class="list-unstyled mb-0 small text-muted">
+                                                            <li>• Material: {{ cotizacion.precio_sugerido.material_nombre }} (${{ cotizacion.precio_sugerido.precio_base_m2 }}/m²)</li>
+                                                            <li>• Superficie: <span id="area{{ cotizacion.id }}">{{ cotizacion.precio_sugerido.area_m2 }}</span> m² (aprox)</li>
+                                                            <li>• Costo Material: $<span id="costoMat{{ cotizacion.id }}">{{ cotizacion.precio_sugerido.costo_material }}</span></li>
+                                                            <li>• Factor Complejidad: x<span id="factor{{ cotizacion.id }}">{{ cotizacion.precio_sugerido.factor }}</span></li>
+                                                            <li>• Mano de Obra Base: $<span id="manoObra{{ cotizacion.id }}">{{ cotizacion.precio_sugerido.mano_obra }}</span></li>
+                                                        </ul>
+                                                        
+                                                        <!-- Buscador de Precios -->
+                                                        <div class="mt-3 border-top border-secondary pt-2">
+                                                            <h6 class="text-success small mb-2"><i class="bi bi-search"></i> Buscar Precio Real en Tiendas</h6>
+                                                            
+                                                            <div class="input-group input-group-sm mb-2">
+                                                                <select class="form-select bg-dark text-light border-secondary" 
+                                                                        id="storeSelect{{ cotizacion.id }}" style="max-width: 120px;">
+                                                                    <option value="sodimac">Sodimac</option>
+                                                                    <option value="imperial">Imperial</option>
+                                                                    <option value="provelcar">Provelcar</option>
+                                                                    <option value="hbt">Hbt</option>
+                                                                    <option value="ledstudio">Led Studio</option>
+                                                                    <option value="stonecenter">Stone Center</option>
+                                                                    <option value="casamura">Casa Mura</option>
+                                                                    <option value="forpec">Forpec</option>
+                                                                    <option value="dph">Dph</option>
+                                                                </select>
+                                                                <input type="text" class="form-control bg-dark text-light border-secondary" 
+                                                                       id="searchQuery{{ cotizacion.id }}" 
+                                                                       value="{{ cotizacion.precio_sugerido.material_nombre }}"
+                                                                       placeholder="Ej: Melamina Blanca">
+                                                                <button class="btn btn-outline-success" type="button" 
+                                                                        onclick="buscarPrecios('{{ cotizacion.id }}')">
+                                                                    Buscar
+                                                                </button>
+                                                            </div>
+                                                            <div id="searchResults{{ cotizacion.id }}" class="small"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            
+                                            <input type="number" class="form-control bg-dark text-light" 
+                                                   id="precio_cotizado{{ cotizacion.id }}" 
+                                                   name="precio_cotizado" 
+                                                   placeholder="Ingrese precio neto (sin puntos)"
+                                                   required>
+                                            <div class="form-text text-muted">El sistema calculará el IVA automáticamente.</div>
+                                        </div>
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="bi bi-check-circle"></i> Aprobar y Enviar Email
+                                        </button>
+                                    </form>
+                                    
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        Cerrar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-inbox" style="font-size: 4rem; color: #666;"></i>
+            <p class="text-muted mt-3">No hay cotizaciones pendientes de aprobación</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .modal-content {
+        background-color: #2a2a2a !important;
+        border: 2px solid var(--admin-primary);
+    }
+    
+    .form-control {
+        background-color: #0d0d0d;
+        border: 1px solid rgba(139, 69, 19, 0.3);
+        color: #e0e0e0;
+    }
+    
+    .form-control:focus {
+        background-color: #0d0d0d;
+        border-color: var(--admin-primary);
+        color: #e0e0e0;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function buscarPrecios(id) {
+        const query = document.getElementById(`searchQuery${id}`).value;
+        const store = document.getElementById(`storeSelect${id}`).value;
+        const resultsDiv = document.getElementById(`searchResults${id}`);
+        
+        if (!query) return;
+        
+        resultsDiv.innerHTML = '<div class="text-center text-success my-2"><div class="spinner-border spinner-border-sm" role="status"></div> Buscando...</div>';
+        
+        fetch(`/api/search-prices/?query=${encodeURIComponent(query)}&store=${store}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    resultsDiv.innerHTML = `<div class="text-danger my-2">Error: ${data.error}</div>`;
+                    return;
+                }
+                
+                if (data.results.length === 0) {
+                    resultsDiv.innerHTML = '<div class="text-muted my-2">No se encontraron resultados.</div>';
+                    return;
+                }
+                
+                let html = '<ul class="list-group list-group-flush mt-2 bg-dark">';
+                data.results.forEach(item => {
+                    html += `
+                        <li class="list-group-item bg-dark text-light border-secondary d-flex justify-content-between align-items-center p-2">
+                            <div class="d-flex align-items-center">
+                                <img src="${item.imagen}" style="width: 30px; height: 30px; object-fit: cover;" class="rounded me-2">
+                                <div>
+                                    <div class="fw-bold" style="font-size: 0.8rem;">${item.nombre}</div>
+                                    <div class="small text-muted">${item.tienda}</div>
+                                </div>
+                            </div>
+                            <div class="text-end ms-2">
+                                <div class="fw-bold text-success">${item.precio_formateado}</div>
+                                <button class="btn btn-sm btn-outline-success py-0 mt-1" style="font-size: 0.7rem;"
+                                        onclick="seleccionarPrecio(${item.precio}, ${id})">
+                                    Usar
+                                </button>
+                            </div>
+                        </li>
+                    `;
+                });
+                html += '</ul>';
+                resultsDiv.innerHTML = html;
+            })
+            .catch(error => {
+                resultsDiv.innerHTML = `<div class="text-danger my-2">Error de conexión</div>`;
+                console.error(error);
+            });
+    }
+    
+    function seleccionarPrecio(precioBase, id) {
+        // Obtener factores del DOM
+        const area = parseFloat(document.getElementById(`area${id}`).innerText.replace(',', '.'));
+        const factor = parseFloat(document.getElementById(`factor${id}`).innerText.replace(',', '.'));
+        const manoObra = parseInt(document.getElementById(`manoObra${id}`).innerText.replace(/\D/g, ''));
+        
+        // Calcular nuevo precio
+        // Formula: (PrecioBase * Area * Factor) + ManoObra
+        // Nota: Area ya incluye desperdicio (x1.2) según pricing.py
+        
+        const costoMaterial = precioBase * area;
+        const precioEstimado = (costoMaterial * factor) + manoObra;
+        
+        // Redondear a miles
+        const precioFinal = Math.round(precioEstimado / 1000) * 1000;
+        
+        // Actualizar input
+        document.getElementById(`precio_cotizado${id}`).value = precioFinal;
+        
+        // Actualizar desglose visualmente (opcional)
+        document.getElementById(`costoMat${id}`).innerText = Math.round(costoMaterial);
+        
+        // Feedback visual
+        const input = document.getElementById(`precio_cotizado${id}`);
+        input.classList.add('is-valid');
+        setTimeout(() => input.classList.remove('is-valid'), 2000);
+    }
+</script>
+{% endblock %}

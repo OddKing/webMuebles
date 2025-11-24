@@ -1,0 +1,113 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Editar Cotización {{ cotizacion.folio }} - Admin Panel{% endblock %}
+{% block page_title %}Editar Cotización {{ cotizacion.folio }}{% endblock %}
+
+{% block content %}
+<div class="row bg-dark">
+    <div class="col-md-10 offset-md-1">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h5 class="mb-0"><i class="bi bi-pencil"></i> Editar Cotización {{ cotizacion.folio }}</h5>
+            </div>
+            <div class="card-body bg-dark">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nombre Completo *</label>
+                            <input type="text" name="nombre_completo" class="form-control" required
+                                value="{{ cotizacion.nombre_completo }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">RUT</label>
+                            <input type="text" name="rut" class="form-control" value="{{ cotizacion.rut }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email *</label>
+                            <input type="email" name="email" class="form-control" required
+                                value="{{ cotizacion.email }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="text" name="telefono" class="form-control" value="{{ cotizacion.telefono }}">
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Dirección</label>
+                            <input type="text" name="direccion" class="form-control" value="{{ cotizacion.direccion }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Producto</label>
+                            <select name="producto" class="form-select">
+                                <option value="">Diseño Personalizado</option>
+                                {% for prod in productos %}
+                                <option value="{{ prod.id }}" {% if cotizacion.producto.id == prod.id %}selected{% endif %}>{{ prod.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Material *</label>
+                            <select name="material_preferido" class="form-select" required>
+                                {% for key, label in materiales %}
+                                <option value="{{ key }}" {% if cotizacion.material_preferido == key %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Ancho (cm) *</label>
+                            <input type="number" step="0.01" name="medidas_ancho" class="form-control" required
+                                value="{{ cotizacion.medidas_ancho }}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Alto (cm) *</label>
+                            <input type="number" step="0.01" name="medidas_alto" class="form-control" required
+                                value="{{ cotizacion.medidas_alto }}">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Profundidad (cm) *</label>
+                            <input type="number" step="0.01" name="medidas_profundidad" class="form-control" required
+                                value="{{ cotizacion.medidas_profundidad }}">
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea name="descripcion_proyecto" class="form-control"
+                                rows="3">{{ cotizacion.descripcion_proyecto }}</textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Estado</label>
+                            <select name="estado" class="form-select">
+                                {% for key, label in estados %}
+                                <option value="{{ key }}" {% if cotizacion.estado == key %}selected{% endif %}>{{ label }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Precio Cotizado ($)</label>
+                            <input type="number" step="1" name="precio_cotizado" class="form-control"
+                                value="{{ cotizacion.precio_cotizado }}">
+                            {% if precio_sugerido %}
+                            <small class="text-muted">Sugerido: ${{ precio_sugerido.precio_final|floatformat:0
+                                }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Notas Administrativas</label>
+                            <textarea name="admin_notas" class="form-control"
+                                rows="2">{{ cotizacion.admin_notas }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'admin_cotizacion_detalle' cotizacion.id %}" class="btn btn-admin-secondary"><i
+                                class="bi bi-arrow-left"></i> Cancelar</a>
+                        <button type="submit" class="btn btn-admin-primary"><i class="bi bi-check"></i> Guardar
+                            Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,496 @@
+{% extends 'base.html' %}
+{% load static %}
+
+    <title>{% block title %}Muebles Barguay{% endblock %}</title>
+<style>
+/* Horarios ocupados - Alta prioridad */
+.horarios-grid .horario-btn.occupied,
+button.horario-btn.occupied {
+    background: rgba(220, 53, 69, 0.2) !important;
+    border: 2px solid #dc3545 !important;
+    color: #dc3545 !important;
+    cursor: not-allowed !important;
+    opacity: 0.85 !important;
+    font-weight: 600 !important;
+    position: relative;
+    pointer-events: none;
+}
+
+.horarios-grid .horario-btn.occupied::before,
+button.horario-btn.occupied::before {
+    content: '✕ ';
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.horarios-grid .horario-btn.occupied:hover,
+button.horario-btn.occupied:hover {
+    transform: none !important;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4) !important;
+    background: rgba(220, 53, 69, 0.25) !important;
+    border-color: #dc3545 !important;
+}
+</style>
+
+{% block content %}
+<div class="agendar-container">
+    <!-- Header Section -->
+    <div class="agendar-header">
+        <div class="container">
+            <h1 class="agendar-title" data-i18n="meeting.hero.title">Agendar tu Reunión</h1>
+            <p class="agendar-subtitle" data-i18n="meeting.hero.subtitle">Selecciona la fecha y hora que mejor se ajuste a tu agenda</p>
+        </div>
+    </div>
+
+    <!-- Mensajes -->
+    {% if messages %}
+    <div class="container mt-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}    
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="container agendar-content">
+        <form method="POST" id="agendarForm" class="row g-4">
+            {% csrf_token %}
+            
+            <!-- Columna Izquierda: Formulario -->
+            <div class="col-lg-6">
+                <div class="form-card">
+                    <h3 class="form-section-title" data-i18n="meeting.form.personal">Información Personal</h3>
+                    
+                    <div class="mb-3">
+                        <label for="nombre_completo" class="form-label" data-i18n="meeting.form.name">Nombre Completo *</label>
+                        <input type="text" class="form-control form-control-dark" id="nombre_completo" name="nombre_completo" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label" data-i18n="meeting.form.email">Email *</label>
+                        <input type="email" class="form-control form-control-dark" id="email" name="email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label" data-i18n="meeting.form.phone">Teléfono *</label>
+                        <input type="tel" class="form-control form-control-dark" id="telefono" name="telefono" placeholder="+56912345678" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="direccion" class="form-label" data-i18n="meeting.form.address">Dirección *</label>
+                        <input type="text" class="form-control form-control-dark" id="direccion" name="direccion" required>
+                    </div>
+
+                    <h3 class="form-section-title mt-4" data-i18n="meeting.form.type">Tipo de Reunión</h3>
+                    
+                    <div class="tipo-reunion-group">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="tipo_reunion" id="online" value="online" required>
+                            <label class="form-check-label" for="online">
+                                <i class="bi bi-camera-video"></i> <span data-i18n="meeting.form.online">Online</span>
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="tipo_reunion" id="presencial" value="presencial">
+                            <label class="form-check-label" for="presencial">
+                                <i class="bi bi-person"></i> <span data-i18n="meeting.form.inperson">Presencial</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Calendario y Horarios -->
+            <div class="col-lg-6">
+                <!-- Calendario Visual -->
+                <div class="form-card mb-4">
+                    <h3 class="form-section-title" data-i18n="meeting.form.selectdate">Selecciona una Fecha</h3>
+                    
+                    <!-- Navegación del Calendario -->
+                    <div class="calendar-navigation">
+                        <button type="button" id="prevMonth" class="calendar-nav-btn">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <h4 id="currentMonth" class="calendar-month-title"></h4>
+                        <button type="button" id="nextMonth" class="calendar-nav-btn">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Grid del Calendario -->
+                    <div class="calendar-grid">
+                        <!-- Headers de días de la semana -->
+                        <div class="calendar-header" data-i18n="calendar.mon">Lun</div>
+                        <div class="calendar-header" data-i18n="calendar.tue">Mar</div>
+                        <div class="calendar-header" data-i18n="calendar.wed">Mié</div>
+                        <div class="calendar-header" data-i18n="calendar.thu">Jue</div>
+                        <div class="calendar-header" data-i18n="calendar.fri">Vie</div>
+                        <div class="calendar-header weekend-header" data-i18n="calendar.sat">Sáb</div>
+                        <div class="calendar-header weekend-header" data-i18n="calendar.sun">Dom</div>
+                    </div>
+
+                    <!-- Días del mes (generados por JavaScript) -->
+                    <div id="calendarDays" class="calendar-days"></div>
+
+                    <!-- Input hidden para el formulario -->
+                    <input type="hidden" id="fecha" name="fecha" required>
+                    <p class="form-text mt-2" data-i18n="meeting.form.workdays">Solo días laborales (Lunes a Viernes)</p>
+                </div>
+
+                <!-- Horarios -->
+                <div class="form-card">
+                    <h3 class="form-section-title" data-i18n="meeting.form.selecttime">Selecciona un Horario</h3>
+                    <div class="horarios-grid">
+                        {% for horario in horarios %}
+                        <button type="button" class="horario-btn" data-hora="{{ horario }}">
+                            {{ horario }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                    <input type="hidden" id="hora" name="hora" required>
+                    <p class="form-text mt-2" data-i18n="meeting.form.schedule">Horario de atención: 10:00 AM - 6:00 PM</p>
+                </div>
+
+                <!-- Resumen de Selección -->
+                <div class="seleccion-resumen" id="resumenSeleccion" style="display: none;">
+                    <h4 data-i18n="meeting.summary.title">Resumen de tu Cita</h4>
+                    <p><strong data-i18n="meeting.summary.date">Fecha:</strong> <span id="resumenFecha"></span></p>
+                    <p><strong data-i18n="meeting.summary.time">Hora:</strong> <span id="resumenHora"></span></p>
+                </div>
+
+                <!-- Checkbox de Consentimiento -->
+                <div class="form-check mb-4 mt-4" style="background: rgba(13, 110, 253, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(13, 110, 253, 0.3);">
+                    <input type="checkbox" class="form-check-input" id="aceptoTerminos" name="acepto_terminos" required style="width: 20px; height: 20px; margin-top: 0.3rem;">
+                    <label class="form-check-label" for="aceptoTerminos" style="color: #e0e0e0; font-size: 1rem; margin-left: 0.5rem; cursor: pointer;">
+                        <span data-i18n="meeting.consent.read">He leído y acepto los</span> 
+                        <a href="{% url 'terminos' %}" target="_blank" style="color: #0d6efd; text-decoration: none; font-weight: 600;" data-i18n="footer.terms">Términos y Condiciones</a> 
+                        <span data-i18n="meeting.consent.and">y la</span> 
+                        <a href="{% url 'privacidad' %}" target="_blank" style="color: #0d6efd; text-decoration: none; font-weight: 600;" data-i18n="footer.privacy">Política de Privacidad</a>
+                    </label>
+                    <div class="invalid-feedback" style="color: #dc3545; margin-top: 0.5rem;" data-i18n="meeting.consent.error">
+                        Debes aceptar los términos y condiciones para continuar.
+                    </div>
+                </div>
+
+                <!-- Botón Submit -->
+                <button type="submit" class="btn btn-primary btn-lg w-100 mt-2" id="btnConfirmar">
+                    <i class="bi bi-calendar-check"></i> <span data-i18n="meeting.btn.confirm">Confirmar Reunión</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fechaInput = document.getElementById('fecha');
+    const horaInput = document.getElementById('hora');
+    const horarioBtns = document.querySelectorAll('.horario-btn');
+    const resumenDiv = document.getElementById('resumenSeleccion');
+    const resumenFecha = document.getElementById('resumenFecha');
+    const resumenHora = document.getElementById('resumenHora');
+    const form = document.getElementById('agendarForm');
+
+    // Variables del calendario
+    let currentDate = new Date();
+    let selectedDate = null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const minDate = new Date(today);
+    minDate.setDate(minDate.getDate() + 1); // Mínimo mañana
+    const maxDate = new Date(today);
+    maxDate.setMonth(maxDate.getMonth() + 3); // Máximo 3 meses
+
+    // Festivos chilenos 2025 (puedes personalizar)
+    const holidays = [
+        '2025-01-01', // Año Nuevo
+        '2025-04-18', // Viernes Santo
+        '2025-04-19', // Sábado Santo
+        '2025-05-01', // Día del Trabajo
+        '2025-05-21', // Glorias Navales
+        '2025-06-29', // San Pedro y San Pablo
+        '2025-07-16', // Virgen del Carmen
+        '2025-08-15', // Asunción
+        '2025-09-18', // Independencia
+        '2025-09-19', // Glorias del Ejército
+        '2025-10-12', // Encuentro de Dos Mundos
+        '2025-10-31', // Reforma Protestante
+        '2025-11-01', // Todos los Santos
+        '2025-12-08', // Inmaculada Concepción
+        '2025-12-25', // Navidad
+    ];
+
+    function isHoliday(date) {
+        const dateStr = date.toISOString().split('T')[0];
+        return holidays.includes(dateStr);
+    }
+
+   function renderCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        
+        // Obtener idioma actual y traducciones
+        const currentLang = getCurrentLanguage();
+        const monthKeys = [
+            'month.january', 'month.february', 'month.march', 'month.april',
+            'month.may', 'month.june', 'month.july', 'month.august',
+            'month.september', 'month.october', 'month.november', 'month.december'
+        ];
+        
+        // Obtener nombre del mes traducido
+        const monthName = translations[currentLang][monthKeys[month]];
+        document.getElementById('currentMonth').textContent = `${monthName} ${year}`;
+
+        // Obtener primer y último día del mes
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        
+        // Ajustar para que empiece en lunes (0=Sunday, 1=Monday)
+        let startDay = firstDay.getDay();
+        startDay = startDay === 0 ? 6 : startDay - 1; // Convertir domingo(0) a 6
+
+        // Limpiar días
+        const calendarDays = document.getElementById('calendarDays');
+        calendarDays.innerHTML = '';
+
+        // Espacios vacíos antes del primer día
+        for (let i = 0; i < startDay; i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.className = 'calendar-day empty';
+            calendarDays.appendChild(emptyDay);
+        }
+
+        // Renderizar días del mes
+        for (let day = 1; day <= lastDay.getDate(); day++) {
+            const date = new Date(year, month, day);
+            const dayElement = document.createElement('div');
+            dayElement.className = 'calendar-day';
+            dayElement.textContent = day;
+
+            // Verificar si es fin de semana (6=Sábado, 0=Domingo)
+            const dayOfWeek = date.getDay();
+            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+            // Verificar si es día pasado
+            const isPast = date < minDate;
+
+            // Verificar si está fuera del rango de 3 meses
+            const isTooFar = date > maxDate;
+
+            // Verificar si es festivo
+            const isFestivo = isHoliday(date);
+
+            // Aplicar clases y estado para voz
+            if (isPast) {
+                dayElement.classList.add('past');
+                dayElement.title = 'Fecha pasada';
+                dayElement.setAttribute('data-status', 'calendar.past');
+            } else if (isTooFar) {
+                dayElement.classList.add('disabled');
+                dayElement.title = 'Fuera del rango disponible';
+                dayElement.setAttribute('data-status', 'calendar.outofrange');
+            } else if (isWeekend) {
+                dayElement.classList.add('weekend');
+                dayElement.title = 'Fin de semana - No disponible';
+                dayElement.setAttribute('data-status', 'calendar.weekend');
+            } else if (isFestivo) {
+                dayElement.classList.add('holiday');
+                dayElement.title = 'Festivo - No disponible';
+                dayElement.setAttribute('data-status', 'calendar.holiday');
+            } else {
+                dayElement.classList.add('available');
+                dayElement.setAttribute('data-status', 'calendar.available');
+                dayElement.addEventListener('click', () => selectDate(date, dayElement));
+            }
+
+            // Marcar si está seleccionado
+            if (selectedDate && date.toDateString() === selectedDate.toDateString()) {
+                dayElement.classList.add('selected');
+            }
+
+            calendarDays.appendChild(dayElement);
+        }
+
+        // Actualizar botones de navegación
+        updateNavigationButtons();
+    }
+
+    function updateNavigationButtons() {
+        const prevBtn = document.getElementById('prevMonth');
+        const nextBtn = document.getElementById('nextMonth');
+
+        // Verificar si el mes anterior tiene días disponibles
+        const prevMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+        const prevMonthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+        prevBtn.disabled = prevMonthEnd < minDate;
+
+        // Verificar si el mes siguiente excede los 3 meses
+        const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+        nextBtn.disabled = nextMonth > maxDate;
+    }
+
+    function selectDate(date, element) {
+        // Remover selección anterior
+        document.querySelectorAll('.calendar-day.selected').forEach(day => {
+            day.classList.remove('selected');
+        });
+
+        // Marcar nuevo día seleccionado
+        element.classList.add('selected');
+        selectedDate = date;
+
+        // Actualizar input hidden
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        fechaInput.value = `${year}-${month}-${day}`;
+
+        // Cargar horarios disponibles para esta fecha
+        cargarHorariosDisponibles(fechaInput.value);
+
+        actualizarResumen();
+    }
+
+    // Función para cargar horarios disponibles via AJAX
+    function cargarHorariosDisponibles(fecha) {
+        console.log('Consultando horarios para fecha:', fecha);
+        
+        fetch(`/api/horarios-disponibles/?fecha=${fecha}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Respuesta del servidor:', data);
+                const horariosDisponibles = data.horarios_disponibles;
+                const horariosOcupados = data.horarios_ocupados;
+
+                console.log('Horarios ocupados:', horariosOcupados);
+
+                // Actualizar botones de horarios
+                horarioBtns.forEach(btn => {
+                    const hora = btn.dataset.hora;
+                    
+                    if (horariosOcupados.includes(hora)) {
+                        // Marcar como ocupado
+                        console.log('Marcando horario como ocupado:', hora);
+                        btn.classList.remove('selected');
+                        btn.classList.add('occupied');
+                        btn.disabled = true;
+                        btn.title = 'Horario no disponible';
+                        btn.style.background = 'rgba(220, 53, 69, 0.2)';
+                        btn.style.borderColor = '#dc3545';
+                        btn.style.color = '#dc3545';
+                    } else {
+                        // Marcar como disponible
+                        btn.classList.remove('occupied', 'selected');
+                        btn.disabled = false;
+                        btn.title = 'Seleccionar horario';
+                        btn.style.background = '';
+                        btn.style.borderColor = '';
+                        btn.style.color = '';
+                    }
+                });
+
+                // Limpiar selección de hora si estaba ocupada
+                if (horaInput.value && horariosOcupados.includes(horaInput.value)) {
+                    horaInput.value = '';
+                    resumenDiv.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar horarios:', error);
+            });
+    }
+
+    // Navegación de meses
+    document.getElementById('prevMonth').addEventListener('click', function() {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+    });
+
+    document.getElementById('nextMonth').addEventListener('click', function() {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+    });
+
+    // Manejar selección de horario
+    horarioBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            horarioBtns.forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+            horaInput.value = this.dataset.hora;
+            actualizarResumen();
+        });
+    });
+
+    function actualizarResumen() {
+        if (fechaInput.value && horaInput.value) {
+            const fecha = new Date(fechaInput.value + 'T00:00:00');
+            const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            
+            // Obtener idioma actual y mapear a locale
+            const currentLang = getCurrentLanguage();
+            const localeMap = {
+                'es': 'es-ES',
+                'en': 'en-US',
+                'de': 'de-DE'
+            };
+            const locale = localeMap[currentLang] || 'es-ES';
+            
+            resumenFecha.textContent = fecha.toLocaleDateString(locale, opciones);
+            resumenHora.textContent = horaInput.value;
+            resumenDiv.style.display = 'block';
+        }
+    }
+
+    // Validación antes de enviar
+    form.addEventListener('submit', function(e) {
+        if (!horaInput.value) {
+            e.preventDefault();
+            alert('Por favor selecciona un horario');
+            return false;
+        }
+        
+        if (!fechaInput.value) {
+            e.preventDefault();
+            alert('Por favor selecciona una fecha');
+            return false;
+        }
+    });
+
+    // Renderizar calendario inicial
+    renderCalendar();
+    
+    // Re-renderizar calendario cuando cambie el idioma
+    window.addEventListener('languageChanged', function() {
+        renderCalendar();
+        // También actualizar el resumen si hay una fecha seleccionada
+        if (fechaInput.value && horaInput.value) {
+            actualizarResumen();
+        }
+    });
+    
+    // Voice feedback para días del calendario
+    document.getElementById('calendarDays').addEventListener('mouseover', function(e) {
+        // Solo si el narrador está activado (verificar si existe la variable global)
+        if (typeof voiceEnabled !== 'undefined' && voiceEnabled && e.target.classList.contains('calendar-day')) {
+            const status = e.target.getAttribute('data-status');
+            if (status) {
+                const currentLang = getCurrentLanguage();
+                const dayNumber = e.target.textContent;
+                const statusText = translations[currentLang][status];
+                
+                // Decir el número del día y su estado
+                const message = `${dayNumber}, ${statusText}`;
+                
+                // Usar la función speak de base.html si está disponible
+                if (typeof speak === 'function') {
+                    speak(message, currentLang);
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

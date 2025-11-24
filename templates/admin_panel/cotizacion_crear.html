@@ -1,0 +1,167 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Crear Cotización - Admin Panel{% endblock %}
+{% block page_title %}Crear Nueva Cotización{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Nueva Cotización</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <!-- Cliente -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h6 class="border-bottom pb-2">Cliente</h6>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Buscar Cliente Habitual (Opcional)</label>
+                            <input type="text" id="cliente-search" class="form-control"
+                                placeholder="Buscar por nombre o RUT...">
+                            <input type="hidden" name="cliente" id="cliente-id">
+                            <div id="cliente-results" class="mt-2"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nombre Completo *</label>
+                            <input type="text" name="nombre_completo" class="form-control" required
+                                value="{% if cliente_data %}{{ cliente_data.nombre_completo }}{% endif %}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">RUT</label>
+                            <input type="text" name="rut" class="form-control"
+                                value="{% if cliente_data %}{{ cliente_data.rut }}{% endif %}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Email *</label>
+                            <input type="email" name="email" class="form-control" required
+                                value="{% if cliente_data %}{{ cliente_data.email }}{% endif %}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="text" name="telefono" class="form-control"
+                                value="{% if cliente_data %}{{ cliente_data.telefono }}{% endif %}">
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Dirección</label>
+                            <input type="text" name="direccion" class="form-control"
+                                value="{% if cliente_data %}{{ cliente_data.direccion }}{% endif %}">
+                        </div>
+                    </div>
+
+                    <!-- Producto -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h6 class="border-bottom pb-2">Proyecto</h6>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Producto Referencia</label>
+                            <select name="producto" class="form-select">
+                                <option value="">Diseño Personalizado</option>
+                                {% for prod in productos %}
+                                <option value="{{ prod.id }}">{{ prod.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Material *</label>
+                            <select name="material_preferido" class="form-select" required>
+                                {% for key, label in materiales %}
+                                <option value="{{ key }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Ancho (cm) *</label>
+                            <input type="number" step="0.01" name="medidas_ancho" class="form-control" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Alto (cm) *</label>
+                            <input type="number" step="0.01" name="medidas_alto" class="form-control" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Profundidad (cm) *</label>
+                            <input type="number" step="0.01" name="medidas_profundidad" class="form-control" required>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Descripción del Proyecto</label>
+                            <textarea name="descripcion_proyecto" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Admin -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <input type="number" step="1" name="precio_cotizado" class="form-control"
+                                placeholder="Dejar vacío para cálculo automático">
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label">Notas Administrativas</label>
+                            <textarea name="admin_notas" class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'admin_cotizaciones_historial' %}" class="btn btn-admin-secondary"><i
+                                class="bi bi-arrow-left"></i> Cancelar</a>
+                        <button type="submit" class="btn btn-success"><i class="bi bi-check"></i> Crear
+                            Cotización</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    {% if cliente_data %}
+    document.getElementById('cliente-id').value = '{{ cliente_data.id }}';
+    {% endif %}
+
+    let searchTimeout;
+    document.getElementById('cliente-search').addEventListener('input', function (e) {
+        clearTimeout(searchTimeout);
+        const query = e.target.value;
+
+        if (query.length < 2) {
+            document.getElementById('cliente-results').innerHTML = '';
+            return;
+        }
+
+        searchTimeout = setTimeout(() => {
+            fetch(`/api/buscar-cliente/?q=${encodeURIComponent(query)}`)
+                .then(r => r.json())
+                .then(data => {
+                    const results = data.results || [];
+                    let html = '';
+                    results.forEach(cli => {
+                        html += `<div class="card mb-2" style="cursor: pointer;" onclick='selectCliente(${JSON.stringify(cli)})'>
+                        <div class="card-body py-2">
+                            <strong>${cli.nombre_completo}</strong> - ${cli.rut}<br>
+                            <small>${cli.email}</small>
+                        </div>
+                    </div>`;
+                    });
+                    document.getElementById('cliente-results').innerHTML = html || '<small class="text-muted">No se encontraron clientes</small>';
+                });
+        }, 500);
+    });
+
+    function selectCliente(cli) {
+        document.getElementById('cliente-id').value = cli.id;
+        document.querySelector('[name="nombre_completo"]').value = cli.nombre_completo;
+        document.querySelector('[name="rut"]').value = cli.rut;
+        document.querySelector('[name="email"]').value = cli.email;
+        document.querySelector('[name="telefono"]').value = cli.telefono;
+        document.querySelector('[name="direccion"]').value = cli.direccion;
+        document.getElementById('cliente-search').value = cli.nombre_completo;
+        document.getElementById('cliente-results').innerHTML = '';
+    }
+</script>
+{% endblock %}

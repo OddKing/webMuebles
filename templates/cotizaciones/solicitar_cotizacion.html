@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Solicitar Cotización - {{ producto.nombre }}{% endblock %}
+
+{% block content %}
+<div class="agendar-container">
+    <!-- Header Section -->
+    <div class="agendar-header">
+        <div class="container">
+            <h1 class="agendar-title">Solicitar Cotización</h1>
+            <p class="agendar-subtitle">{{ producto.nombre }} - Completanos los detalles de tu proyecto y te enviaremos una cotización personalizada</p>
+        </div>
+    </div>
+
+    <!-- Mensajes -->
+    {% if messages %}
+    <div class="container mt-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="container agendar-content">
+        <form method="POST" enctype="multipart/form-data" id="cotizacionForm" class="row g-4">
+            {% csrf_token %}
+            
+            <!-- Columna Izquierda: Datos Personales y Proyecto -->
+            <div class="col-lg-6">
+                <div class="form-card">
+                    <h3 class="form-section-title">Información Personal</h3>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.nombre_completo.id_for_label }}" class="form-label">{{ form.nombre_completo.label }}</label>
+                        {{ form.nombre_completo }}
+                        {% if form.nombre_completo.errors %}
+                            <div class="invalid-feedback d-block">{{ form.nombre_completo.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.rut.id_for_label }}" class="form-label">{{ form.rut.label }}</label>
+                        {{ form.rut }}
+                        {% if form.rut.help_text %}
+                           <small class="form-text">{{ form.rut.help_text }}</small>
+                        {% endif %}
+                        {% if form.rut.errors %}
+                            <div class="invalid-feedback d-block">{{ form.rut.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.direccion.id_for_label }}" class="form-label">{{ form.direccion.label }}</label>
+                        {{ form.direccion }}
+                        {% if form.direccion.errors %}
+                            <div class="invalid-feedback d-block">{{ form.direccion.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="invalid-feedback d-block">{{ form.email.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.telefono.id_for_label }}" class="form-label">{{ form.telefono.label }}</label>
+                        {{ form.telefono }}
+                        {% if form.telefono.errors %}
+                            <div class="invalid-feedback d-block">{{ form.telefono.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Detalles del Proyecto -->
+            <div class="col-lg-6">
+                <div class="form-card">
+                    <h3 class="form-section-title">Detalles del Espacio</h3>
+                    <p class="form-text mb-3">Proporciona las medidas del espacio donde se ubicará el mueble</p>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.medidas_ancho.id_for_label }}" class="form-label">{{ form.medidas_ancho.label }}</label>
+                            {{ form.medidas_ancho }}
+                            {% if form.medidas_ancho.help_text %}
+                                <small class="form-text">{{ form.medidas_ancho.help_text }}</small>
+                            {% endif %}
+                            {% if form.medidas_ancho.errors %}
+                                <div class="invalid-feedback d-block">{{ form.medidas_ancho.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.medidas_alto.id_for_label }}" class="form-label">{{ form.medidas_alto.label }}</label>
+                            {{ form.medidas_alto }}
+                            {% if form.medidas_alto.help_text %}
+                                <small class="form-text">{{ form.medidas_alto.help_text }}</small>
+                            {% endif %}
+                            {% if form.medidas_alto.errors %}
+                                <div class="invalid-feedback d-block">{{ form.medidas_alto.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.medidas_profundidad.id_for_label }}" class="form-label">{{ form.medidas_profundidad.label }}</label>
+                            {{ form.medidas_profundidad }}
+                            {% if form.medidas_profundidad.help_text %}
+                                <small class="form-text">{{ form.medidas_profundidad.help_text }}</small>
+                            {% endif %}
+                            {% if form.medidas_profundidad.errors %}
+                                <div class="invalid-feedback d-block">{{ form.medidas_profundidad.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.material_preferido.id_for_label }}" class="form-label">{{ form.material_preferido.label }}</label>
+                        {{ form.material_preferido }}
+                        {% if form.material_preferido.errors %}
+                            <div class="invalid-feedback d-block">{{ form.material_preferido.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.foto_lugar.id_for_label }}" class="form-label">{{ form.foto_lugar.label }}</label>
+                        {{ form.foto_lugar }}
+                        {% if form.foto_lugar.help_text %}
+                            <small class="form-text">{{ form.foto_lugar.help_text }}</small>
+                        {% endif %}
+                        {% if form.foto_lugar.errors %}
+                            <div class="invalid-feedback d-block">{{ form.foto_lugar.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.descripcion_proyecto.id_for_label }}" class="form-label">{{ form.descripcion_proyecto.label }}</label>
+                        {{ form.descripcion_proyecto }}
+                        {% if form.descripcion_proyecto.errors %}
+                            <div class="invalid-feedback d-block">{{ form.descripcion_proyecto.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Consentimiento Legal -->
+                <div class="form-card mt-4">
+                    <h3 class="form-section-title">Consentimiento Legal</h3>
+                    
+                    <div class="form-check mb-3">
+                        {{ form.acepto_terminos }}
+                        <label class="form-check-label" for="{{ form.acepto_terminos.id_for_label }}">
+                            {{ form.acepto_terminos.label }} - 
+                            <a href="{% url 'terminos' %}" target="_blank" style="color: #0d6efd;">Ver T&eacute;rminos</a>
+                        </label>
+                        {% if form.acepto_terminos.errors %}
+                            <div class="invalid-feedback d-block">{{ form.acepto_terminos.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-check mb-3">
+                        {{ form.acepto_privacidad }}
+                        <label class="form-check-label" for="{{ form.acepto_privacidad.id_for_label }}">
+                            {{ form.acepto_privacidad.label }} - 
+                            <a href="{% url 'privacidad' %}" target="_blank" style="color: #0d6efd;">Ver Pol&iacute;tica</a>
+                        </label>
+                        {% if form.acepto_privacidad.errors %}
+                            <div class="invalid-feedback d-block">{{ form.acepto_privacidad.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Botón Submit -->
+                <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">
+                    <i class="bi bi-calculator"></i> Solicitar Cotización
+                </button>
+
+                <p class="form-text text-center mt-3">
+                    Recibirás tu cotización por email en formato PDF
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

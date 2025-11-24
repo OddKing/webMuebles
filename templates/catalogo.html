@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<title>{% block title %}Muebles Barguay{% endblock %}</title>
+
+{% block content %}
+<div class="catalogo-container">
+    <!-- Hero Section -->
+    <div class="catalogo-hero">
+        <div class="container">
+            <h1 class="catalogo-title" data-i18n="catalog.hero.title">Nuestros Productos</h1>
+            <p class="catalogo-subtitle" data-i18n="catalog.hero.subtitle">Diseños exclusivos para tu hogar y oficina</p>
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="container productos-section">
+        {% if productos %}
+        <div class="row g-4">
+            {% for producto in productos %}
+            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="{{ producto.imagen.url }}" class="product-image" alt="{{ producto.nombre }}">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">{{ producto.nombre }}</h3>
+                        <p class="product-description">{{ producto.descripcion }}</p>
+                        <p class="product-price">${{ producto.precio|floatformat:0 }}</p>
+                        <div class="product-footer">
+                            <a href="{% url 'solicitar_cotizacion' producto.id %}" class="btn btn-primary btn-sm w-100">
+                                <i class="bi bi-calculator"></i> <span data-i18n="catalog.btn.quote">Cotizar</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="empty-catalog">
+            <i class="bi bi-inbox" style="font-size: 4rem; color: #6c757d;"></i>
+            <h3 data-i18n="catalog.empty.title">No hay productos disponibles</h3>
+            <p data-i18n="catalog.empty.message">Pronto agregaremos nuevos productos a nuestro catálogo.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Call to Action -->
+    <div class="cta-section">
+        <div class="container text-center">
+            <h2 class="cta-title" data-i18n="catalog.cta.title">¿Necesitas un diseño personalizado?</h2>
+            <p class="cta-text" data-i18n="catalog.cta.message">Contáctanos y creamos el mueble perfecto para ti</p>
+            <a href="{% url 'agendar_reunion' %}" class="btn btn-primary btn-lg px-5 rounded-pill" data-i18n="catalog.cta.button">Agendar Reunión</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

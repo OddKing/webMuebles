@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cotización Enviada - Muebles Barguay{% endblock %}
+
+{% block content %}
+<div class="agendar-container">
+    <!-- Header Success -->
+    <div class="agendar-header" style="background: linear-gradient(135deg, #28a745 0%, #20c75f 100%);">
+        <div class="container text-center">
+            <div class="success-icon mb-4">
+                <i class="bi bi-check-circle"  style="font-size: 5rem; color: white;"></i>
+            </div>
+            <h1 class="agendar-title">¡Solicitud Recibida Exitosamente!</h1>
+            <p>Nuestro equipo está evaluando tu solicitud y te enviará la cotización por email una vez aprobada.</p>
+
+            <div class="alert alert-info mt-4 bg-danger" style="color: #e0e0e0;">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Importante:</strong> La cotización enviada es de carácter REFERENCIAL. El precio final puede variar tras la evaluación en terreno.
+                    </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="container agendar-content">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="form-card text-center">
+                    <div class="mb-4">
+                        <i class="bi bi-hourglass-split" style="font-size: 4rem; color: #0d6efd;"></i>
+                    </div>
+                   
+                    <h2 style="color: #e0e0e0; margin-bottom: 1.5rem;">¿Qué sigue ahora?</h2>
+                    
+                    <div class="timeline-steps">
+                        <div class="timeline-step">
+                            <div class="step-icon">
+                                <i class="bi bi-clipboard-check"></i>
+                            </div>
+                            <h4>1. Revisión Administrativa</h4>
+                            <p>Nuestro equipo revisará tu solicitud para validar disponibilidad y viabilidad del proyecto.</p>
+                        </div>
+
+                        <div class="timeline-step">
+                            <div class="step-icon">
+                                <i class="bi bi-envelope-open"></i>
+                            </div>
+                            <h4>2. Recibirás tu Cotización</h4>
+                            <p>Una vez aprobada, enviaremos la cotización detallada en PDF a tu correo electrónico.</p>
+                        </div>
+
+                        <div class="timeline-step">
+                            <div class="step-icon">
+                                <i class="bi bi-tools"></i>
+                            </div>
+                            <h4>3. Evaluación en Terreno</h4>
+                            <p>Visitaremos el espacio para tomar medidas precisas y ajustar la cotización final según las condiciones reales.</p>
+                        </div>
+
+                        <div class="timeline-step">
+                            <div class="step-icon">
+                                <i class="bi bi-hammer"></i>
+                            </div>
+                            <h4>4. ¡A Construir!</h4>
+                            <p>Una vez aprobada la cotización final, comenzaremos a fabricar tu mueble a medida con los más altos estándares de calidad.</p>
+                        </div>
+                    </div>
+
+                    <div class="divider my-4" style="height: 1px; background: linear-gradient(to right, transparent, #0d6efd, transparent);"></div>
+
+                    <h3 style="color: #e0e0e0; margin-bottom: 1rem;">¿Necesitas ayuda?</h3>
+                    <p style="color: #b0b0b0; margin-bottom: 1.5rem;">Si tienes alguna pregunta o necesitas modificar tu solicitud, no dudes en contactarnos:</p>
+                    
+                    <div class="contact-info" style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+                        <div>
+                            <i class="bi bi-envelope"></i>
+                            <a href="mailto:contacto@mueblesbarguay.cl" style="color: #0d6efd; text-decoration: none;">contacto@mueblesbarguay.cl</a>
+                        </div>
+                    </div>
+
+                    <div class="mt-5">
+                        <a href="{% url 'index' %}" class="btn btn-primary btn-lg me-2">
+                            <i class="bi bi-house"></i> Volver al Inicio
+                        </a>
+                        <a href="{% url 'catalogo' %}" class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-grid"></i> Ver Catálogo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.timeline-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.timeline-step {
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.1) 0%, rgba(13, 110, 253, 0.05) 100%);
+    border: 1px solid rgba(13, 110, 253, 0.2);
+    transition: all 0.3s ease;
+}
+
+.timeline-step:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(13, 110, 253, 0.2);
+}
+
+.step-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.timeline-step h4 {
+    color: #e0e0e0;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-step p {
+    color: #b0b0b0;
+    margin: 0;
+    font-size: 0.9rem;
+}
+</style>
+{% endblock %}

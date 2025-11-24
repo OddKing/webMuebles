@@ -1,0 +1,111 @@
+{% extends 'admin_panel/base.html' %}
+
+{% block title %}Detalle Cotización {{ cotizacion.folio }} - Admin Panel{% endblock %}
+{% block page_title %}Detalle de Cotización{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between">
+            <a href="{% url 'admin_cotizaciones_historial' %}" class="btn btn-admin-secondary"><i
+                    class="bi bi-arrow-left"></i> Volver</a>
+            <div>
+                <a href="{% url 'admin_editar_cotizacion' cotizacion.id %}" class="btn btn-admin-primary"><i
+                        class="bi bi-pencil"></i> Editar</a>
+                <a href="{% url 'preview_quote_pdf' cotizacion.id %}" class="btn btn-info" target="_blank"><i
+                        class="bi bi-file-pdf"></i> Ver PDF</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-file-earmark-text"></i> Información de la Cotización</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="small text-muted">Folio</label>
+                        <p><strong>{{ cotizacion.folio }}</strong></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="small text-muted">Estado</label>
+                        <p>
+                            {% if cotizacion.estado == 'aprobada' %}
+                            <span class="badge bg-success">Aprobada</span>
+                            {% elif cotizacion.estado == 'pendiente_aprobacion' %}
+                            <span class="badge bg-warning">Pendiente</span>
+                            {% else %}
+                            <span class="badge bg-info">{{ cotizacion.get_estado_display }}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="small text-muted">Cliente</label>
+                        <p>{{ cotizacion.nombre_completo }}
+                            {% if cotizacion.cliente %}
+                            <a href="{% url 'admin_cliente_detalle' cotizacion.cliente.id %}"
+                                class="btn btn-sm btn-outline-secondary ms-2">
+                                <i class="bi bi-person"></i> Ver Cliente
+                            </a>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="small text-muted">Email</label>
+                        <p>{{ cotizacion.email }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="small text-muted">Producto</label>
+                        <p>{{ cotizacion.producto.nombre|default:"Diseño Personalizado" }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="small text-muted">Material</label>
+                        <p>{{ cotizacion.get_material_preferido_display }}</p>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label class="small text-muted">Medidas</label>
+                        <p>{{ cotizacion.medidas_ancho }} × {{ cotizacion.medidas_alto }} × {{
+                            cotizacion.medidas_profundidad }} cm</p>
+                    </div>
+                    {% if cotizacion.descripcion_proyecto %}
+                    <div class="col-md-12">
+                        <label class="small text-muted">Descripción del Proyecto</label>
+                        <p>{{ cotizacion.descripcion_proyecto }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-body text-center">
+                <i class="bi bi-currency-dollar" style="font-size: 2rem; color: var(--admin-secondary);"></i>
+                <h3 class="mt-2">
+                    {% if cotizacion.precio_cotizado %}
+                    ${{ cotizacion.precio_cotizado|floatformat:0 }}
+                    {% else %}
+                    <span class="text-muted">Sin Precio</span>
+                    {% endif %}
+                </h3>
+                <p class="text-muted mb-0">Precio Cotizado</p>
+            </div>
+        </div>
+
+        {% if precio_sugerido %}
+        <div class="card">
+            <div class="card-body">
+                <h6 class="border-bottom pb-2">Precio Sugerido</h6>
+                <p class="mb-1"><strong>${{ precio_sugerido.precio_final|floatformat:0 }}</strong></p>
+                <small class="text-muted">Área: {{ precio_sugerido.area_m2 }} m²</small>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
