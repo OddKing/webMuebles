@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - Error del Servidor | Muebles Barguay</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .error-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 20px;
+        }
+        .error-container {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .error-code {
+            font-size: 120px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            line-height: 1;
+        }
+        .error-icon {
+            font-size: 80px;
+            color: #f5576c;
+            margin-bottom: 20px;
+            animation: shake 2s ease-in-out infinite;
+        }
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
+        }
+        .error-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin: 20px 0 15px;
+        }
+        .error-message {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .btn-home {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+        }
+        .btn-home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(245, 87, 108, 0.4);
+            color: white;
+        }
+        .contact-info {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+            color: #666;
+            font-size: 14px;
+        }
+        .contact-info a {
+            color: #f5576c;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-page">
+        <div class="error-container">
+            <i class="bi bi-exclamation-triangle error-icon"></i>
+            <h1 class="error-code">500</h1>
+            <h2 class="error-title">¡Ups! Algo salió mal</h2>
+            <p class="error-message">
+                Lo sentimos mucho, nuestro servidor está teniendo problemas en este momento.
+                Nuestro equipo técnico ya ha sido notificado y está trabajando para resolverlo.
+            </p>
+            <a href="/" class="btn-home">
+                <i class="bi bi-house-door-fill me-2"></i>Volver al Inicio
+            </a>
+            
+            <div class="contact-info">
+                <p>Si el problema persiste, por favor contáctanos:</p>
+                <p>
+                    <i class="bi bi-envelope me-2"></i>
+                    <a href="mailto:contacto@mueblesbarguay.cl">contacto@mueblesbarguay.cl</a>
+                </p>
+                <p>
+                    <i class="bi bi-whatsapp me-2"></i>
+                    <a href="https://wa.me/56949935865">+56 9 4993 5865</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
