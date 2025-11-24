@@ -27,7 +27,7 @@
                 <label class="form-label">Tienda</label>
                 <select name="store" class="form-select">
                     {% for key, config in stores.items %}
-                    <option value="{{ key }}" {% if store==key %}selected{% endif %}>{{ config.name }}</option>
+                    <option value="{{ key }}" {% if store == key %}selected{% endif %}>{{ config.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -89,7 +89,7 @@
                         <td class="text-center">
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-sm btn-admin-secondary"
-                                    onclick="copyPrice({{ resultado.precio }})" title="Copiar Precio">
+                                    onclick="copyPrice('{{ resultado.precio }}', '{{ resultado.precio_formateado }}')" title="Copiar Precio">
                                     <i class="bi bi-clipboard"></i>
                                 </button>
                                 {% if resultado.url %}
@@ -118,9 +118,12 @@
 
 {% block extra_js %}
 <script>
-    function copyPrice(price) {
+    function copyPrice(price, formattedPrice) {
         navigator.clipboard.writeText(price).then(() => {
-            alert('Precio copiado: $' + price.toLocaleString('es-CL'));
+            alert('Precio copiado: ' + formattedPrice);
+        }).catch(err => {
+            console.error('Error al copiar:', err);
+            alert('No se pudo copiar el precio');
         });
     }
 </script>

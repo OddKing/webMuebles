@@ -89,6 +89,30 @@
         </button>
     </div>
 
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-banner" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); backdrop-filter: blur(10px); color: white; padding: 20px; z-index: 10001; border-top: 3px solid #667eea; box-shadow: 0 -4px 20px rgba(0,0,0,0.3);">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8 mb-3 mb-md-0">
+                    <h6 class="mb-2" style="font-weight: 600;"><i class="bi bi-cookie me-2"></i>Uso de Cookies</h6>
+                    <p class="mb-0" style="font-size: 0.9rem; line-height: 1.5;">
+                        Utilizamos cookies para mejorar tu experiencia de navegación, recordar tus preferencias y analizar el tráfico del sitio. 
+                        Al hacer clic en "Aceptar", consientes el uso de todas las cookies. 
+                        Puedes gestionar tus preferencias en nuestra <a href="{% url 'privacidad' %}" style="color: #667eea; text-decoration: underline;">Política de Privacidad</a>.
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <button onclick="acceptCookies()" class="btn btn-sm px-4 me-2" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 25px; font-weight: 600; padding: 10px 25px;">
+                        <i class="bi bi-check-circle me-1"></i>Aceptar
+                    </button>
+                    <button onclick="rejectCookies()" class="btn btn-sm btn-outline-light px-4" style="border-radius: 25px; font-weight: 600; padding: 10px 25px;">
+                        <i class="bi bi-x-circle me-1"></i>Rechazar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Accessibility Widget (DERECHA, ABAJO) -->
     <div id="accessibility-controls" class="d-none d-md-flex" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; gap: 5px; background: rgba(0,0,0,0.85); padding: 8px; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2);">
         <button onclick="adjustFontSize(-1)" aria-label="Disminuir letra" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">-</button>
@@ -286,6 +310,50 @@
 
         document.addEventListener('mouseover', handleInteraction);
         document.addEventListener('focus', handleInteraction, true);
+
+        // Cookie Consent Management
+        function checkCookieConsent() {
+            const consent = localStorage.getItem('cookieConsent');
+            const consentDate = localStorage.getItem('cookieConsentDate');
+            
+            if (!consent || !consentDate) {
+                // No hay consentimiento guardado, mostrar banner
+                setTimeout(() => {
+                    document.getElementById('cookie-banner').style.display = 'block';
+                }, 1000);
+            } else {
+                // Verificar si han pasado más de 365 días
+                const daysSinceConsent = (Date.now() - parseInt(consentDate)) / (1000 * 60 * 60 * 24);
+                if (daysSinceConsent > 365) {
+                    // Ha expirado, pedir consentimiento de nuevo
+                    localStorage.removeItem('cookieConsent');
+                    localStorage.removeItem('cookieConsentDate');
+                    document.getElementById('cookie-banner').style.display = 'block';
+                }
+            }
+        }
+
+        function acceptCookies() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            localStorage.setItem('cookieConsentDate', Date.now().toString());
+            document.getElementById('cookie-banner').style.display = 'none';
+            
+            // Aquí puedes activar servicios de analytics si los tienes
+            // Por ejemplo: Google Analytics, Facebook Pixel, etc.
+            console.log('Cookies aceptadas');
+        }
+
+        function rejectCookies() {
+            localStorage.setItem('cookieConsent', 'rejected');
+            localStorage.setItem('cookieConsentDate', Date.now().toString());
+            document.getElementById('cookie-banner').style.display = 'none';
+            
+            // Aquí puedes desactivar servicios de tracking
+            console.log('Cookies rechazadas - solo cookies esenciales');
+        }
+
+        // Verificar consentimiento al cargar la página
+        document.addEventListener('DOMContentLoaded', checkCookieConsent);
     </script>
 
     <script src="{% static 'js/i18n.js' %}"></script>

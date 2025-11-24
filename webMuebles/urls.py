@@ -100,3 +100,9 @@ if settings.DEBUG:
 admin.site.site_header = "🪑 Muebles Barguay - Panel de Administración"
 admin.site.site_title = "Muebles Barguay Admin"
 admin.site.index_title = "Bienvenido al Panel de Gestión"
+
+# Custom error handlers
+handler404 = 'django.views.defaults.page_not_found'
+handler500 = 'django.views.defaults.server_error'
+handler403 = 'django.views.defaults.permission_denied'
+handler400 = 'django.views.defaults.bad_request'
