@@ -1,32 +1,78 @@
-# Python
+# ==============================================================================
+# PYTHON
+# ==============================================================================
 __pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
 *.pyc
 *.pyo
 *.pyd
-*.sqlite3
 
-# Entornos virtuales
-venv/
-venvweb/
-ENV/
-.vscode/
-carlos
-carlos.pub
-# Archivos Django
+# ==============================================================================
+# DJANGO
+# ==============================================================================
+*.log
+*.pot
+db.sqlite3
+db.sqlite3-journal
 /staticfiles/
 /media/
 
-# Archivos de configuración sensibles
-*.log
-*.pot
-*.py[co]
-
-# Configuración local
-.env
-db.sqlite3
-
-# Archivos de sistema
-.DS_Store
-Thumbs.db
+# ==============================================================================
+# ENVIRONMENT & SECRETS
+# ==============================================================================
+# IMPORTANT: .env is tracked for private repository convenience
+# For production: use .env.production with different credentials
+# For local overrides: use .env.local (ignored)
+.env.local
+.env.*.local
+.env.production  # Keep production secrets separate
+*.key
+*.pub
+carlos
 carlos.pub
 carlos.key
+
+# ==============================================================================
+# VIRTUAL ENVIRONMENTS
+# ==============================================================================
+venv/
+venvweb/
+ENV/
+env/
+.venv
+
+# ==============================================================================
+# IDE & EDITORS
+# ==============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ==============================================================================
+# BACKUPS
+# ==============================================================================
+*.bak
+*.backup
+*.old
+
+# ==============================================================================
+# TESTING
+# ==============================================================================
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# ==============================================================================
+# BUILD & DISTRIBUTION
+# ==============================================================================
+build/
+dist/
+*.egg-info/

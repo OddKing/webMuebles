@@ -17,3 +17,8 @@ def terminos_condiciones(request):
 def politica_privacidad(request):
     """Vista para Política de Privacidad"""
     return render(request, 'legal/privacidad.html')
+
+
+def faq(request):
+    """Vista para Preguntas Frecuentes (FAQ)"""
+    return render(request, 'faq.html')

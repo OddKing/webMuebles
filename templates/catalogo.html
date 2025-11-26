@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/product-lightbox.css' %}">
+{% endblock %}
+
 <title>{% block title %}Muebles Barguay{% endblock %}</title>
 
 {% block content %}
@@ -9,7 +13,8 @@
     <div class="catalogo-hero">
         <div class="container">
             <h1 class="catalogo-title" data-i18n="catalog.hero.title">Nuestros Productos</h1>
-            <p class="catalogo-subtitle" data-i18n="catalog.hero.subtitle">Diseños exclusivos para tu hogar y oficina</p>
+            <p class="catalogo-subtitle" data-i18n="catalog.hero.subtitle">Diseños exclusivos para tu hogar y oficina
+            </p>
         </div>
     </div>
 
@@ -51,8 +56,13 @@
         <div class="container text-center">
             <h2 class="cta-title" data-i18n="catalog.cta.title">¿Necesitas un diseño personalizado?</h2>
             <p class="cta-text" data-i18n="catalog.cta.message">Contáctanos y creamos el mueble perfecto para ti</p>
-            <a href="{% url 'agendar_reunion' %}" class="btn btn-primary btn-lg px-5 rounded-pill" data-i18n="catalog.cta.button">Agendar Reunión</a>
+            <a href="{% url 'agendar_reunion' %}" class="btn btn-primary btn-lg px-5 rounded-pill"
+                data-i18n="catalog.cta.button">Agendar Reunión</a>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/product-lightbox.js' %}"></script>
 {% endblock %}

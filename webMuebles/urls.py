@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from administracion.views import portada, terminos_condiciones, politica_privacidad
+from administracion.views import portada, terminos_condiciones, politica_privacidad, faq
 from administracion.views_productos import lista_productos, crear_producto, editar_producto, eliminar_producto
 from productos.views import catalogo
 from cotizaciones.views import agendar_reunion, get_horarios_disponibles, solicitar_cotizacion, cotizacion_enviada
@@ -52,6 +52,7 @@ urlpatterns += [
     path('cotizacion/enviada/', cotizacion_enviada, name='cotizacion_enviada'),
     path('terminos/', terminos_condiciones, name='terminos'),
     path('privacidad/', politica_privacidad, name='privacidad'),
+    path('faq/', faq, name='faq'),
     
     # Admin Panel Routes
     path('admin-panel/login/', admin_login, name='admin_login'),

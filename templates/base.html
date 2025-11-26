@@ -10,6 +10,8 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" href="{% static 'img/logo.jpg' %}" type="image/jpeg">
+    {% block extra_css %}{% endblock %}
     
     <nav class="navbar navbar-custom" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">
         <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
@@ -23,6 +25,7 @@
             
             <div class="d-flex align-items-center gap-2 gap-md-3 flex-wrap justify-content-end">
                 <div class="legal-links d-flex gap-2">
+                    <a href="{% url 'faq' %}" class="legal-link text-light" data-i18n="nav.faq" style="font-size: 0.75rem;">Preguntas</a>
                     <a href="{% url 'terminos' %}" class="legal-link text-light" data-i18n="nav.terms" style="font-size: 0.75rem;">Términos</a>
                     <a href="{% url 'privacidad' %}" class="legal-link text-light" data-i18n="nav.privacy" style="font-size: 0.75rem;">Privacidad</a>
                 </div>
@@ -275,26 +278,28 @@
             if (!voiceEnabled) return;
             const target = event.target;
             
-            // Expandir tags para incluir DIV (para calendario) y otros elementos interactivos
-            const readableTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'A', 'BUTTON', 'LABEL', 'SPAN', 'LI', 'TD', 'TH', 'DIV'];
+            // Expandir tags para incluir IMG, DIV y otros elementos interact ivos
+            const readableTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'A', 'BUTTON', 'LABEL', 'SPAN', 'LI', 'TD', 'TH', 'DIV', 'IMG'];
             
             if (readableTags.includes(target.tagName)) {
                 let text = target.innerText || target.textContent;
                 if (target.tagName === 'IMG' && target.alt) text = "Imagen: " + target.alt;
                 
-                // Filtrar DIVs vacíos o con demasiado contenido (como contenedores)
+                // Filtrar DIVs vacíos o contenedores muy grandes
                 if (target.tagName === 'DIV') {
-                    // Solo leer DIVs del calendario o con poco texto
+                    // Leer DIVs del calendario, accordion-body (FAQ), o con poco texto
                     const isCalendarElement = target.classList.contains('calendar-day') || 
                                             target.classList.contains('calendar-header') ||
                                             target.classList.contains('calendar-month-title');
+                    const isFAQAnswer = target.classList.contains('accordion-body');
                     
-                    if (!isCalendarElement && text.length > 100) {
-                        return; // Skip large containers
+                    if (!isCalendarElement && !isFAQAnswer && text.length > 200) {
+                        return; // Skip large containers que no son respuestas FAQ
                     }
                 }
                 
-                if (text && text.trim().length > 0 && text.trim().length < 200) {
+                // Aumentado a 1000 caracteres para leer respuestas completas del FAQ
+                if (text && text.trim().length > 0 && text.trim().length < 1000) {
                     const currentLang = getCurrentLanguage();
                     document.querySelectorAll('.speaking-highlight').forEach(el => el.classList.remove('speaking-highlight'));
                     target.classList.add('speaking-highlight');
@@ -357,5 +362,6 @@
 
     <script src="{% static 'js/i18n.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>
