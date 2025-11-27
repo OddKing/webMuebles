@@ -27,6 +27,7 @@
                     <tr>
                         <th style="width: 80px;">Imagen</th>
                         <th>Nombre</th>
+                        <th>Categoría</th>
                         <th style="width: 120px;">Precio</th>
                         <th style="width: 80px;">Orden</th>
                         <th style="width: 100px;">Estado</th>
@@ -39,10 +40,11 @@
                     <tr>
                         <td>
                             {% if producto.imagen %}
-                            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" 
-                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 2px solid rgba(139, 69, 19, 0.3);">
+                            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}"
+                                style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 2px solid rgba(139, 69, 19, 0.3);">
                             {% else %}
-                            <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <div
+                                style="width: 50px; height: 50px; background: rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
                                 <i class="bi bi-image text-muted"></i>
                             </div>
                             {% endif %}
@@ -51,6 +53,13 @@
                             <strong>{{ producto.nombre }}</strong>
                             <br>
                             <small class="text-muted">{{ producto.descripcion|truncatewords:8 }}</small>
+                        </td>
+                        <td>
+                            {% if producto.categoria %}
+                            <span class="badge bg-secondary">{{ producto.categoria.nombre }}</span>
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
                         </td>
                         <td>
                             <strong style="color: var(--admin-secondary);">${{ producto.precio|floatformat:0 }}</strong>
@@ -74,16 +83,12 @@
                         </td>
                         <td class="text-center">
                             <div class="btn-group" role="group">
-                                <a href="{% url 'admin_editar_producto' producto.id %}" 
-                                   class="btn btn-sm btn-warning" 
-                                   title="Editar"
-                                   style="padding: 0.375rem 0.75rem;">
+                                <a href="{% url 'admin_editar_producto' producto.id %}" class="btn btn-sm btn-warning"
+                                    title="Editar" style="padding: 0.375rem 0.75rem;">
                                     <i class="bi bi-pencil-fill"></i>
                                 </a>
-                                <a href="{% url 'admin_eliminar_producto' producto.id %}" 
-                                   class="btn btn-sm btn-danger" 
-                                   title="Eliminar"
-                                   style="padding: 0.375rem 0.75rem;">
+                                <a href="{% url 'admin_eliminar_producto' producto.id %}" class="btn btn-sm btn-danger"
+                                    title="Eliminar" style="padding: 0.375rem 0.75rem;">
                                     <i class="bi bi-trash-fill"></i>
                                 </a>
                             </div>

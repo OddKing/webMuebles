@@ -1,0 +1,466 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<title>{% block title %}Preguntas Frecuentes - Muebles Barguay{% endblock %}</title>
+
+{% block content %}
+<div class="faq-container">
+    <!-- Hero Section -->
+    <div class="faq-hero">
+        <div class="container">
+            <div class="text-center">
+                <i class="bi bi-question-circle-fill" style="font-size: 4rem; color: #667eea; margin-bottom: 1rem;"></i>
+                <h1 class="faq-title" data-i18n="faq.hero.title">Preguntas Frecuentes</h1>
+                <p class="faq-subtitle" data-i18n="faq.hero.subtitle">Encuentra respuestas a las preguntas más comunes
+                    sobre nuestros muebles y servicios</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Content -->
+    <div class="container faq-content">
+        <!-- General Section -->
+        <div class="faq-category">
+            <h2 class="category-title">
+                <i class="bi bi-info-circle"></i>
+                <span data-i18n="faq.category.general">General</span>
+            </h2>
+
+            <div class="accordion" id="faqGeneral">
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1"
+                            aria-expanded="true">
+                            <span data-i18n="faq.general.q1">¿Qué tipo de muebles fabrican?</span>
+                        </button>
+                    </h3>
+                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqGeneral">
+                        <div class="accordion-body" data-i18n="faq.general.a1">
+                            Fabricamos todo tipo de muebles a medida: cocinas integrales, closets, muebles de baño,
+                            escritorios, bibliotecas, muebles de TV, y más. Nos especializamos en muebles modulares que
+                            se adaptan perfectamente a tu espacio.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq2">
+                            <span data-i18n="faq.general.q2">¿Hacen muebles a medida?</span>
+                        </button>
+                    </h3>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqGeneral">
+                        <div class="accordion-body" data-i18n="faq.general.a2">
+                            Sí, todos nuestros muebles son diseñados y fabricados a medida según tus necesidades
+                            específicas. Nos adaptamos al espacio disponible y a tus preferencias de diseño y
+                            funcionalidad.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq3">
+                            <span data-i18n="faq.general.q3">¿Cuánto tiempo toma fabricar un mueble?</span>
+                        </button>
+                    </h3>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqGeneral">
+                        <div class="accordion-body" data-i18n="faq.general.a3">
+                            El tiempo de fabricación varía según la complejidad del mueble. Generalmente, un proyecto
+                            promedio toma entre 15 a 30 días hábiles desde la aprobación del diseño hasta la
+                            instalación. Proyectos más grandes pueden tomar más tiempo.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq4">
+                            <span data-i18n="faq.general.q4">¿En qué zonas trabajan?</span>
+                        </button>
+                    </h3>
+                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqGeneral">
+                        <div class="accordion-body" data-i18n="faq.general.a4">
+                            Atendemos principalmente en la Región Metropolitana de Santiago y alrededores. Para
+                            proyectos en otras regiones, contáctanos para evaluar la viabilidad.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cotizaciones Section -->
+        <div class="faq-category">
+            <h2 class="category-title">
+                <i class="bi bi-calculator"></i>
+                <span data-i18n="faq.category.quotes">Cotizaciones</span>
+            </h2>
+
+            <div class="accordion" id="faqCotizaciones">
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq5">
+                            <span data-i18n="faq.quotes.q1">¿Cómo solicito una cotización?</span>
+                        </button>
+                    </h3>
+                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqCotizaciones">
+                        <div class="accordion-body" data-i18n="faq.quotes.a1">
+                            Puedes solicitar una cotización de tres formas: (1) a través de nuestro catálogo en línea
+                            haciendo clic en "Cotizar", (2) agendando una reunión con nuestros diseñadores, o (3)
+                            contactándonos directamente por WhatsApp.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq6">
+                            <span data-i18n="faq.quotes.q2">¿La cotización tiene costo?</span>
+                        </button>
+                    </h3>
+                    <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqCotizaciones">
+                        <div class="accordion-body" data-i18n="faq.quotes.a2">
+                            No, nuestras cotizaciones son completamente gratuitas y sin compromiso. Queremos que puedas
+                            tomar la mejor decisión para tu proyecto.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq7">
+                            <span data-i18n="faq.quotes.q3">¿Cuánto demoran en responder una cotización?</span>
+                        </button>
+                    </h3>
+                    <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqCotizaciones">
+                        <div class="accordion-body" data-i18n="faq.quotes.a3">
+                            Generalmente respondemos cotizaciones en un plazo de 24 a 48 horas hábiles. Para proyectos
+                            más complejos que requieren diseño personalizado, podría tomar un poco más de tiempo.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq8">
+                            <span data-i18n="faq.quotes.q4">¿Puedo modificar mi cotización?</span>
+                        </button>
+                    </h3>
+                    <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#faqCotizaciones">
+                        <div class="accordion-body" data-i18n="faq.quotes.a4">
+                            Sí, puedes solicitar modificaciones a tu cotización antes de aprobarla. Una vez aprobada y
+                            en producción, los cambios pueden generar costos adicionales.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Entrega e Instalación Section -->
+        <div class="faq-category">
+            <h2 class="category-title">
+                <i class="bi bi-truck"></i>
+                <span data-i18n="faq.category.delivery">Entrega e Instalación</span>
+            </h2>
+
+            <div class="accordion" id="faqEntrega">
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq9">
+                            <span data-i18n="faq.delivery.q1">¿Incluyen entrega e instalación?</span>
+                        </button>
+                    </h3>
+                    <div id="faq9" class="accordion-collapse collapse" data-bs-parent="#faqEntrega">
+                        <div class="accordion-body" data-i18n="faq.delivery.a1">
+                            Sí, todos nuestros muebles incluyen entrega e instalación profesional sin costo adicional
+                            dentro de la Región Metropolitana. Para otras regiones, consulta costo de envío.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq10">
+                            <span data-i18n="faq.delivery.q2">¿Cuánto demora la instalación?</span>
+                        </button>
+                    </h3>
+                    <div id="faq10" class="accordion-collapse collapse" data-bs-parent="#faqEntrega">
+                        <div class="accordion-body" data-i18n="faq.delivery.a2">
+                            La instalación típicamente toma entre 4 a 8 horas dependiendo de la complejidad del mueble.
+                            Para proyectos grandes como cocinas completas, puede tomar 1-2 días.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq11">
+                            <span data-i18n="faq.delivery.q3">¿Puedo elegir la fecha de instalación?</span>
+                        </button>
+                    </h3>
+                    <div id="faq11" class="accordion-collapse collapse" data-bs-parent="#faqEntrega">
+                        <div class="accordion-body" data-i18n="faq.delivery.a3">
+                            Sí, una vez que tu mueble esté listo, coordinamos contigo la fecha más conveniente para la
+                            instalación dentro de nuestra agenda disponible.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Garantía Section -->
+        <div class="faq-category">
+            <h2 class="category-title">
+                <i class="bi bi-shield-check"></i>
+                <span data-i18n="faq.category.warranty">Garantía y Mantenimiento</span>
+            </h2>
+
+            <div class="accordion" id="faqGarantia">
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq12">
+                            <span data-i18n="faq.warranty.q1">¿Los muebles tienen garantía?</span>
+                        </button>
+                    </h3>
+                    <div id="faq12" class="accordion-collapse collapse" data-bs-parent="#faqGarantia">
+                        <div class="accordion-body" data-i18n="faq.warranty.a1">
+                            Sí, todos nuestros muebles cuentan con 12 meses de garantía contra defectos de fabricación.
+                            La garantía cubre mano de obra y materiales.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq13">
+                            <span data-i18n="faq.warranty.q2">¿Qué cubre la garantía?</span>
+                        </button>
+                    </h3>
+                    <div id="faq13" class="accordion-collapse collapse" data-bs-parent="#faqGarantia">
+                        <div class="accordion-body" data-i18n="faq.warranty.a2">
+                            La garantía cubre defectos de fabricación, fallas en herrajes y bisagras, desprendimiento de
+                            enchapados, y problemas estructurales. No cubre daños por mal uso, desgaste natural o
+                            accidentes.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq14">
+                            <span data-i18n="faq.warranty.q3">¿Ofrecen servicio de mantenimiento?</span>
+                        </button>
+                    </h3>
+                    <div id="faq14" class="accordion-collapse collapse" data-bs-parent="#faqGarantia">
+                        <div class="accordion-body" data-i18n="faq.warranty.a3">
+                            Sí, ofrecemos servicio de mantenimiento y reparación post-garantía. Contáctanos para agendar
+                            una revisión o reparación de tu mueble.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h3 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#faq15">
+                            <span data-i18n="faq.warranty.q4">¿Qué materiales utilizan?</span>
+                        </button>
+                    </h3>
+                    <div id="faq15" class="accordion-collapse collapse" data-bs-parent="#faqGarantia">
+                        <div class="accordion-body" data-i18n="faq.warranty.a4">
+                            Trabajamos con materiales de primera calidad: melamina, MDF, madera maciza, vidrios
+                            templados, herrajes de marca reconocida, y acabados de alta durabilidad. Te asesoramos en la
+                            mejor opción según tu presupuesto y necesidades.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="faq-cta">
+        <div class="container text-center">
+            <h2 class="cta-title" data-i18n="faq.cta.title">¿No encontraste tu respuesta?</h2>
+            <p class="cta-text" data-i18n="faq.cta.message">Estamos aquí para ayudarte. Contáctanos directamente</p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="{% url 'agendar_reunion' %}" class="btn btn-primary btn-lg px-5 rounded-pill">
+                    <i class="bi bi-calendar-check"></i>
+                    <span data-i18n="faq.cta.schedule">Agendar Reunión</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* FAQ Styles */
+    .faq-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+        padding-bottom: 80px;
+    }
+
+    .faq-hero {
+        background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+        padding: 60px 20px;
+        color: white;
+        margin-bottom: 50px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .faq-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+    .faq-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .faq-content {
+        max-width: 900px;
+    }
+
+    .faq-category {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .category-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .category-title i {
+        color: #667eea;
+        font-size: 2rem;
+    }
+
+    .accordion-item {
+        border: none;
+        margin-bottom: 10px;
+        border-radius: 12px !important;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .accordion-button {
+        font-weight: 600;
+        font-size: 1.05rem;
+        padding: 18px 24px;
+        background: #f8f9fa;
+        border: none;
+        color: #333;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        box-shadow: none;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+        border: none;
+    }
+
+    .accordion-button::after {
+        background-size: 1.2rem;
+    }
+
+    .accordion-button:not(.collapsed)::after {
+        filter: brightness(0) invert(1);
+    }
+
+    .accordion-body {
+        padding: 24px;
+        font-size: 1rem;
+        line-height: 1.8;
+        color: #555;
+    }
+
+    .faq-cta {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 60px 20px;
+        margin-top: 50px;
+    }
+
+    .faq-cta .cta-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 15px;
+    }
+
+    .faq-cta .cta-text {
+        font-size: 1.1rem;
+        color: #666;
+        margin-bottom: 30px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .faq-title {
+            font-size: 2rem;
+        }
+
+        .faq-subtitle {
+            font-size: 1rem;
+        }
+
+        .category-title {
+            font-size: 1.4rem;
+        }
+
+        .faq-category {
+            padding: 20px;
+        }
+
+        .accordion-button {
+            font-size: 0.95rem;
+            padding: 14px 18px;
+        }
+
+        .accordion-body {
+            font-size: 0.9rem;
+            padding: 18px;
+        }
+
+        .faq-cta .cta-title {
+            font-size: 1.5rem;
+        }
+
+        .btn-lg {
+            padding: 12px 30px !important;
+            font-size: 0.95rem !important;
+        }
+    }
+</style>
+{% endblock %}

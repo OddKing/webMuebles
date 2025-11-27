@@ -1,25 +1,41 @@
 
 import os
 from pathlib import Path
-BASE_DIR = Path(__file__).resolve().parent.parent
-TEMPLATES_DIR=os.path.join(BASE_DIR,'templates')
-STATIC_DIR=os.path.join(BASE_DIR,'static')
-STATIC_ROOT = '/root/django_proyectos/web/staticfiles'
-# STATIC_ROOT for production - comment out for development
-# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+from decouple import config, Csv
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+# Build paths inside the project
+BASE_DIR = Path(__file__).resolve().parent.parent
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+
+# ==============================================================================
+# SECURITY SETTINGS
+# ==============================================================================
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-uh!nw6(j5v7b8%q-!l21ramynuwtl72&x#1q7tr9b=(=_atnw%'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'server.mueblesbarguay.cl']
+DEBUG = config('DEBUG', default=False, cast=bool)
 
+# Allowed hosts from environment variable (comma-separated)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost', cast=Csv())
 
-# Application definition
+# Security headers and HTTPS settings
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
+# ==============================================================================
+# APPLICATION DEFINITION
+# ==============================================================================
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -48,7 +64,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'webMuebles.urls'
 
-
+# ==============================================================================
+# TEMPLATES
+# ==============================================================================
 
 TEMPLATES = [
     {
@@ -68,31 +86,28 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'webMuebles.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# ==============================================================================
+# DATABASE
+# ==============================================================================
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": 'web',
-        "USER": "admin",
-        "PASSWORD": "123momiaes",
-        "HOST": "server.mueblesbarguay.cl", 
-        "OPTIONS": {
-            "charset": "utf8mb4",
-            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+    'default': {
+        'ENGINE': config('DB_ENGINE', default='django.db.backends.mysql'),
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT', default='3306'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         }
     }
 }
 
-
-
-
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
+# ==============================================================================
+# PASSWORD VALIDATION
+# ==============================================================================
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -109,11 +124,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# ==============================================================================
+# INTERNATIONALIZATION
+# ==============================================================================
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
-LANGUAGE_CODE = 'es'
+LANGUAGE_CODE = config('LANGUAGE_CODE', default='es')
 
 from django.utils.translation import gettext_lazy as _
 
@@ -127,59 +142,60 @@ LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
 ]
 
-TIME_ZONE = "America/Santiago"
+TIME_ZONE = config('TIME_ZONE', default='America/Santiago')
 
 USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
+# ==============================================================================
+# STATIC FILES (CSS, JavaScript, Images)
+# ==============================================================================
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS=[STATIC_DIR]
+STATICFILES_DIRS = [STATIC_DIR]
+STATIC_ROOT = config('STATIC_ROOT', default=os.path.join(BASE_DIR, 'staticfiles'))
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+# ==============================================================================
+# MEDIA FILES (User Uploads)
+# ==============================================================================
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# ==============================================================================
+# DEFAULT PRIMARY KEY FIELD TYPE
+# ==============================================================================
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ==============================================================================
-# AUTENTICACIÓN
+# AUTHENTICATION SETTINGS
 # ==============================================================================
-LOGIN_URL = 'admin_login'  # Redirigir a panel de admin personalizado
+
+LOGIN_URL = 'admin_login'
 LOGIN_REDIRECT_URL = 'admin_dashboard'
 LOGOUT_REDIRECT_URL = 'admin_login'
 
+# ==============================================================================
+# EMAIL CONFIGURATION
+# ==============================================================================
+
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', default=465, cast=int)
+EMAIL_USE_SSL = config('EMAIL_USE_SSL', default=True, cast=bool)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=False, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+EMAIL_SUBJECT_PREFIX = config('EMAIL_SUBJECT_PREFIX', default='[Muebles Barguay] ')
 
 # ==============================================================================
-# EMAIL CONFIGURATION - Servidor Corporativo
+# COMPANY INFORMATION
 # ==============================================================================
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-# Configuracion del servidor SMTP (solicitar a tu proveedor de hosting)
-EMAIL_HOST = 'mail.mueblesbarguay.cl'  
-EMAIL_PORT = 465 
-#EMAIL_USE_TLS = False  # Si es puerto 587
-EMAIL_USE_SSL = True  # Si es puerto 465, descomentar y comentar EMAIL_USE_TLS
-
-# Credenciales del email corporativo
-EMAIL_HOST_USER = 'contacto@mueblesbarguay.cl'
-EMAIL_HOST_PASSWORD = 'barguay.2025'  
-
-# Email de envio
-DEFAULT_FROM_EMAIL = 'Muebles Barguay <contacto@mueblesbarguay.cl>'
-EMAIL_SUBJECT_PREFIX = '[Muebles Barguay] '
-
-# Informacionde la empresa
-COMPANY_NAME = 'Muebles Barguay'
-COMPANY_ADDRESS = 'Av Lo Espejo 964, El Bosque, Santiago'
-COMPANY_PHONE = '+569 1234 5678'  # TODO: Actualizar con telefono real
-COMPANY_EMAIL = 'contacto@mueblesbarguay.cl'
-
-# ==============================================================================
-# MEDIA FILES CONFIGURATION - Archivos subidos por usuarios
-# ==============================================================================
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+COMPANY_NAME = config('COMPANY_NAME', default='Muebles Barguay')
+COMPANY_ADDRESS = config('COMPANY_ADDRESS', default='Av Lo Espejo 964, El Bosque, Santiago')
+COMPANY_PHONE = config('COMPANY_PHONE', default='+569 1234 5678')
+COMPANY_EMAIL = config('COMPANY_EMAIL', default='contacto@mueblesbarguay.cl')

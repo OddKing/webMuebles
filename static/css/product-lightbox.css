@@ -1,0 +1,384 @@
+/* =============================================================================
+   PRODUCT LIGHTBOX MODAL
+   ============================================================================= */
+
+/* Modal Overlay */
+.product-lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    overflow: hidden;
+}
+
+.product-lightbox.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+}
+
+/* Modal Content Container */
+.lightbox-content {
+    position: relative;
+    max-width: 1200px;
+    width: 90%;
+    max-height: 90vh;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.product-lightbox.active .lightbox-content {
+    transform: scale(1);
+}
+
+/* Close Button */
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    border-radius: 50%;
+    font-size: 28px;
+    line-height: 1;
+    color: #333;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.lightbox-close:hover {
+    background: #fff;
+    transform: rotate(90deg);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Navigation Buttons */
+.lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    border-radius: 50%;
+    font-size: 32px;
+    line-height: 1;
+    color: #333;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.lightbox-nav:hover {
+    background: #fff;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.lightbox-nav.prev {
+    left: 20px;
+}
+
+.lightbox-nav.next {
+    right: 20px;
+}
+
+.lightbox-nav:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.lightbox-nav:disabled:hover {
+    transform: translateY(-50%) scale(1);
+}
+
+/* Main Layout */
+.lightbox-layout {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    height: 100%;
+    max-height: 90vh;
+}
+
+/* Image Section */
+.lightbox-image-section {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.lightbox-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    cursor: zoom-in;
+}
+
+.lightbox-image:hover {
+    transform: scale(1.05);
+}
+
+/* Product Details Section */
+.lightbox-details {
+    padding: 50px 40px;
+    background: #fff;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.lightbox-product-name {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.lightbox-product-description {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 30px;
+    flex-grow: 1;
+}
+
+.lightbox-product-price {
+    font-size: 36px;
+    font-weight: 700;
+    color: #2563eb;
+    margin-bottom: 30px;
+}
+
+.lightbox-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: auto;
+}
+
+.lightbox-btn {
+    flex: 1;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.lightbox-btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.lightbox-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.lightbox-btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.lightbox-btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+/* Product Image Trigger (in catalog) */
+.product-image {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.product-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Loading Animation */
+.lightbox-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.lightbox-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* =============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================= */
+
+/* Tablets */
+@media (max-width: 1024px) {
+    .lightbox-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr auto;
+    }
+    
+    .lightbox-image-section {
+        min-height: 50vh;
+        padding: 30px;
+    }
+    
+    .lightbox-details {
+        padding: 40px 30px;
+        max-height: 50vh;
+    }
+    
+    .lightbox-product-name {
+        font-size: 28px;
+    }
+    
+    .lightbox-product-price {
+        font-size: 30px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .lightbox-content {
+        width: 100%;
+        height: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    
+    .lightbox-layout {
+        grid-template-rows: 60vh auto;
+    }
+    
+    .lightbox-close {
+        width: 40px;
+        height: 40px;
+        top: 15px;
+        right: 15px;
+        font-size: 24px;
+    }
+    
+    .lightbox-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 28px;
+    }
+    
+    .lightbox-nav.prev {
+        left: 10px;
+    }
+    
+    .lightbox-nav.next {
+        right: 10px;
+    }
+    
+    .lightbox-image-section {
+        padding: 20px;
+        min-height: auto;
+    }
+    
+    .lightbox-details {
+        padding: 30px 20px;
+        max-height: 40vh;
+    }
+    
+    .lightbox-product-name {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+    
+    .lightbox-product-description {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+    
+    .lightbox-product-price {
+        font-size: 26px;
+        margin-bottom: 20px;
+    }
+    
+    .lightbox-actions {
+        flex-direction: column;
+    }
+    
+    .lightbox-btn {
+        padding: 12px 24px;
+        font-size: 14px;
+    }
+}
+
+/* Very Small Screens */
+@media (max-width: 480px) {
+    .lightbox-product-name {
+        font-size: 20px;
+    }
+    
+    .lightbox-product-price {
+        font-size: 24px;
+    }
+    
+    .lightbox-image:hover {
+        transform: none;
+    }
+}
+
+/* Prevent body scroll when modal is open */
+body.lightbox-open {
+    overflow: hidden;
+}
