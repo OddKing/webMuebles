@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from productos.models import Producto
+from productos.models import Producto, Categoria
 from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
@@ -31,11 +31,17 @@ def crear_producto(request):
             orden = request.POST.get('orden', 0)
             activo = request.POST.get('activo') == 'on'
             imagen = request.FILES.get('imagen')
+            categoria_id = request.POST.get('categoria')
             
             # Validar campos requeridos
             if not all([nombre, descripcion, precio, imagen]):
                 messages.error(request, 'Todos los campos son obligatorios.')
                 return redirect('admin_crear_producto')
+            
+            # Obtener instancia de categoría si se seleccionó una
+            categoria = None
+            if categoria_id:
+                categoria = get_object_or_404(Categoria, id=categoria_id)
             
             # Crear producto
             producto = Producto.objects.create(
@@ -44,7 +50,8 @@ def crear_producto(request):
                 precio=precio,
                 orden=orden,
                 activo=activo,
-                imagen=imagen
+                imagen=imagen,
+                categoria=categoria
             )
             
             messages.success(request, f'Producto "{producto.nombre}" creado exitosamente.')
@@ -54,9 +61,13 @@ def crear_producto(request):
             messages.error(request, f'Error al crear el producto: {str(e)}')
             return redirect('admin_crear_producto')
     
+    # Obtener categorías para el selector
+    categorias = Categoria.objects.all().order_by('nombre')
+    
     return render(request, 'administracion/producto_form.html', {
         'titulo': 'Crear Producto',
-        'accion': 'Crear'
+        'accion': 'Crear',
+        'categorias': categorias
     })
 
 
@@ -74,6 +85,12 @@ def editar_producto(request, producto_id):
             producto.orden = request.POST.get('orden', 0)
             producto.activo = request.POST.get('activo') == 'on'
             
+            categoria_id = request.POST.get('categoria')
+            if categoria_id:
+                producto.categoria = get_object_or_404(Categoria, id=categoria_id)
+            else:
+                producto.categoria = None
+            
             # Actualizar imagen si se proporciona una nueva
             if 'imagen' in request.FILES:
                 producto.imagen = request.FILES['imagen']
@@ -87,10 +104,14 @@ def editar_producto(request, producto_id):
             messages.error(request, f'Error al actualizar el producto: {str(e)}')
             return redirect('admin_editar_producto', producto_id=producto_id)
     
+    # Obtener categorías para el selector
+    categorias = Categoria.objects.all().order_by('nombre')
+    
     context = {
         'titulo': 'Editar Producto',
         'accion': 'Actualizar',
-        'producto': producto
+        'producto': producto,
+        'categorias': categorias
     }
     
     return render(request, 'administracion/producto_form.html', context)

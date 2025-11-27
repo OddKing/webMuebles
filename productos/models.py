@@ -2,9 +2,32 @@ from django.db import models
 
 # Create your models here.
 
+class Categoria(models.Model):
+    """Modelo para categorías de productos"""
+    nombre = models.CharField(max_length=100, verbose_name="Nombre")
+    slug = models.SlugField(unique=True, verbose_name="Slug URL")
+    imagen = models.ImageField(upload_to='categorias/', verbose_name="Imagen", blank=True, null=True)
+    orden = models.IntegerField(default=0, verbose_name="Orden")
+    
+    class Meta:
+        verbose_name = "Categoría"
+        verbose_name_plural = "Categorías"
+        ordering = ['orden', 'nombre']
+        
+    def __str__(self):
+        return self.nombre
+
 class Producto(models.Model):
     """Modelo para productos del catálogo"""
     nombre = models.CharField(max_length=200, verbose_name="Nombre del Producto")
+    categoria = models.ForeignKey(
+        Categoria, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='productos',
+        verbose_name="Categoría"
+    )
     descripcion = models.TextField(verbose_name="Descripción")
     precio = models.DecimalField(
         max_digits=10, 

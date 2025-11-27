@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,102 +13,195 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="icon" href="{% static 'img/logo.jpg' %}" type="image/jpeg">
     {% block extra_css %}{% endblock %}
-    
+
     <nav class="navbar navbar-custom" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">
         <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
             <a href="{% url 'index' %}" style="text-decoration: none;">
-                <img src="{% static 'img/logo.jpg' %}" 
-                     style="max-width: 80px; border-radius: 100%; cursor: pointer; transition: transform 0.3s ease;" 
-                     alt="Muebles Barguay - Volver al inicio"
-                     onmouseover="this.style.transform='scale(1.1)'" 
-                     onmouseout="this.style.transform='scale(1)'">
+                <img src="{% static 'img/logo.jpg' %}"
+                    style="max-width: 80px; border-radius: 100%; cursor: pointer; transition: transform 0.3s ease;"
+                    alt="Muebles Barguay - Volver al inicio" onmouseover="this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.transform='scale(1)'">
             </a>
-            
+
             <div class="d-flex align-items-center gap-2 gap-md-3 flex-wrap justify-content-end">
                 <div class="legal-links d-flex gap-2">
-                    <a href="{% url 'faq' %}" class="legal-link text-light" data-i18n="nav.faq" style="font-size: 0.75rem;">Preguntas</a>
-                    <a href="{% url 'terminos' %}" class="legal-link text-light" data-i18n="nav.terms" style="font-size: 0.75rem;">Términos</a>
-                    <a href="{% url 'privacidad' %}" class="legal-link text-light" data-i18n="nav.privacy" style="font-size: 0.75rem;">Privacidad</a>
+                    <a href="{% url 'faq' %}" class="legal-link text-light" data-i18n="nav.faq"
+                        style="font-size: 0.75rem;">Preguntas</a>
+                    <a href="{% url 'terminos' %}" class="legal-link text-light" data-i18n="nav.terms"
+                        style="font-size: 0.75rem;">Términos</a>
+                    <a href="{% url 'privacidad' %}" class="legal-link text-light" data-i18n="nav.privacy"
+                        style="font-size: 0.75rem;">Privacidad</a>
                 </div>
-                
+
                 <div class="dropdown">
-                    <button class="btn btn-sm" id="languageSelector" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.85rem;">
+                    <button class="btn btn-sm" id="languageSelector" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.85rem;">
                         🇪🇸 Español
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" style="background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
-                        <li><a class="dropdown-item lang-option active" href="#" data-lang="es" onclick="setLanguage('es'); return false;" style="color: white;">🇪🇸 Español</a></li>
-                        <li><a class="dropdown-item lang-option" href="#" data-lang="en" onclick="setLanguage('en'); return false;" style="color: white;">🇬🇧 English</a></li>
-                        <li><a class="dropdown-item lang-option" href="#" data-lang="de" onclick="setLanguage('de'); return false;" style="color: white;">🇩🇪 Deutsch</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end"
+                        style="background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                        <li><a class="dropdown-item lang-option active" href="#" data-lang="es"
+                                onclick="setLanguage('es'); return false;" style="color: white;">🇪🇸 Español</a></li>
+                        <li><a class="dropdown-item lang-option" href="#" data-lang="en"
+                                onclick="setLanguage('en'); return false;" style="color: white;">🇬🇧 English</a></li>
+                        <li><a class="dropdown-item lang-option" href="#" data-lang="de"
+                                onclick="setLanguage('de'); return false;" style="color: white;">🇩🇪 Deutsch</a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </nav>
 </head>
+
 <body class="{% block body_class %}{% endblock %}">
     {% block content %}{% endblock %}
 
     <footer class="legal-footer">
         <div class="container text-center">
-            <p class="mb-2">© 2025 Muebles Barguay - <span data-i18n="footer.rights">Todos los derechos reservados</span></p>
+            <p class="mb-2">© 2025 Muebles Barguay - <span data-i18n="footer.rights">Todos los derechos
+                    reservados</span></p>
             <p class="mb-0">
-                <a href="{% url 'terminos' %}" class="footer-link" data-i18n="footer.terms">Términos y Condiciones</a> | 
-                <a href="{% url 'privacidad' %}" class="footer-link" data-i18n="footer.privacy">Política de Privacidad</a>
+                <a href="{% url 'terminos' %}" class="footer-link" data-i18n="footer.terms">Términos y Condiciones</a> |
+                <a href="{% url 'privacidad' %}" class="footer-link" data-i18n="footer.privacy">Política de
+                    Privacidad</a>
             </p>
         </div>
     </footer>
 
-    <!-- WhatsApp Floating Button (DERECHA, ARRIBA DE ACCESIBILIDAD) -->
-    <div id="whatsapp-widget" style="position: fixed; bottom: 100px; right: 20px; z-index: 10000; display: flex; flex-direction: column; align-items: flex-end;">
-        <div id="whatsapp-options" style="display: none; margin-bottom: 10px; background: rgba(255, 255, 255, 0.98); border-radius: 15px; padding: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); min-width: 280px;">
+    <!-- WhatsApp Floating Button (DERECHA, 20px) -->
+    <div id="whatsapp-widget"
+        style="position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; align-items: flex-end;">
+        <div id="whatsapp-options"
+            style="display: none; margin-bottom: 10px; background: rgba(255, 255, 255, 0.98); border-radius: 15px; padding: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); min-width: 280px;">
             <div style="margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #e0e0e0;">
-                <p style="margin: 0; font-size: 0.85rem; font-weight: 600; color: #333;" data-i18n="whatsapp.menu.title">Contáctanos por WhatsApp</p>
+                <p style="margin: 0; font-size: 0.85rem; font-weight: 600; color: #333;"
+                    data-i18n="whatsapp.menu.title">Contáctanos por WhatsApp</p>
             </div>
-            
-            <a href="https://wa.me/56995322154?text=Hola,%20necesito%20resolver%20una%20duda%20sobre%20una%20cotización." target="_blank" style="display: flex; align-items: center; padding: 10px; border-radius: 10px; text-decoration: none; color: #333; transition: background 0.2s; margin-bottom: 8px;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='transparent'">
-                <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #25D366, #128C7E); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;">
+
+            <a href="https://wa.me/56995322154?text=Hola,%20necesito%20resolver%20una%20duda%20sobre%20una%20cotización."
+                target="_blank"
+                style="display: flex; align-items: center; padding: 10px; border-radius: 10px; text-decoration: none; color: #333; transition: background 0.2s; margin-bottom: 8px;"
+                onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='transparent'">
+                <div
+                    style="width: 45px; height: 45px; background: linear-gradient(135deg, #25D366, #128C7E); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;">
                     <i class="bi bi-whatsapp" style="color: white; font-size: 24px;"></i>
                 </div>
                 <div style="flex: 1;">
-                    <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 2px;" data-i18n="whatsapp.taylor.name">Taylor Barrera</div>
-                    <div style="font-size: 0.75rem; color: #666;" data-i18n="whatsapp.taylor.desc">Cotizaciones y dudas</div>
+                    <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 2px;"
+                        data-i18n="whatsapp.taylor.name">Taylor Barrera</div>
+                    <div style="font-size: 0.75rem; color: #666;" data-i18n="whatsapp.taylor.desc">Cotizaciones y dudas
+                    </div>
                 </div>
             </a>
-            
-            <a href="https://wa.me/56966893329?text=Hola,%20necesito%20resolver%20una%20duda%20sobre%20un%20diseño%20y/o%20medida." target="_blank" style="display: flex; align-items: center; padding: 10px; border-radius: 10px; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='transparent'">
-                <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #25D366, #128C7E); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;">
+
+            <a href="https://wa.me/56966893329?text=Hola,%20necesito%20resolver%20una%20duda%20sobre%20un%20diseño%20y/o%20medida."
+                target="_blank"
+                style="display: flex; align-items: center; padding: 10px; border-radius: 10px; text-decoration: none; color: #333; transition: background 0.2s;"
+                onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='transparent'">
+                <div
+                    style="width: 45px; height: 45px; background: linear-gradient(135deg, #25D366, #128C7E); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;">
                     <i class="bi bi-whatsapp" style="color: white; font-size: 24px;"></i>
                 </div>
                 <div style="flex: 1;">
-                    <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 2px;" data-i18n="whatsapp.michael.name">Michael Barrera</div>
-                    <div style="font-size: 0.75rem; color: #666;" data-i18n="whatsapp.michael.desc">Medidas y diseños</div>
+                    <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 2px;"
+                        data-i18n="whatsapp.michael.name">Michael Barrera</div>
+                    <div style="font-size: 0.75rem; color: #666;" data-i18n="whatsapp.michael.desc">Medidas y diseños
+                    </div>
                 </div>
             </a>
         </div>
-        
-        <button type="button" id="whatsapp-btn" style="width: 60px; height: 60px; border-radius: 50%; border: none; background: linear-gradient(135deg, #25D366, #128C7E); color: white; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); display: flex; align-items: center; justify-content: center; transition: all 0.3s; position: relative;" onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 6px 20px rgba(37, 211, 102, 0.6)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 15px rgba(37, 211, 102, 0.4)'">
+
+        <button type="button" id="whatsapp-btn"
+            style="width: 60px; height: 60px; border-radius: 50%; border: none; background: linear-gradient(135deg, #25D366, #128C7E); color: white; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); display: flex; align-items: center; justify-content: center; transition: all 0.3s; position: relative;"
+            onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 6px 20px rgba(37, 211, 102, 0.6)'"
+            onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 15px rgba(37, 211, 102, 0.4)'">
             <i class="bi bi-whatsapp" style="font-size: 32px;"></i>
-            <span style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: bold; display: flex; align-items: center; justify-content: center;">2</span>
+            <span
+                style="position: absolute; top: -5px; right: -5px; background: #ff4444; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: bold; display: flex; align-items: center; justify-content: center;">2</span>
         </button>
     </div>
 
+    <!-- Accessibility Widget (DERECHA, 90px - AL LADO DE WHATSAPP) -->
+    <div id="accessibility-wrapper" style="position: fixed; bottom: 20px; right: 90px; z-index: 9999;">
+        <!-- Main Toggle Button -->
+        <button id="accessibility-toggle" onclick="toggleAccessibilityMenu()" aria-label="Opciones de Accesibilidad"
+            style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); background: #333; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: all 0.3s;">
+            <i class="bi bi-universal-access-circle" style="font-size: 28px;"></i>
+        </button>
+
+        <!-- Accessibility Menu -->
+        <div id="accessibility-menu"
+            style="display: none; position: absolute; bottom: 65px; right: 0; width: 280px; background: rgba(30, 30, 30, 0.98); backdrop-filter: blur(10px); border-radius: 15px; padding: 20px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);">
+            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary">
+                <h6 class="m-0 text-white"><i class="bi bi-universal-access me-2"></i>Accesibilidad</h6>
+                <button onclick="toggleAccessibilityMenu()" class="btn btn-sm btn-link text-white p-0"
+                    aria-label="Cerrar menú"><i class="bi bi-x-lg"></i></button>
+            </div>
+
+            <!-- Font Size -->
+            <div class="acc-control-row mb-3">
+                <label class="text-white-50 mb-1 d-block small">Tamaño de texto</label>
+                <div class="d-flex gap-2 align-items-center bg-dark rounded p-1 border border-secondary">
+                    <button onclick="adjustFontSize(-1)" class="btn btn-sm btn-dark flex-grow-1"
+                        aria-label="Disminuir letra"><i class="bi bi-dash-lg"></i></button>
+                    <span class="text-white px-2 small">A</span>
+                    <button onclick="adjustFontSize(1)" class="btn btn-sm btn-dark flex-grow-1"
+                        aria-label="Aumentar letra"><i class="bi bi-plus-lg"></i></button>
+                </div>
+            </div>
+
+            <!-- Contrast -->
+            <div class="acc-control-row mb-3">
+                <label class="text-white-50 mb-1 d-block small">Contraste</label>
+                <button onclick="toggleHighContrast()" id="contrast-toggle"
+                    class="btn btn-outline-light w-100 d-flex justify-content-between align-items-center">
+                    <span>Alto Contraste</span>
+                    <i class="bi bi-circle-half"></i>
+                </button>
+            </div>
+
+            <!-- Voice -->
+            <div class="acc-control-row mb-3">
+                <label class="text-white-50 mb-1 d-block small">Lector de voz</label>
+                <button id="voice-toggle" onclick="toggleVoice()"
+                    class="btn btn-outline-light w-100 d-flex justify-content-between align-items-center">
+                    <span>Narrador</span>
+                    <i class="bi bi-volume-up-fill"></i>
+                </button>
+            </div>
+
+            <!-- Reset -->
+            <div class="pt-2 border-top border-secondary">
+                <button onclick="resetAccessibility()" class="btn btn-danger btn-sm w-100">
+                    <i class="bi bi-arrow-counterclockwise me-2"></i>Restablecer todo
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Cookie Consent Banner -->
-    <div id="cookie-banner" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); backdrop-filter: blur(10px); color: white; padding: 20px; z-index: 10001; border-top: 3px solid #667eea; box-shadow: 0 -4px 20px rgba(0,0,0,0.3);">
+    <div id="cookie-banner"
+        style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: rgba(30, 30, 30, 0.98); backdrop-filter: blur(10px); color: white; padding: 20px; z-index: 10001; border-top: 3px solid #667eea; box-shadow: 0 -4px 20px rgba(0,0,0,0.3);">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-8 mb-3 mb-md-0">
                     <h6 class="mb-2" style="font-weight: 600;"><i class="bi bi-cookie me-2"></i>Uso de Cookies</h6>
                     <p class="mb-0" style="font-size: 0.9rem; line-height: 1.5;">
-                        Utilizamos cookies para mejorar tu experiencia de navegación, recordar tus preferencias y analizar el tráfico del sitio. 
-                        Al hacer clic en "Aceptar", consientes el uso de todas las cookies. 
-                        Puedes gestionar tus preferencias en nuestra <a href="{% url 'privacidad' %}" style="color: #667eea; text-decoration: underline;">Política de Privacidad</a>.
+                        Utilizamos cookies para mejorar tu experiencia de navegación, recordar tus preferencias y
+                        analizar el tráfico del sitio.
+                        Al hacer clic en "Aceptar", consientes el uso de todas las cookies.
+                        Puedes gestionar tus preferencias en nuestra <a href="{% url 'privacidad' %}"
+                            style="color: #667eea; text-decoration: underline;">Política de Privacidad</a>.
                     </p>
                 </div>
                 <div class="col-md-4 text-md-end">
-                    <button onclick="acceptCookies()" class="btn btn-sm px-4 me-2" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 25px; font-weight: 600; padding: 10px 25px;">
+                    <button onclick="acceptCookies()" class="btn btn-sm px-4 me-2"
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 25px; font-weight: 600; padding: 10px 25px;">
                         <i class="bi bi-check-circle me-1"></i>Aceptar
                     </button>
-                    <button onclick="rejectCookies()" class="btn btn-sm btn-outline-light px-4" style="border-radius: 25px; font-weight: 600; padding: 10px 25px;">
+                    <button onclick="rejectCookies()" class="btn btn-sm btn-outline-light px-4"
+                        style="border-radius: 25px; font-weight: 600; padding: 10px 25px;">
                         <i class="bi bi-x-circle me-1"></i>Rechazar
                     </button>
                 </div>
@@ -115,43 +209,105 @@
         </div>
     </div>
 
-    <!-- Accessibility Widget (DERECHA, ABAJO) -->
-    <div id="accessibility-controls" class="d-none d-md-flex" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; gap: 5px; background: rgba(0,0,0,0.85); padding: 8px; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2);">
-        <button onclick="adjustFontSize(-1)" aria-label="Disminuir letra" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">-</button>
-        <span style="color: #fff; font-weight: bold; align-self: center; font-size: 14px; margin: 0 5px;">A</span>
-        <button onclick="adjustFontSize(1)" aria-label="Aumentar letra" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-weight: bold; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">+</button>
-        
-        <div style="width: 1px; background: rgba(255,255,255,0.3); margin: 0 5px;"></div>
-        
-        <button id="voice-toggle" onclick="toggleVoice()" aria-label="Activar Narrador" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid #fff; background: #333; color: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
-            <i class="bi bi-volume-up-fill"></i>
-        </button>
-    </div>
-
     <style>
-        #accessibility-controls button:hover { background: #555 !important; transform: scale(1.1); }
-        #accessibility-controls button.active { background: #28a745 !important; border-color: #28a745 !important; }
-        .speaking-highlight { outline: 2px solid #ffc107 !important; background: rgba(255, 193, 7, 0.1); }
-        .lang-option.active { background: rgba(13, 110, 253, 0.3) !important; }
-        .lang-option:hover { background: rgba(255, 255, 255, 0.9) !important; color: #000 !important; }
-        
+        /* High Contrast Mode */
+        body.high-contrast {
+            background-color: #000 !important;
+            color: #fff !important;
+        }
+
+        body.high-contrast * {
+            background-color: #000 !important;
+            color: #fff !important;
+            border-color: #fff !important;
+            box-shadow: none !important;
+            text-shadow: none !important;
+        }
+
+        body.high-contrast a {
+            color: #ffff00 !important;
+            text-decoration: underline !important;
+        }
+
+        body.high-contrast button,
+        body.high-contrast .btn {
+            background-color: #000 !important;
+            color: #ffff00 !important;
+            border: 2px solid #ffff00 !important;
+        }
+
+        body.high-contrast .navbar-custom,
+        body.high-contrast footer,
+        body.high-contrast .card,
+        body.high-contrast .dropdown-menu {
+            background: #000 !important;
+            border: 1px solid #fff !important;
+        }
+
+        body.high-contrast img {
+            filter: grayscale(100%) contrast(120%);
+        }
+
+        /* Accessibility Widget Styles */
+        #accessibility-toggle:hover {
+            transform: scale(1.1);
+            background: #444 !important;
+        }
+
+        #accessibility-menu button:hover {
+            opacity: 0.9;
+        }
+
+        #voice-toggle.active {
+            background: #28a745 !important;
+            border-color: #28a745 !important;
+            color: white !important;
+        }
+
+        #contrast-toggle.active {
+            background: #ffc107 !important;
+            border-color: #ffc107 !important;
+            color: black !important;
+        }
+
+        .speaking-highlight {
+            outline: 2px solid #ffc107 !important;
+            background: rgba(255, 193, 7, 0.1);
+        }
+
+        .lang-option.active {
+            background: rgba(13, 110, 253, 0.3) !important;
+        }
+
+        .lang-option:hover {
+            background: rgba(255, 255, 255, 0.9) !important;
+            color: #000 !important;
+        }
+
         @media (max-width: 768px) {
-            #accessibility-controls { bottom: 15px; right: 15px; padding: 10px; }
-            #accessibility-controls button { width: 40px; height: 40px; font-size: 20px; }
-            #whatsapp-widget { bottom: 90px; right: 15px; }
-            #whatsapp-options { min-width: 260px; }
+            #accessibility-wrapper {
+                bottom: 20px;
+                right: 90px;
+            }
+
+            #whatsapp-widget {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            #whatsapp-options {
+                min-width: 260px;
+            }
         }
     </style>
 
     <script>
-        document.getElementById('accessibility-controls').className = ''; 
-
         function toggleWhatsAppMenu() {
             const menu = document.getElementById('whatsapp-options');
             const btn = document.getElementById('whatsapp-btn');
             if (!menu) return;
             const isHidden = menu.style.display === 'none' || menu.style.display === '';
-            
+
             if (isHidden) {
                 menu.style.display = 'block';
                 if (btn) btn.style.opacity = '0.5';
@@ -161,18 +317,30 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const whatsappBtn = document.getElementById('whatsapp-btn');
             if (whatsappBtn) {
-                whatsappBtn.addEventListener('click', function(e) {
+                whatsappBtn.addEventListener('click', function (e) {
                     e.preventDefault();
                     e.stopPropagation();
                     toggleWhatsAppMenu();
                 });
             }
+
+            // Restore High Contrast
+            if (localStorage.getItem('highContrast') === 'true') {
+                document.body.classList.add('high-contrast');
+                const btn = document.getElementById('contrast-toggle');
+                if (btn) btn.classList.add('active');
+            }
+
+            // Restore Voice
+            if (localStorage.getItem('voiceEnabled') === 'true') {
+                toggleVoice(true); // Force enable without toggling off
+            }
         });
 
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             const widget = document.getElementById('whatsapp-widget');
             const menu = document.getElementById('whatsapp-options');
             const btn = document.getElementById('whatsapp-btn');
@@ -180,34 +348,43 @@
                 menu.style.display = 'none';
                 if (btn) btn.style.opacity = '1';
             }
+
+            // Close accessibility menu if clicked outside
+            const accWrapper = document.getElementById('accessibility-wrapper');
+            const accMenu = document.getElementById('accessibility-menu');
+            if (accWrapper && accMenu && !accWrapper.contains(event.target) && accMenu.style.display === 'block') {
+                accMenu.style.display = 'none';
+            }
         });
 
         function adjustFloatingWidgets() {
             const footer = document.querySelector('.legal-footer');
             const whatsappWidget = document.getElementById('whatsapp-widget');
-            const accessibilityWidget = document.getElementById('accessibility-controls');
-            
+            const accessibilityWidget = document.getElementById('accessibility-wrapper');
+
             if (!footer) return;
-            
+
             const footerRect = footer.getBoundingClientRect();
             const windowHeight = window.innerHeight;
-            
+
+            // Base bottom position for both widgets
+            const baseBottom = 20;
+
             if (footerRect.top < windowHeight) {
                 const offset = windowHeight - footerRect.top + 20;
-                
+
                 if (whatsappWidget) {
-                    const whatsappBottom = window.innerWidth <= 768 ? 90 : 100;
-                    whatsappWidget.style.bottom = (offset + whatsappBottom - 20) + 'px';
+                    whatsappWidget.style.bottom = offset + 'px';
                 }
                 if (accessibilityWidget) {
                     accessibilityWidget.style.bottom = offset + 'px';
                 }
             } else {
                 if (whatsappWidget) {
-                    whatsappWidget.style.bottom = window.innerWidth <= 768 ? '90px' : '100px';
+                    whatsappWidget.style.bottom = baseBottom + 'px';
                 }
                 if (accessibilityWidget) {
-                    accessibilityWidget.style.bottom = window.innerWidth <= 768 ? '15px' : '20px';
+                    accessibilityWidget.style.bottom = baseBottom + 'px';
                 }
             }
         }
@@ -215,6 +392,16 @@
         window.addEventListener('scroll', adjustFloatingWidgets);
         window.addEventListener('resize', adjustFloatingWidgets);
         adjustFloatingWidgets();
+
+        // Accessibility Functions
+        function toggleAccessibilityMenu() {
+            const menu = document.getElementById('accessibility-menu');
+            if (menu.style.display === 'none' || menu.style.display === '') {
+                menu.style.display = 'block';
+            } else {
+                menu.style.display = 'none';
+            }
+        }
 
         function adjustFontSize(change) {
             const html = document.documentElement;
@@ -227,7 +414,7 @@
             localStorage.setItem('userFontSize', newSize);
         }
 
-        (function() {
+        (function () {
             const savedSize = localStorage.getItem('userFontSize');
             if (savedSize) document.documentElement.style.fontSize = savedSize + 'px';
         })();
@@ -235,40 +422,82 @@
         let voiceEnabled = false;
         let synthesis = window.speechSynthesis;
 
-        function toggleVoice() {
-            voiceEnabled = !voiceEnabled;
+        function toggleVoice(forceEnable = false) {
+            if (!forceEnable) {
+                voiceEnabled = !voiceEnabled;
+            } else {
+                voiceEnabled = true;
+            }
+
             const btn = document.getElementById('voice-toggle');
             const currentLang = getCurrentLanguage();
-            
+
             if (voiceEnabled) {
-                btn.classList.add('active');
-                btn.innerHTML = '<i class="bi bi-mic-fill"></i>';
-                const activatedMsg = translations[currentLang]['voice.activated'] || 'Narrador activado. Pase el mouse sobre el texto para escuchar.';
+                if (btn) {
+                    btn.classList.add('active');
+                    btn.innerHTML = '<span>Narrador</span><i class="bi bi-mic-fill"></i>';
+                }
+                const activatedMsg = translations[currentLang]['voice.activated'] || 'Narrador activado.';
                 speak(activatedMsg, currentLang);
                 localStorage.setItem('voiceEnabled', 'true');
             } else {
-                btn.classList.remove('active');
-                btn.innerHTML = '<i class="bi bi-volume-mute-fill"></i>';
+                if (btn) {
+                    btn.classList.remove('active');
+                    btn.innerHTML = '<span>Narrador</span><i class="bi bi-volume-up-fill"></i>';
+                }
                 synthesis.cancel();
                 const deactivatedMsg = translations[currentLang]['voice.deactivated'] || 'Narrador desactivado.';
                 speak(deactivatedMsg, currentLang);
                 localStorage.setItem('voiceEnabled', 'false');
-                setTimeout(() => { if(!voiceEnabled) btn.innerHTML = '<i class="bi bi-volume-up-fill"></i>'; }, 2000);
             }
+        }
+
+        function toggleHighContrast() {
+            document.body.classList.toggle('high-contrast');
+            const isHighContrast = document.body.classList.contains('high-contrast');
+            localStorage.setItem('highContrast', isHighContrast);
+
+            const btn = document.getElementById('contrast-toggle');
+            if (isHighContrast) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        }
+
+        function resetAccessibility() {
+            // Reset Font Size
+            document.documentElement.style.fontSize = '16px';
+            localStorage.removeItem('userFontSize');
+
+            // Reset High Contrast
+            document.body.classList.remove('high-contrast');
+            localStorage.removeItem('highContrast');
+            const contrastBtn = document.getElementById('contrast-toggle');
+            if (contrastBtn) contrastBtn.classList.remove('active');
+
+            // Reset Voice
+            if (voiceEnabled) {
+                toggleVoice(); // This will toggle it off
+            }
+            localStorage.removeItem('voiceEnabled');
+
+            // Close menu
+            document.getElementById('accessibility-menu').style.display = 'none';
         }
 
         function speak(text, lang) {
             if (!text) return;
             synthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
-            
+
             // Map language codes to speech synthesis locales
             const langMap = {
                 'es': 'es-ES',
                 'en': 'en-US',
                 'de': 'de-DE'
             };
-            
+
             const currentLang = lang || getCurrentLanguage();
             utterance.lang = langMap[currentLang] || 'es-ES';
             synthesis.speak(utterance);
@@ -277,27 +506,27 @@
         function handleInteraction(event) {
             if (!voiceEnabled) return;
             const target = event.target;
-            
-            // Expandir tags para incluir IMG, DIV y otros elementos interact ivos
+
+            // Expandir tags para incluir IMG, DIV y otros elementos interactivos
             const readableTags = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'A', 'BUTTON', 'LABEL', 'SPAN', 'LI', 'TD', 'TH', 'DIV', 'IMG'];
-            
+
             if (readableTags.includes(target.tagName)) {
                 let text = target.innerText || target.textContent;
                 if (target.tagName === 'IMG' && target.alt) text = "Imagen: " + target.alt;
-                
+
                 // Filtrar DIVs vacíos o contenedores muy grandes
                 if (target.tagName === 'DIV') {
                     // Leer DIVs del calendario, accordion-body (FAQ), o con poco texto
-                    const isCalendarElement = target.classList.contains('calendar-day') || 
-                                            target.classList.contains('calendar-header') ||
-                                            target.classList.contains('calendar-month-title');
+                    const isCalendarElement = target.classList.contains('calendar-day') ||
+                        target.classList.contains('calendar-header') ||
+                        target.classList.contains('calendar-month-title');
                     const isFAQAnswer = target.classList.contains('accordion-body');
-                    
+
                     if (!isCalendarElement && !isFAQAnswer && text.length > 200) {
                         return; // Skip large containers que no son respuestas FAQ
                     }
                 }
-                
+
                 // Aumentado a 1000 caracteres para leer respuestas completas del FAQ
                 if (text && text.trim().length > 0 && text.trim().length < 1000) {
                     const currentLang = getCurrentLanguage();
@@ -307,7 +536,7 @@
                     target.addEventListener('mouseleave', () => {
                         target.classList.remove('speaking-highlight');
                         synthesis.cancel();
-                    }, {once: true});
+                    }, { once: true });
                 }
             }
         }
@@ -319,7 +548,7 @@
         function checkCookieConsent() {
             const consent = localStorage.getItem('cookieConsent');
             const consentDate = localStorage.getItem('cookieConsentDate');
-            
+
             if (!consent || !consentDate) {
                 // No hay consentimiento guardado, mostrar banner
                 setTimeout(() => {
@@ -341,7 +570,7 @@
             localStorage.setItem('cookieConsent', 'accepted');
             localStorage.setItem('cookieConsentDate', Date.now().toString());
             document.getElementById('cookie-banner').style.display = 'none';
-            
+
             // Aquí puedes activar servicios de analytics si los tienes
             // Por ejemplo: Google Analytics, Facebook Pixel, etc.
             console.log('Cookies aceptadas');
@@ -351,7 +580,7 @@
             localStorage.setItem('cookieConsent', 'rejected');
             localStorage.setItem('cookieConsentDate', Date.now().toString());
             document.getElementById('cookie-banner').style.display = 'none';
-            
+
             // Aquí puedes desactivar servicios de tracking
             console.log('Cookies rechazadas - solo cookies esenciales');
         }
@@ -364,4 +593,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     {% block extra_js %}{% endblock %}
 </body>
+
 </html>

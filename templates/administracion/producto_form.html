@@ -10,89 +10,100 @@
         <i class="bi bi-arrow-left"></i> Volver a Lista
     </a>
 </div>
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        <!-- Información del Producto -->
-                        <div class="mb-4">
-                            <h3 class="form-section-title">Información del Producto</h3>
-                            
-                            <div class="mb-3">
-                                <label for="nombre" class="form-label">Nombre del Producto *</label>
-                                <input type="text" class="form-control form-control-dark" id="nombre" name="nombre" 
-                                       value="{% if producto %}{{ producto.nombre }}{% endif %}" required>
-                            </div>
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
-                            <div class="mb-3">
-                                <label for="descripcion" class="form-label">Descripción *</label>
-                                <textarea class="form-control form-control-dark" id="descripcion" name="descripcion" 
-                                          rows="4" required>{% if producto %}{{ producto.descripcion }}{% endif %}</textarea>
-                            </div>
+            <!-- Información del Producto -->
+            <div class="mb-4">
+                <h3 class="form-section-title">Información del Producto</h3>
 
-                            <div class="mb-3">
-                                <label for="precio" class="form-label">Precio (CLP) *</label>
-                                <input type="number" class="form-control form-control-dark" id="precio" name="precio" 
-                                       value="{% if producto %}{{ producto.precio }}{% endif %}" min="0" step="1" required>
-                                <small class="form-text">Precio en pesos chilenos (sin decimales)</small>
-                            </div>
-                        </div>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre del Producto *</label>
+                    <input type="text" class="form-control form-control-dark" id="nombre" name="nombre" 
+                           value="{% if producto %}{{ producto.nombre }}{% endif %}" required>
+                </div>
 
-                        <!-- Imagen -->
-                        <div class="mb-4">
-                            <h3 class="form-section-title">Imagen del Producto</h3>
-                            
-                            <div class="mb-3">
-                                <label for="imagen" class="form-label">
-                                    Imagen {% if not producto %}*{% endif %}
-                                </label>
-                                <input type="file" class="form-control form-control-dark" id="imagen" name="imagen" 
-                                       accept="image/*" {% if not producto %}required{% endif %}>
-                                <small class="form-text">Formatos aceptados: JPG, PNG, WEBP</small>
-                            </div>
+                <div class="mb-3">
+                    <label for="categoria" class="form-label">Categoría</label>
+                    <select class="form-select form-control-dark" id="categoria" name="categoria">
+                        <option value="">-- Seleccionar Categoría --</option>
+                        {% for cat in categorias %}
+                        <option value="{{ cat.id }}" {% if producto and producto.categoria and producto.categoria.id == cat.id %}selected{% endif %}>
+                            {{ cat.nombre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-                            {% if producto and producto.imagen %}
-                            <div class="current-image">
-                                <label class="form-label">Imagen Actual:</label>
-                                <div class="image-preview">
-                                    <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="img-fluid">
-                                </div>
-                            </div>
-                            {% endif %}
-                        </div>
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción *</label>
+                    <textarea class="form-control form-control-dark" id="descripcion" name="descripcion" 
+                              rows="4" required>{% if producto %}{{ producto.descripcion }}{% endif %}</textarea>
+                </div>
 
-                        <!-- Configuración -->
-                        <div class="mb-4">
-                            <h3 class="form-section-title">Configuración</h3>
-                            
-                            <div class="mb-3">
-                                <label for="orden" class="form-label">Orden de Visualización</label>
-                                <input type="number" class="form-control form-control-dark" id="orden" name="orden" 
-                                       value="{% if producto %}{{ producto.orden }}{% else %}0{% endif %}" min="0">
-                                <small class="form-text">Menor número aparece primero en el catálogo</small>
-                            </div>
-
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="activo" name="activo" 
-                                       {% if not producto or producto.activo %}checked{% endif %}>
-                                <label class="form-check-label" for="activo">
-                                    Producto Activo (visible en el catálogo)
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Buttons -->
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save"></i> {{ accion }}
-                            </button>
-                            <a href="{% url 'admin_lista_productos' %}" class="btn btn-secondary">
-                                <i class="bi bi-x-circle"></i> Cancelar
-                            </a>
-                        </div>
-                    </form>
+                <div class="mb-3">
+                    <label for="precio" class="form-label">Precio (CLP) *</label>
+                    <input type="number" class="form-control form-control-dark" id="precio" name="precio" 
+                           value="{% if producto %}{{ producto.precio }}{% endif %}" min="0" step="1" required>
+                    <small class="form-text">Precio en pesos chilenos (sin decimales)</small>
                 </div>
             </div>
-        </div>
+
+            <!-- Imagen -->
+            <div class="mb-4">
+                <h3 class="form-section-title">Imagen del Producto</h3>
+                
+                <div class="mb-3">
+                    <label for="imagen" class="form-label">
+                        Imagen {% if not producto %}*{% endif %}
+                    </label>
+                    <input type="file" class="form-control form-control-dark" id="imagen" name="imagen" 
+                           accept="image/*" {% if not producto %}required{% endif %}>
+                    <small class="form-text">Formatos aceptados: JPG, PNG, WEBP</small>
+                </div>
+
+                {% if producto and producto.imagen %}
+                <div class="current-image">
+                    <label class="form-label">Imagen Actual:</label>
+                    <div class="image-preview">
+                        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="img-fluid">
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Configuración -->
+            <div class="mb-4">
+                <h3 class="form-section-title">Configuración</h3>
+                
+                <div class="mb-3">
+                    <label for="orden" class="form-label">Orden de Visualización</label>
+                    <input type="number" class="form-control form-control-dark" id="orden" name="orden" 
+                           value="{% if producto %}{{ producto.orden }}{% else %}0{% endif %}" min="0">
+                    <small class="form-text">Menor número aparece primero en el catálogo</small>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="activo" name="activo" 
+                           {% if not producto or producto.activo %}checked{% endif %}>
+                    <label class="form-check-label" for="activo">
+                        Producto Activo (visible en el catálogo)
+                    </label>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> {{ accion }}
+                </button>
+                <a href="{% url 'admin_lista_productos' %}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </a>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}
