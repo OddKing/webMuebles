@@ -424,6 +424,51 @@ def admin_cotizaciones_historial(request):
 
 
 @login_required(login_url='admin_login')
+def admin_citas_historial(request):
+    """Vista de historial completo de citas con filtros"""
+    from django.db.models import Q
+    
+    # Obtener parámetros de búsqueda y filtrado
+    estado_filter = request.GET.get('estado', '')
+    search_query = request.GET.get('q', '')
+    
+    # Base queryset
+    citas = Cita.objects.all()
+    
+    # Aplicar filtro de estado
+    if estado_filter:
+        citas = citas.filter(estado=estado_filter)
+    
+    # Aplicar búsqueda
+    if search_query:
+        citas = citas.filter(
+            Q(nombre_completo__icontains=search_query) |
+            Q(email__icontains=search_query) |
+            Q(telefono__icontains=search_query)
+        )
+    
+    # Ordenar por fecha
+    citas = citas.order_by('-fecha', '-hora')
+    
+    # Calcular estadísticas
+    total_citas = Cita.objects.count()
+    total_aprobadas = Cita.objects.filter(estado='aprobada').count()
+    total_pendientes = Cita.objects.filter(estado='pendiente_aprobacion').count()
+    
+    context = {
+        'citas': citas,
+        'estado_filter': estado_filter,
+        'search_query': search_query,
+        'total_citas': total_citas,
+        'total_aprobadas': total_aprobadas,
+        'total_pendientes': total_pendientes,
+        'estados': Cita.ESTADO_CHOICES,
+    }
+    
+    return render(request, 'admin_panel/citas_historial.html', context)
+
+
+@login_required(login_url='admin_login')
 def admin_cotizacion_detalle(request, cotizacion_id):
     """Vista detallada de una cotización específica"""
     from .utils.pricing import calcular_precio_estimado

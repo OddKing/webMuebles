@@ -25,7 +25,7 @@ from cotizaciones.views_admin import (
     admin_cotizaciones_pendientes, admin_citas_pendientes,
     aprobar_cotizacion, rechazar_cotizacion,
     aprobar_cita, rechazar_cita, preview_quote_pdf,
-    admin_scraper_precios, admin_cotizaciones_historial,
+    admin_scraper_precios, admin_cotizaciones_historial, admin_citas_historial,
     admin_cotizacion_detalle, admin_editar_cotizacion, admin_crear_cotizacion
 )
 from cotizaciones.views_api import api_search_material_prices
@@ -88,6 +88,7 @@ urlpatterns += [
     
     # Enhanced Quotation Routes
     path('admin-panel/cotizaciones/historial/', admin_cotizaciones_historial, name='admin_cotizaciones_historial'),
+    path('admin-panel/citas/historial/', admin_citas_historial, name='admin_citas_historial'), # Added appointment history
     path('admin-panel/cotizaciones/crear/', admin_crear_cotizacion, name='admin_crear_cotizacion'),
     path('admin-panel/cotizacion/<int:cotizacion_id>/', admin_cotizacion_detalle, name='admin_cotizacion_detalle'),
     path('admin-panel/cotizacion/<int:cotizacion_id>/editar/', admin_editar_cotizacion, name='admin_editar_cotizacion'),

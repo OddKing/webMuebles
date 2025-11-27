@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Panel de Administración - Muebles Barguay{% endblock %}</title>
-    
+
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    
+
     <style>
         :root {
             --admin-primary: #8B4513;
@@ -18,13 +19,13 @@
             --admin-darker: #0d0d0d;
             --sidebar-width: 260px;
         }
-        
+
         body {
             background-color: var(--admin-dark);
             color: #e0e0e0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         /* Sidebar */
         .sidebar {
             position: fixed;
@@ -37,29 +38,29 @@
             z-index: 1000;
             overflow-y: auto;
         }
-        
+
         .sidebar-brand {
             padding: 1.5rem;
             text-align: center;
             border-bottom: 1px solid rgba(139, 69, 19, 0.3);
         }
-        
+
         .sidebar-brand h4 {
             color: var(--admin-secondary);
             font-weight: 600;
             margin: 0;
         }
-        
+
         .sidebar-brand p {
             color: #ffffff;
             font-size: 0.85rem;
             margin: 0.25rem 0 0 0;
         }
-        
+
         .nav-section {
             padding: 1.5rem 0;
         }
-        
+
         .nav-section-title {
             color: #ffffff;
             font-size: 0.75rem;
@@ -69,13 +70,13 @@
             margin-bottom: 0.75rem;
             font-weight: 600;
         }
-        
+
         .sidebar-nav {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        
+
         .sidebar-nav li a {
             display: flex;
             align-items: center;
@@ -84,24 +85,24 @@
             text-decoration: none;
             transition: all 0.3s;
         }
-        
+
         .sidebar-nav li a:hover {
             background-color: rgba(139, 69, 19, 0.2);
             color: var(--admin-secondary);
             padding-left: 2rem;
         }
-        
+
         .sidebar-nav li a.active {
             background-color: rgba(139, 69, 19, 0.3);
             color: var(--admin-secondary);
             border-left: 3px solid var(--admin-primary);
         }
-        
+
         .sidebar-nav li a i {
             margin-right: 0.75rem;
             font-size: 1.1rem;
         }
-        
+
         .badge-count {
             margin-left: auto;
             background-color: var(--admin-primary);
@@ -110,14 +111,14 @@
             border-radius: 10px;
             font-size: 0.75rem;
         }
-        
+
         /* Main Content */
         .main-content {
             margin-left: var(--sidebar-width);
             min-height: 100vh;
             padding: 2rem;
         }
-        
+
         /* Header */
         .admin-header {
             background: linear-gradient(135deg, var(--admin-darker) 0%, #2a2a2a 100%);
@@ -126,19 +127,19 @@
             margin-bottom: 2rem;
             border: 1px solid rgba(139, 69, 19, 0.3);
         }
-        
+
         .admin-header h1 {
             color: var(--admin-secondary);
             margin: 0;
             font-size: 1.75rem;
         }
-        
+
         .user-info {
             display: flex;
             align-items: center;
             gap: 1rem;
         }
-        
+
         .user-info i {
             font-size: 2rem;
             color: var(--admin-secondary);
@@ -149,7 +150,7 @@
             color: #b0b0b0 !important;
             opacity: 1;
         }
-        
+
         /* Cards */
         .card {
             background: transparent;
@@ -157,143 +158,146 @@
             border-radius: 10px;
             color: #e0e0e0;
         }
-        
+
         .card-header {
             background-color: rgba(139, 69, 19, 0.15);
             border-bottom: 2px solid rgba(139, 69, 19, 0.5);
             color: var(--admin-secondary);
             font-weight: 600;
         }
-        
+
         .card-body {
             background: rgba(0, 0, 0, 0.2);
         }
-        
+
         /* Buttons */
         .btn-admin-primary {
             background-color: var(--admin-primary);
             border-color: var(--admin-primary);
             color: white;
         }
-        
+
         .btn-admin-primary:hover {
             background-color: var(--admin-secondary);
             border-color: var(--admin-secondary);
             color: white;
         }
-        
+
         .btn-admin-secondary {
             background-color: transparent;
             border: 1px solid var(--admin-primary);
             color: var(--admin-secondary);
         }
-        
+
         .btn-admin-secondary:hover {
             background-color: var(--admin-primary);
             border-color: var(--admin-primary);
             color: white;
         }
-        
+
         /* Tables */
         .table {
             color: #e0e0e0;
             background: transparent;
         }
-        
+
         .table thead {
             background-color: rgba(139, 69, 19, 0.25);
             color: var(--admin-secondary);
             border-bottom: 2px solid rgba(139, 69, 19, 0.6);
         }
-        
+
         .table thead th {
             border-bottom: 2px solid rgba(139, 69, 19, 0.6);
             padding: 1rem;
             font-weight: 600;
         }
-        
+
         .table tbody td {
             border-bottom: 1px solid rgba(139, 69, 19, 0.3);
             padding: 1rem;
         }
-        
+
         .table-hover tbody tr {
             background: transparent;
         }
-        
+
         .table-hover tbody tr:hover {
             background-color: rgba(139, 69, 19, 0.15);
         }
-        
+
         /* Form Controls */
-        .form-control, .form-select {
+        .form-control,
+        .form-select {
             background-color: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(139, 69, 19, 0.4);
             color: #e0e0e0;
         }
-        
-        .form-control:focus, .form-select:focus {
+
+        .form-control:focus,
+        .form-select:focus {
             background-color: rgba(0, 0, 0, 0.4);
             border-color: var(--admin-secondary);
             color: #e0e0e0;
             box-shadow: 0 0 0 0.25rem rgba(139, 69, 19, 0.25);
         }
-        
+
         .form-control::placeholder {
             color: #888;
         }
-        
+
         /* Badges */
         .badge {
             font-weight: 500;
             padding: 0.5rem 0.75rem;
         }
-        
+
         /* Alerts */
         .alert {
             border: 2px solid;
             background: rgba(0, 0, 0, 0.3);
         }
-        
+
         .alert-success {
             border-color: #198754;
             color: #75b798;
         }
-        
+
         .alert-warning {
             border-color: #ffc107;
             color: #ffd966;
         }
-        
+
         .alert-danger {
             border-color: #dc3545;
             color: #ea868f;
         }
-        
+
         .alert-info {
             border-color: #0dcaf0;
             color: #6edff6;
         }
-        
+
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.3s;
             }
-            
+
             .sidebar.show {
                 transform: translateX(0);
             }
-            
+
             .main-content {
                 margin-left: 0;
             }
         }
     </style>
-    
+
     {% block extra_css %}{% endblock %}
 </head>
+
 <body>
     <!-- Sidebar -->
     <aside class="sidebar">
@@ -301,18 +305,20 @@
             <h4><i class="bi bi-gear-fill"></i> Admin Panel</h4>
             <p>Muebles Barguay</p>
         </div>
-        
+
         <div class="nav-section">
             <div class="nav-section-title">Menú Principal</div>
             <ul class="sidebar-nav">
                 <li>
-                    <a href="{% url 'admin_dashboard' %}" class="{% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+                    <a href="{% url 'admin_dashboard' %}"
+                        class="{% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
                         <i class="bi bi-speedometer2"></i>
                         Dashboard
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'admin_cotizaciones' %}" class="{% if request.resolver_match.url_name == 'admin_cotizaciones' %}active{% endif %}">
+                    <a href="{% url 'admin_cotizaciones' %}"
+                        class="{% if request.resolver_match.url_name == 'admin_cotizaciones' %}active{% endif %}">
                         <i class="bi bi-file-earmark-text"></i>
                         Cotizaciones Pendientes
                         {% if cotizaciones_count %}
@@ -321,7 +327,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'admin_citas' %}" class="{% if request.resolver_match.url_name == 'admin_citas' %}active{% endif %}">
+                    <a href="{% url 'admin_citas' %}"
+                        class="{% if request.resolver_match.url_name == 'admin_citas' %}active{% endif %}">
                         <i class="bi bi-calendar-check"></i>
                         Citas
                         {% if citas_count %}
@@ -330,44 +337,56 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'admin_lista_productos' %}" class="{% if 'producto' in request.resolver_match.url_name %}active{% endif %}">
+                    <a href="{% url 'admin_lista_productos' %}"
+                        class="{% if 'producto' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="bi bi-box-seam"></i>
                         Productos
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'admin_clientes' %}" class="{% if 'cliente' in request.resolver_match.url_name %}active{% endif %}">
+                    <a href="{% url 'admin_clientes' %}"
+                        class="{% if 'cliente' in request.resolver_match.url_name %}active{% endif %}">
                         <i class="bi bi-people-fill"></i>
                         Clientes Habituales
                     </a>
                 </li>
             </ul>
         </div>
-        
+
         <div class="nav-section">
             <div class="nav-section-title">Herramientas</div>
             <ul class="sidebar-nav">
                 <li>
-                    <a href="{% url 'admin_cotizaciones_historial' %}" class="{% if request.resolver_match.url_name == 'admin_cotizaciones_historial' %}active{% endif %}">
+                    <a href="{% url 'admin_cotizaciones_historial' %}"
+                        class="{% if request.resolver_match.url_name == 'admin_cotizaciones_historial' %}active{% endif %}">
                         <i class="bi bi-clock-history"></i>
                         Historial Cotizaciones
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'admin_crear_cotizacion' %}" class="{% if request.resolver_match.url_name == 'admin_crear_cotizacion' %}active{% endif %}">
+                    <a href="{% url 'admin_citas_historial' %}"
+                        class="{% if request.resolver_match.url_name == 'admin_citas_historial' %}active{% endif %}">
+                        <i class="bi bi-calendar3-range"></i>
+                        Historial Citas
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'admin_crear_cotizacion' %}"
+                        class="{% if request.resolver_match.url_name == 'admin_crear_cotizacion' %}active{% endif %}">
                         <i class="bi bi-plus-circle"></i>
                         Crear Cotización
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'admin_scraper' %}" class="{% if request.resolver_match.url_name == 'admin_scraper' %}active{% endif %}">
+                    <a href="{% url 'admin_scraper' %}"
+                        class="{% if request.resolver_match.url_name == 'admin_scraper' %}active{% endif %}">
                         <i class="bi bi-search"></i>
                         Buscar Precios
                     </a>
                 </li>
             </ul>
         </div>
-        
+
         <div class="nav-section">
             <div class="nav-section-title">Usuario</div>
             <ul class="sidebar-nav">
@@ -386,7 +405,7 @@
             </ul>
         </div>
     </aside>
-    
+
     <!-- Main Content -->
     <main class="main-content">
         <!-- Header -->
@@ -403,7 +422,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Messages -->
         {% if messages %}
         <div class="messages-container mb-4">
@@ -415,13 +434,14 @@
             {% endfor %}
         </div>
         {% endif %}
-        
+
         <!-- Content -->
         {% block content %}{% endblock %}
     </main>
-    
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     {% block extra_js %}{% endblock %}
 </body>
+
 </html>
