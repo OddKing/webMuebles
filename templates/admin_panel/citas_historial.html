@@ -9,18 +9,30 @@
     <div class="col-md-12">
         <div class="card bg-dark text-light">
             <div class="card-body">
-                <div class="col-md-8">
-                    <label class="form-label">Buscar</label>
-                    <div class="input-group">
-                        <input type="text" name="q" class="form-control" placeholder="Nombre, email, teléfono..."
-                            value="{{ search_query }}">
-                        <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Buscar</button>
-                        {% if search_query or estado_filter %}
-                        <a href="{% url 'admin_citas_historial' %}" class="btn btn-secondary"><i
-                                class="bi bi-x-circle"></i> Limpiar</a>
-                        {% endif %}
+                <form method="GET" class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Estado</label>
+                        <select name="estado" class="form-select" onchange="this.form.submit()">
+                            <option value="">Todos los estados</option>
+                            {% for estado in estados %}
+                            <option value="{{ estado.val }}" {% if estado.selected %}selected{% endif %}>
+                                {{ estado.label }}
+                            </option>
+                            {% endfor %}
+                        </select>
                     </div>
-                </div>
+                    <div class="col-md-8">
+                        <label class="form-label">Buscar</label>
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" placeholder="Nombre, email, teléfono..."
+                                value="{{ search_query }}">
+                            <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Buscar</button>
+                            {% if search_query or estado_filter %}
+                            <a href="{% url 'admin_citas_historial' %}" class="btn btn-secondary"><i
+                                    class="bi bi-x-circle"></i> Limpiar</a>
+                            {% endif %}
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

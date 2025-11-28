@@ -455,6 +455,15 @@ def admin_citas_historial(request):
     total_aprobadas = Cita.objects.filter(estado='aprobada').count()
     total_pendientes = Cita.objects.filter(estado='pendiente_aprobacion').count()
     
+    # Prepare states with selection logic to avoid template formatter issues
+    estados_list = []
+    for val, label in Cita.ESTADO_CHOICES:
+        estados_list.append({
+            'val': val,
+            'label': label,
+            'selected': val == estado_filter
+        })
+
     context = {
         'citas': citas,
         'estado_filter': estado_filter,
@@ -462,7 +471,7 @@ def admin_citas_historial(request):
         'total_citas': total_citas,
         'total_aprobadas': total_aprobadas,
         'total_pendientes': total_pendientes,
-        'estados': Cita.ESTADO_CHOICES,
+        'estados': estados_list,
     }
     
     return render(request, 'admin_panel/citas_historial.html', context)

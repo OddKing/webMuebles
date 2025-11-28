@@ -23,7 +23,8 @@ db.sqlite3-journal
 # ==============================================================================
 # ENVIRONMENT & SECRETS
 # ==============================================================================
-# IMPORTANT: .env is tracked for private repository convenience
+# .env is now ignored for security
+.env
 # For production: use .env.production with different credentials
 # For local overrides: use .env.local (ignored)
 .env.local
