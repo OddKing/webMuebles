@@ -283,6 +283,14 @@ def aprobar_cita(request, cita_id):
             logo.add_header('Content-ID', '<logo>')
             email.attach(logo)
             
+        # Generar y adjuntar archivo .ics (Calendario)
+        try:
+            from .utils.calendar import generate_ics_content
+            ics_content = generate_ics_content(cita)
+            email.attach(f'cita_muebles_barguay_{cita.id}.ics', ics_content, 'text/calendar')
+        except Exception as e:
+            print(f"Error generando calendario: {e}")
+            
         email.send(fail_silently=False)
         
         messages.success(request, f'Cita de {cita.nombre_completo} aprobada y confirmación enviada.')

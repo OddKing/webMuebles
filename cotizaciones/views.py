@@ -78,9 +78,11 @@ def agendar_reunion(request):
                 return redirect('agendar_reunion')
             
             try:
+                print(f"DEBUG: fecha_str='{fecha_str}', hora_str='{hora_str}'")
+                
                 # Convertir fecha y hora
-                fecha = datetime.strptime(fecha_str, '%Y-%m-%d').date()
-                hora = datetime.strptime(hora_str, '%H:%M').time()
+                fecha = datetime.strptime(fecha_str.strip(), '%Y-%m-%d').date()
+                hora = datetime.strptime(hora_str.strip(), '%H:%M').time()
                 
                 # Validaciones de negocio
                 hoy = datetime.now().date()
@@ -163,7 +165,8 @@ def agendar_reunion(request):
                 return redirect('agendar_reunion')
                 
             except ValueError as e:
-                messages.error(request, 'Error en el formato de fecha u hora.')
+                print(f"ERROR PARSING DATE/TIME: {e}")
+                messages.error(request, f'Error en el formato de fecha u hora: {str(e)}')
                 return redirect('agendar_reunion')
         else:
             messages.error(request, 'Por favor complete todos los campos.')
