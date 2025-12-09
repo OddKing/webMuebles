@@ -163,6 +163,11 @@ STATIC_ROOT = config('STATIC_ROOT', default=os.path.join(BASE_DIR, 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# File Upload Settings
+# Maximum size for uploaded files (20MB in bytes)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 20971520  # 20 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 20971520  # 20 MB
+
 # ==============================================================================
 # DEFAULT PRIMARY KEY FIELD TYPE
 # ==============================================================================

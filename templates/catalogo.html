@@ -61,10 +61,30 @@
                 <div class="product-card">
                     <div class="product-image-container">
                         <img src="{{ producto.imagen.url }}" class="product-image" alt="{{ producto.nombre }}">
+                        {% if producto.categoria %}
+                        <span class="product-category-badge">{{ producto.categoria.nombre }}</span>
+                        {% endif %}
                     </div>
                     <div class="product-info">
                         <h3 class="product-name">{{ producto.nombre }}</h3>
-                        <p class="product-description">{{ producto.descripcion }}</p>
+                        
+                        <!-- Descripción colapsable -->
+                        <div class="product-description-wrapper">
+                            <div class="product-description collapse" id="desc{{ producto.id }}">
+                                {{ producto.descripcion }}
+                            </div>
+                            <button class="btn btn-link btn-sm product-toggle-btn p-0 text-decoration-none" 
+                                    type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#desc{{ producto.id }}" 
+                                    aria-expanded="false" 
+                                    aria-controls="desc{{ producto.id }}"
+                                    onclick="toggleDescription(this)">
+                                <i class="bi bi-chevron-down"></i>
+                                <span class="toggle-text">Ver detalles</span>
+                            </button>
+                        </div>
+                        
                         <div class="product-footer">
                             <a href="{% url 'solicitar_cotizacion' producto.id %}" class="btn btn-primary btn-sm w-100">
                                 <i class="bi bi-calculator"></i> <span data-i18n="catalog.btn.quote">Cotizar</span>
@@ -108,4 +128,24 @@
 
 {% block extra_js %}
 <script src="{% static 'js/product-lightbox.js' %}"></script>
+<script>
+function toggleDescription(button) {
+    const icon = button.querySelector('i');
+    const text = button.querySelector('.toggle-text');
+    const isExpanded = button.getAttribute('aria-expanded') === 'true';
+    
+    // Delay the update to sync with Bootstrap collapse animation
+    setTimeout(() => {
+        if (isExpanded) {
+            icon.classList.remove('bi-chevron-up');
+            icon.classList.add('bi-chevron-down');
+            text.textContent = 'Ver detalles';
+        } else {
+            icon.classList.remove('bi-chevron-down');
+            icon.classList.add('bi-chevron-up');
+            text.textContent = 'Ocultar detalles';
+        }
+    }, 50);
+}
+</script>
 {% endblock %}
