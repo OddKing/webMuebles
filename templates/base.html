@@ -14,31 +14,34 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="icon" href="{% static 'img/logo.jpg' %}" type="image/jpeg">
     {% block extra_css %}{% endblock %}
+</head>
 
+<body class="{% block body_class %}{% endblock %}">
     <nav class="navbar navbar-custom" style="font-family:Verdana, Geneva, Tahoma, sans-serif;">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-            <a href="{% url 'index' %}" style="text-decoration: none;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding-top: 10px; padding-bottom: 10px;">
+            <a href="{% url 'index' %}" style="text-decoration: none; flex-shrink: 0;">
                 <img src="{% static 'img/logo.jpg' %}"
                     style="max-width: 80px; border-radius: 100%; cursor: pointer; transition: transform 0.3s ease;"
                     alt="Muebles Barguay - Volver al inicio" onmouseover="this.style.transform='scale(1.1)'"
                     onmouseout="this.style.transform='scale(1)'">
             </a>
 
-            <div class="d-flex align-items-center gap-2 gap-md-3 flex-wrap justify-content-end">
-                <div class="legal-links d-flex gap-2">
+   
+            <div class="desktop-nav d-flex align-items-center gap-2 flex-wrap justify-content-end" style="flex: 1;">
+                <div class="legal-links d-flex flex-wrap gap-1 gap-sm-2 justify-content-center justify-content-md-end">
                     <a href="{% url 'faq' %}" class="legal-link text-light" data-i18n="nav.faq"
-                        style="font-size: 0.75rem;">Preguntas</a>
+                        style="font-size: 0.7rem; white-space: nowrap;">Preguntas</a>
                     <a href="{% url 'terminos' %}" class="legal-link text-light" data-i18n="nav.terms"
-                        style="font-size: 0.75rem;">Términos</a>
+                        style="font-size: 0.7rem; white-space: nowrap;">Términos</a>
                     <a href="{% url 'privacidad' %}" class="legal-link text-light" data-i18n="nav.privacy"
-                        style="font-size: 0.75rem;">Privacidad</a>
+                        style="font-size: 0.7rem; white-space: nowrap;">Privacidad</a>
                 </div>
 
                 <div class="dropdown">
                     <button class="btn btn-sm" id="languageSelector" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false"
-                        style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.4rem 0.9rem; border-radius: 20px; font-size: 0.85rem;">
-                        🇪🇸 Español
+                        style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.3rem 0.6rem; border-radius: 20px; font-size: 0.75rem; white-space: nowrap;">
+                        🇪🇸 ES
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end"
                         style="background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
@@ -51,11 +54,11 @@
                     </ul>
                 </div>
             </div>
+
+
         </div>
     </nav>
-</head>
 
-<body class="{% block body_class %}{% endblock %}">
     {% block content %}{% endblock %}
 
     <footer class="legal-footer">
@@ -588,6 +591,8 @@
 
         // Verificar consentimiento al cargar la página
         document.addEventListener('DOMContentLoaded', checkCookieConsent);
+
+
     </script>
 
     <script src="{% static 'js/i18n.js' %}"></script>

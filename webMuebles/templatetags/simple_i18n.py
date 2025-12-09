@@ -12,7 +12,7 @@ TRANSLATIONS = {
         'Términos y Condiciones': 'Términos y Condiciones',
         'Portada': 'Portada',
         'Agendar Reunión': 'Agendar Reunión',
-        'Cotiza Aquí': 'Cotiza Aquí',
+        'Proyectos': 'Proyectos',
         'Volver al inicio': 'Volver al inicio',
     },
     'en': {
@@ -22,7 +22,7 @@ TRANSLATIONS = {
         'Términos y Condiciones': 'Terms and Conditions',
         'Portada': 'Home',
         'Agendar Reunión': 'Book Meeting',
-        'Cotiza Aquí': 'Get Quote',
+        'Proyectos': 'Projects',
         'Volver al inicio': 'Back to home',
     },
     'de': {
@@ -32,7 +32,7 @@ TRANSLATIONS = {
         'Términos y Condiciones': 'Allgemeine Geschäftsbedingungen',
         'Portada': 'Startseite',
         'Agendar Reunión': 'Termin vereinbaren',
-        'Cotiza Aquí': 'Angebot anfordern',
+        'Proyectos': 'Projekte',
         'Volver al inicio': 'Zurück zur Startseite',
     }
 }
