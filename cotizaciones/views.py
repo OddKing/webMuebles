@@ -212,22 +212,10 @@ def solicitar_cotizacion(request, producto_id):
     """
     Vista para solicitar cotización de un producto específico
     """
-    # Datos de productos (hardcodeados hasta que existan en la BD)
-    productos_hardcoded = [
-        {'id': 1, 'nombre': 'Sofá Moderno', 'descripcion': 'Sofá de 3 puestos con diseño contemporáneo'},
-        {'id': 2, 'nombre': 'Mesa de Comedor', 'descripcion': 'Mesa de madera maciza para 6 personas'},
-        {'id': 3, 'nombre': 'Silla Ejecutiva', 'descripcion': 'Silla ergonómica para oficina'},
-        {'id': 4, 'nombre': 'Librero Minimalista', 'descripcion': 'Estantería moderna de 5 niveles'},
-        {'id': 5, 'nombre': 'Cama King Size', 'descripcion': 'Cama de madera con cabecero acolchado'},
-        {'id': 6, 'nombre': 'Escritorio Ejecutivo', 'descripcion': 'Escritorio de oficina con cajones'},
-        {'id': 7, 'nombre': 'Sillón Reclinable', 'descripcion': 'Sillón individual con sistema reclinable'},
-        {'id': 8, 'nombre': 'Rack TV Moderno', 'descripcion': 'Mueble para TV hasta 55 pulgadas'},
-    ]
+    from productos.models import Producto
     
-    producto_dict = next((p for p in productos_hardcoded if p['id'] == producto_id), None)
-    if not producto_dict:
-        messages.error(request, 'Producto no encontrado')
-        return redirect('catalogo')
+    # Obtener producto de la base de datos
+    producto = get_object_or_404(Producto, id=producto_id, activo=True)
     
     if request.method == 'POST':
         form = CotizacionForm(request.POST, request.FILES)
@@ -235,6 +223,9 @@ def solicitar_cotizacion(request, producto_id):
         if form.is_valid():
             # Guardar la cotización
             cotizacion = form.save(commit=False)
+            
+            # Asignar el producto real
+            cotizacion.producto = producto
             
             # Generar folio único
             cotizacion.folio = generar_folio()
@@ -280,7 +271,7 @@ def solicitar_cotizacion(request, producto_id):
     
     context = {
         'form': form,
-        'producto': producto_dict,
+        'producto': producto,
         'producto_id': producto_id
     }
     

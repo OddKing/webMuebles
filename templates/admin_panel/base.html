@@ -330,7 +330,7 @@
                     <a href="{% url 'admin_citas' %}"
                         class="{% if request.resolver_match.url_name == 'admin_citas' %}active{% endif %}">
                         <i class="bi bi-calendar-check"></i>
-                        Citas
+                        Citas Pendientes
                         {% if citas_count %}
                         <span class="badge-count">{{ citas_count }}</span>
                         {% endif %}
