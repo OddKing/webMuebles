@@ -4,41 +4,41 @@
  */
 
 class ProductLightbox {
-    constructor() {
-        this.currentIndex = 0;
-        this.products = [];
-        this.lightbox = null;
-        this.init();
-    }
+  constructor() {
+    this.currentIndex = 0;
+    this.products = [];
+    this.lightbox = null;
+    this.init();
+  }
 
-    init() {
-        // Wait for DOM to be ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => this.setup());
-        } else {
-            this.setup();
-        }
+  init() {
+    // Wait for DOM to be ready
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", () => this.setup());
+    } else {
+      this.setup();
     }
+  }
 
-    setup() {
-        // Create lightbox modal structure
-        this.createLightboxHTML();
-        
-        // Get all product cards and extract data
-        this.products = this.extractProductData();
-        
-        // Bind click events to product images
-        this.bindImageClicks();
-        
-        // Bind keyboard events
-        this.bindKeyboardEvents();
-        
-        // Bind navigation buttons
-        this.bindNavigationButtons();
-    }
+  setup() {
+    // Create lightbox modal structure
+    this.createLightboxHTML();
 
-    createLightboxHTML() {
-        const lightboxHTML = `
+    // Get all product cards and extract data
+    this.products = this.extractProductData();
+
+    // Bind click events to product images
+    this.bindImageClicks();
+
+    // Bind keyboard events
+    this.bindKeyboardEvents();
+
+    // Bind navigation buttons
+    this.bindNavigationButtons();
+  }
+
+  createLightboxHTML() {
+    const lightboxHTML = `
             <div class="product-lightbox" id="productLightbox">
                 <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">
                     &times;
@@ -75,159 +75,191 @@ class ProductLightbox {
                 </div>
             </div>
         `;
-        
-        document.body.insertAdjacentHTML('beforeend', lightboxHTML);
-        this.lightbox = document.getElementById('productLightbox');
-        
-        // Close on backdrop click
-        this.lightbox.addEventListener('click', (e) => {
-            if (e.target === this.lightbox) {
-                this.close();
-            }
+
+    document.body.insertAdjacentHTML("beforeend", lightboxHTML);
+    this.lightbox = document.getElementById("productLightbox");
+
+    // Close on backdrop click
+    this.lightbox.addEventListener("click", (e) => {
+      if (e.target === this.lightbox) {
+        this.close();
+      }
+    });
+  }
+
+  extractProductData() {
+    const productCards = document.querySelectorAll(".product-card");
+    const products = [];
+
+    productCards.forEach((card, index) => {
+      const image = card.querySelector(".product-image");
+      const name = card.querySelector(".product-name");
+      const description = card.querySelector(".product-description");
+      const quoteBtn = card.querySelector('a[href*="cotizacion"]');
+
+      if (image && name) {
+        products.push({
+          index: index,
+          imageSrc: image.getAttribute("src"),
+          imageAlt: image.getAttribute("alt"),
+          name: name.textContent.trim(),
+          description: description ? description.textContent.trim() : "",
+          quoteUrl: quoteBtn ? quoteBtn.getAttribute("href") : "#",
         });
-    }
 
-    extractProductData() {
-        const productCards = document.querySelectorAll('.product-card');
-        const products = [];
-        
-        productCards.forEach((card, index) => {
-            const image = card.querySelector('.product-image');
-            const name = card.querySelector('.product-name');
-            const description = card.querySelector('.product-description');
-            const quoteBtn = card.querySelector('a[href*="cotizacion"]');
-            
-            if (image && name) {
-                products.push({
-                    index: index,
-                    imageSrc: image.getAttribute('src'),
-                    imageAlt: image.getAttribute('alt'),
-                    name: name.textContent.trim(),
-                    description: description ? description.textContent.trim() : '',
-                    quoteUrl: quoteBtn ? quoteBtn.getAttribute('href') : '#'
-                });
-                
-                // Store index on the image element
-                image.dataset.productIndex = index;
-            }
-        });
-        
-        return products;
-    }
+        // Store index on the image element
+        image.dataset.productIndex = index;
+      }
+    });
 
-    bindImageClicks() {
-        const productImages = document.querySelectorAll('.product-image');
-        
-        productImages.forEach(image => {
-            image.style.cursor = 'pointer';
-            image.addEventListener('click', (e) => {
-                e.preventDefault();
-                const index = parseInt(image.dataset.productIndex);
-                this.open(index);
-            });
-        });
-    }
+    return products;
+  }
 
-    bindKeyboardEvents() {
-        document.addEventListener('keydown', (e) => {
-            if (!this.lightbox.classList.contains('active')) return;
-            
-            switch(e.key) {
-                case 'Escape':
-                    this.close();
-                    break;
-                case 'ArrowLeft':
-                    this.prev();
-                    break;
-                case 'ArrowRight':
-                    this.next();
-                    break;
-            }
-        });
-    }
+  bindImageClicks() {
+    const productImages = document.querySelectorAll(".product-image");
 
-    bindNavigationButtons() {
-        const closeBtn = document.getElementById('lightboxClose');
-        const prevBtn = document.getElementById('lightboxPrev');
-        const nextBtn = document.getElementById('lightboxNext');
-        
-        closeBtn.addEventListener('click', () => this.close());
-        prevBtn.addEventListener('click', () => this.prev());
-        nextBtn.addEventListener('click', () => this.next());
-    }
+    productImages.forEach((image) => {
+      image.style.cursor = "pointer";
+      image.addEventListener("click", (e) => {
+        e.preventDefault();
+        const index = parseInt(image.dataset.productIndex);
+        this.open(index);
+      });
+    });
+  }
 
-    open(index) {
-        this.currentIndex = index;
-        this.updateContent();
-        this.lightbox.classList.add('active');
-        document.body.classList.add('lightbox-open');
-        this.updateNavigationButtons();
-    }
+  bindKeyboardEvents() {
+    document.addEventListener("keydown", (e) => {
+      if (!this.lightbox.classList.contains("active")) return;
 
-    close() {
-        this.lightbox.classList.remove('active');
-        document.body.classList.remove('lightbox-open');
-    }
+      switch (e.key) {
+        case "Escape":
+          this.close();
+          break;
+        case "ArrowLeft":
+          this.prev();
+          break;
+        case "ArrowRight":
+          this.next();
+          break;
+      }
+    });
+  }
 
-    prev() {
-        if (this.currentIndex > 0) {
-            this.currentIndex--;
-            this.updateContent();
-            this.updateNavigationButtons();
-        }
-    }
+  bindNavigationButtons() {
+    const closeBtn = document.getElementById("lightboxClose");
+    const prevBtn = document.getElementById("lightboxPrev");
+    const nextBtn = document.getElementById("lightboxNext");
 
-    next() {
-        if (this.currentIndex < this.products.length - 1) {
-            this.currentIndex++;
-            this.updateContent();
-            this.updateNavigationButtons();
-        }
-    }
+    closeBtn.addEventListener("click", () => this.close());
+    prevBtn.addEventListener("click", () => this.prev());
+    nextBtn.addEventListener("click", () => this.next());
+  }
 
-    updateContent() {
-        const product = this.products[this.currentIndex];
-        
-        if (!product) return;
-        
-        // Update image
-        const lightboxImage = document.getElementById('lightboxImage');
-        lightboxImage.src = product.imageSrc;
-        lightboxImage.alt = product.imageAlt;
-        
-        // Update text content
-        document.getElementById('lightboxName').textContent = product.name;
-        document.getElementById('lightboxDescription').textContent = product.description;
-        
-        // Update quote button link
-        const quoteBtn = document.getElementById('lightboxQuoteBtn');
-        quoteBtn.href = product.quoteUrl;
-        
-        // Add animation
-        lightboxImage.style.opacity = '0';
-        setTimeout(() => {
-            lightboxImage.style.transition = 'opacity 0.3s ease';
-            lightboxImage.style.opacity = '1';
-        }, 10);
-    }
+  open(index) {
+    this.currentIndex = index;
+    this.updateContent();
+    this.lightbox.classList.add("active");
+    document.body.classList.add("lightbox-open");
+    this.updateNavigationButtons();
+  }
 
-    updateNavigationButtons() {
-        const prevBtn = document.getElementById('lightboxPrev');
-        const nextBtn = document.getElementById('lightboxNext');
-        
-        // Disable/enable based on position
-        prevBtn.disabled = (this.currentIndex === 0);
-        nextBtn.disabled = (this.currentIndex === this.products.length - 1);
-        
-        // Hide buttons if only one product
-        if (this.products.length <= 1) {
-            prevBtn.style.display = 'none';
-            nextBtn.style.display = 'none';
-        } else {
-            prevBtn.style.display = 'flex';
-            nextBtn.style.display = 'flex';
-        }
+  close() {
+    this.lightbox.classList.remove("active");
+    document.body.classList.remove("lightbox-open");
+  }
+
+  prev() {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+      this.updateContent();
+      this.updateNavigationButtons();
     }
+  }
+
+  next() {
+    if (this.currentIndex < this.products.length - 1) {
+      this.currentIndex++;
+      this.updateContent();
+      this.updateNavigationButtons();
+    }
+  }
+
+  updateContent() {
+    const product = this.products[this.currentIndex];
+
+    if (!product) return;
+
+    // Show loading state
+    const lightboxImage = document.getElementById("lightboxImage");
+    const imageWrapper = lightboxImage.parentElement;
+
+    // Add spinner if not exists
+    let spinner = imageWrapper.querySelector(".lightbox-loading");
+    if (!spinner) {
+      spinner = document.createElement("div");
+      spinner.className = "lightbox-loading";
+      spinner.innerHTML = '<div class="lightbox-spinner"></div>';
+      imageWrapper.appendChild(spinner);
+    }
+    spinner.style.display = "block";
+
+    // Hide current image
+    lightboxImage.style.opacity = "0";
+    lightboxImage.style.transition = "none";
+
+    // Create a new image to preload
+    const tempImg = new Image();
+    tempImg.onload = () => {
+      lightboxImage.src = product.imageSrc;
+      lightboxImage.alt = product.imageAlt;
+      spinner.style.display = "none";
+      // Fade in
+      requestAnimationFrame(() => {
+        lightboxImage.style.transition = "opacity 0.4s ease";
+        lightboxImage.style.opacity = "1";
+      });
+    };
+    tempImg.onerror = () => {
+      // Show fallback
+      lightboxImage.src =
+        "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect fill=%22%231a1a2e%22 width=%22800%22 height=%22600%22/%3E%3Ctext x=%22400%22 y=%22300%22 text-anchor=%22middle%22 fill=%22%23666%22 font-size=%2224%22 font-family=%22sans-serif%22%3EImagen no disponible%3C/text%3E%3C/svg%3E";
+      lightboxImage.alt = "Imagen no disponible";
+      spinner.style.display = "none";
+      requestAnimationFrame(() => {
+        lightboxImage.style.transition = "opacity 0.4s ease";
+        lightboxImage.style.opacity = "1";
+      });
+    };
+    tempImg.src = product.imageSrc;
+
+    // Update text content
+    document.getElementById("lightboxName").textContent = product.name;
+    document.getElementById("lightboxDescription").textContent =
+      product.description;
+
+    // Update quote button link
+    const quoteBtn = document.getElementById("lightboxQuoteBtn");
+    quoteBtn.href = product.quoteUrl;
+  }
+
+  updateNavigationButtons() {
+    const prevBtn = document.getElementById("lightboxPrev");
+    const nextBtn = document.getElementById("lightboxNext");
+
+    // Disable/enable based on position
+    prevBtn.disabled = this.currentIndex === 0;
+    nextBtn.disabled = this.currentIndex === this.products.length - 1;
+
+    // Hide buttons if only one product
+    if (this.products.length <= 1) {
+      prevBtn.style.display = "none";
+      nextBtn.style.display = "none";
+    } else {
+      prevBtn.style.display = "flex";
+      nextBtn.style.display = "flex";
+    }
+  }
 }
 
 // Initialize the lightbox when script loads

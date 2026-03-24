@@ -55,20 +55,43 @@
             <div class="mb-4">
                 <h3 class="form-section-title">Imagen del Producto</h3>
                 
+                <!-- Drag & Drop Zone -->
                 <div class="mb-3">
                     <label for="imagen" class="form-label">
                         Imagen {% if not producto %}*{% endif %}
                     </label>
-                    <input type="file" class="form-control form-control-dark" id="imagen" name="imagen" 
-                           accept="image/*" {% if not producto %}required{% endif %}>
-                    <small class="form-text">Formatos aceptados: JPG, PNG, WEBP</small>
+                    <div class="image-drop-zone" id="imageDropZone" 
+                         onclick="document.getElementById('imagen').click()">
+                        <input type="file" class="form-control form-control-dark" id="imagen" name="imagen" 
+                               accept="image/*" {% if not producto %}required{% endif %}
+                               style="display: none;"
+                               onchange="handleImageSelect(this)">
+                        
+                        <div class="drop-zone-content" id="dropZoneContent">
+                            <i class="bi bi-cloud-arrow-up" style="font-size: 3rem; color: #0d6efd; margin-bottom: 0.5rem;"></i>
+                            <p style="margin: 0; font-weight: 600; color: #e0e0e0;">Arrastra una imagen aquí</p>
+                            <p style="margin: 0; font-size: 0.85rem; color: #888;">o haz clic para seleccionar</p>
+                            <small class="form-text" style="margin-top: 0.75rem;">JPG, PNG, WEBP — Máx 20MB</small>
+                        </div>
+
+                        <!-- Image Preview -->
+                        <div class="drop-zone-preview" id="dropZonePreview" style="display: none;">
+                            <img id="previewImage" src="" alt="Preview" 
+                                 style="max-width: 100%; max-height: 250px; border-radius: 12px; object-fit: contain;">
+                            <div id="previewInfo" style="margin-top: 0.75rem; font-size: 0.85rem; color: #aaa;"></div>
+                            <button type="button" class="btn btn-sm btn-outline-danger mt-2" onclick="event.stopPropagation(); removePreview();">
+                                <i class="bi bi-trash"></i> Quitar imagen
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 {% if producto and producto.imagen %}
                 <div class="current-image">
                     <label class="form-label">Imagen Actual:</label>
-                    <div class="image-preview">
-                        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="img-fluid">
+                    <div class="image-preview" style="padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 12px; text-align: center;">
+                        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" 
+                             class="img-fluid" style="max-height: 200px; border-radius: 8px;">
                     </div>
                 </div>
                 {% endif %}
@@ -106,4 +129,95 @@
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .image-drop-zone {
+        border: 2px dashed rgba(13, 110, 253, 0.4);
+        border-radius: 15px;
+        padding: 2.5rem 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: rgba(0, 0, 0, 0.15);
+        min-height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .image-drop-zone:hover,
+    .image-drop-zone.drag-over {
+        border-color: #0d6efd;
+        background: rgba(13, 110, 253, 0.08);
+        transform: scale(1.01);
+    }
+    .image-drop-zone.drag-over {
+        box-shadow: 0 0 20px rgba(13, 110, 253, 0.2);
+    }
+    .drop-zone-content,
+    .drop-zone-preview {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const dropZone = document.getElementById('imageDropZone');
+    const fileInput = document.getElementById('imagen');
+    const content = document.getElementById('dropZoneContent');
+    const preview = document.getElementById('dropZonePreview');
+
+    // Drag & Drop events
+    ['dragenter', 'dragover'].forEach(evt => {
+        dropZone.addEventListener(evt, e => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.add('drag-over');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(evt => {
+        dropZone.addEventListener(evt, e => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.remove('drag-over');
+        });
+    });
+
+    dropZone.addEventListener('drop', e => {
+        const files = e.dataTransfer.files;
+        if (files.length > 0 && files[0].type.startsWith('image/')) {
+            fileInput.files = files;
+            handleImageSelect(fileInput);
+        }
+    });
+
+    function handleImageSelect(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('previewImage').src = e.target.result;
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            document.getElementById('previewInfo').innerHTML =
+                `<strong>${file.name}</strong> — ${sizeMB} MB — ${file.type.replace('image/', '').toUpperCase()}`;
+            content.style.display = 'none';
+            preview.style.display = 'flex';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function removePreview() {
+        fileInput.value = '';
+        content.style.display = 'flex';
+        preview.style.display = 'none';
+        document.getElementById('previewImage').src = '';
+        document.getElementById('previewInfo').innerHTML = '';
+    }
+</script>
 {% endblock %}

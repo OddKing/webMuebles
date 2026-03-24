@@ -61,15 +61,103 @@
 
     {% block content %}{% endblock %}
 
-    <footer class="legal-footer">
-        <div class="container text-center">
-            <p class="mb-2">© 2025 Muebles Barguay - <span data-i18n="footer.rights">Todos los derechos
-                    reservados</span></p>
-            <p class="mb-0">
-                <a href="{% url 'terminos' %}" class="footer-link" data-i18n="footer.terms">Términos y Condiciones</a> |
-                <a href="{% url 'privacidad' %}" class="footer-link" data-i18n="footer.privacy">Política de
-                    Privacidad</a>
-            </p>
+    <footer class="site-footer">
+        <div class="footer-main">
+            <div class="container">
+                <div class="row g-4 g-lg-5">
+                    <!-- Company Info -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="footer-brand">
+                            <a href="{% url 'index' %}" class="footer-logo-link">
+                                <img src="{% static 'img/logo.jpg' %}" alt="Muebles Barguay" class="footer-logo">
+                                <span class="footer-brand-name">Muebles Barguay</span>
+                            </a>
+                            <p class="footer-description" data-i18n="footer.description">
+                                Creamos muebles a medida con materiales de primera calidad. 
+                                Diseño, fabricación e instalación para hogares y oficinas en Santiago.
+                            </p>
+                            <div class="footer-social">
+                                <a href="https://www.instagram.com/mueblesbarguay/" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                                <a href="https://wa.me/56995322154" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="WhatsApp">
+                                    <i class="bi bi-whatsapp"></i>
+                                </a>
+                                <a href="mailto:contacto@mueblesbarguay.cl" class="social-link" aria-label="Email">
+                                    <i class="bi bi-envelope-fill"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="col-lg-2 col-md-6 col-6">
+                        <h5 class="footer-heading" data-i18n="footer.nav.title">Navegación</h5>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'index' %}" data-i18n="footer.nav.home">Inicio</a></li>
+                            <li><a href="{% url 'catalogo' %}" data-i18n="footer.nav.catalog">Catálogo</a></li>
+                            <li><a href="{% url 'agendar_reunion' %}" data-i18n="footer.nav.schedule">Agendar Reunión</a></li>
+                            <li><a href="{% url 'faq' %}" data-i18n="footer.nav.faq">Preguntas Frecuentes</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Legal Links -->
+                    <div class="col-lg-2 col-md-6 col-6">
+                        <h5 class="footer-heading" data-i18n="footer.legal.title">Legal</h5>
+                        <ul class="footer-links">
+                            <li><a href="{% url 'terminos' %}" data-i18n="footer.legal.terms">Términos y Condiciones</a></li>
+                            <li><a href="{% url 'privacidad' %}" data-i18n="footer.legal.privacy">Política de Privacidad</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="col-lg-4 col-md-6">
+                        <h5 class="footer-heading" data-i18n="footer.contact.title">Contáctanos</h5>
+                        <ul class="footer-contact">
+                            <li>
+                                <i class="bi bi-geo-alt-fill"></i>
+                                <span>Av Lo Espejo 964, El Bosque, Santiago</span>
+                            </li>
+                            <li>
+                                <a href="tel:+56995322154">
+                                    <i class="bi bi-telephone-fill"></i>
+                                    <span>+56 9 9532 2154</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="tel:+56966893329">
+                                    <i class="bi bi-telephone-fill"></i>
+                                    <span>+56 9 6689 3329</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="mailto:contacto@mueblesbarguay.cl">
+                                    <i class="bi bi-envelope-fill"></i>
+                                    <span>contacto@mueblesbarguay.cl</span>
+                                </a>
+                            </li>
+                            <li>
+                                <i class="bi bi-clock-fill"></i>
+                                <span data-i18n="footer.contact.hours">Lun - Vie: 9:00 - 18:00</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="footer-bottom-content">
+                    <p class="footer-copyright">
+                        © 2025 Muebles Barguay — <span data-i18n="footer.rights">Todos los derechos reservados</span>
+                    </p>
+                    <p class="footer-made">
+                        <span data-i18n="footer.made">Hecho con</span> <i class="bi bi-heart-fill text-danger"></i> <span data-i18n="footer.in">en Santiago, Chile</span>
+                    </p>
+                </div>
+            </div>
         </div>
     </footer>
 
@@ -362,7 +450,7 @@
         });
 
         function adjustFloatingWidgets() {
-            const footer = document.querySelector('.legal-footer');
+            const footer = document.querySelector('.site-footer');
             const whatsappWidget = document.getElementById('whatsapp-widget');
             const accessibilityWidget = document.getElementById('accessibility-wrapper');
 
