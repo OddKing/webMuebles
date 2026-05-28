@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.http import JsonResponse
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Sum
 from django.utils import timezone
 from .models import Cliente
 from .forms import ClienteForm
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def admin_clientes_lista(request):
     """Vista para listar todos los clientes con búsqueda"""
     search_query = request.GET.get('q', '')
@@ -30,8 +30,19 @@ def admin_clientes_lista(request):
     # Ordenar por última cotización
     clientes = clientes.order_by('-ultima_cotizacion', '-fecha_registro')
     
+    # Paginación (20 por página)
+    from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+    paginator = Paginator(clientes, 20)
+    page_number = request.GET.get('page')
+    try:
+        clientes_paginados = paginator.page(page_number)
+    except PageNotAnInteger:
+        clientes_paginados = paginator.page(1)
+    except EmptyPage:
+        clientes_paginados = paginator.page(paginator.num_pages)
+    
     context = {
-        'clientes': clientes,
+        'clientes': clientes_paginados,
         'search_query': search_query,
         'total_clientes': Cliente.objects.filter(activo=True).count(),
         'clientes_count': clientes.count(),
@@ -40,7 +51,7 @@ def admin_clientes_lista(request):
     return render(request, 'admin_panel/clientes_lista.html', context)
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def admin_cliente_crear(request):
     """Vista para crear un nuevo cliente"""
     if request.method == 'POST':
@@ -63,7 +74,7 @@ def admin_cliente_crear(request):
     return render(request, 'admin_panel/cliente_form.html', context)
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def admin_cliente_editar(request, cliente_id):
     """Vista para editar un cliente existente"""
     cliente = get_object_or_404(Cliente, id=cliente_id)
@@ -89,24 +100,24 @@ def admin_cliente_editar(request, cliente_id):
     return render(request, 'admin_panel/cliente_form.html', context)
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def admin_cliente_detalle(request, cliente_id):
     """Vista detallada de un cliente con su historial de cotizaciones"""
     cliente = get_object_or_404(Cliente, id=cliente_id)
     
     # Obtener cotizaciones del cliente ordenadas por fecha
-    cotizaciones = cliente.cotizacion_set.all().order_by('-fecha_solicitud')
+    cotizaciones = cliente.cotizacion_set.all().select_related('producto').order_by('-fecha_solicitud')
     
     # Calcular estadísticas
     total_cotizaciones = cotizaciones.count()
     cotizaciones_aprobadas = cotizaciones.filter(estado='aprobada').count()
     cotizaciones_pendientes = cotizaciones.filter(estado='pendiente_aprobacion').count()
     
-    # Calcular total cotizado
-    total_cotizado = sum(
-        cot.precio_cotizado for cot in cotizaciones 
-        if cot.precio_cotizado and cot.estado in ['aprobada', 'aceptada']
-    )
+    # Calcular total cotizado de forma eficiente en SQL
+    total_cotizado = cotizaciones.filter(
+        estado__in=['aprobada', 'aceptada'],
+        precio_cotizado__isnull=False
+    ).aggregate(Sum('precio_cotizado'))['precio_cotizado__sum'] or 0
     
     context = {
         'cliente': cliente,
@@ -120,7 +131,7 @@ def admin_cliente_detalle(request, cliente_id):
     return render(request, 'admin_panel/cliente_detalle.html', context)
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def admin_cliente_eliminar(request, cliente_id):
     """Soft delete - Desactiva el cliente en lugar de eliminarlo"""
     if request.method != 'POST':
@@ -136,7 +147,7 @@ def admin_cliente_eliminar(request, cliente_id):
     return redirect('admin_clientes')
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def api_buscar_cliente(request):
     """API para buscar clientes (autocompletado en formularios)"""
     query = request.GET.get('q', '')

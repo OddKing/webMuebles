@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cotizacion
+from .models import Cotizacion, Cita
 import re
 
 
@@ -161,3 +161,36 @@ class CotizacionForm(forms.ModelForm):
                 self.add_error(dim, 'Las medidas deben ser mayores a 0')
         
         return cleaned_data
+
+
+class CitaForm(forms.ModelForm):
+    """
+    Formulario para agendar reuniones (citas)
+    """
+    acepto_terminos = forms.BooleanField(
+        required=True,
+        error_messages={'required': 'Debes aceptar los términos y condiciones y políticas de privacidad para continuar.'}
+    )
+    
+    class Meta:
+        model = Cita
+        fields = [
+            'nombre_completo',
+            'telefono',
+            'direccion',
+            'email',
+            'tipo_reunion',
+            'fecha',
+            'hora'
+        ]
+        
+    def clean_telefono(self):
+        telefono = self.cleaned_data.get('telefono', '').strip()
+        # Validación del formato telefónico (usamos el mismo patrón que el validador del modelo)
+        pattern = r'^\+?1?\d{9,15}$'
+        if not re.match(pattern, telefono):
+            raise forms.ValidationError(
+                "El número de teléfono debe estar en el formato: '+999999999'. Hasta 15 dígitos permitidos."
+            )
+        return telefono
+

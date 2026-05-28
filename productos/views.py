@@ -13,7 +13,7 @@ def catalogo(request):
     categoria_slug = request.GET.get('categoria')
     
     # Base queryset
-    productos = Producto.objects.filter(activo=True)
+    productos = Producto.objects.filter(activo=True).select_related('categoria')
     
     # Aplicar búsqueda por texto
     if query:
@@ -34,11 +34,22 @@ def catalogo(request):
     # Ordenar resultados
     productos = productos.order_by('orden', '-fecha_creacion')
     
+    # Paginación (12 productos por página)
+    from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+    paginator = Paginator(productos, 12)
+    page_number = request.GET.get('page')
+    try:
+        productos_paginados = paginator.page(page_number)
+    except PageNotAnInteger:
+        productos_paginados = paginator.page(1)
+    except EmptyPage:
+        productos_paginados = paginator.page(paginator.num_pages)
+    
     # Obtener todas las categorías para el sidebar
     categorias = Categoria.objects.all().order_by('orden', 'nombre')
     
     context = {
-        'productos': productos,
+        'productos': productos_paginados,
         'total_productos': productos.count(),
         'categorias': categorias,
         'categoria_actual': categoria_actual,

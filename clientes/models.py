@@ -108,7 +108,6 @@ class Cliente(models.Model):
         verbose_name_plural = "Clientes"
         ordering = ['-ultima_cotizacion', '-fecha_registro']
         indexes = [
-            models.Index(fields=['rut']),
             models.Index(fields=['email']),
             models.Index(fields=['-ultima_cotizacion']),
         ]

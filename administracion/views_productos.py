@@ -1,15 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from productos.models import Producto, Categoria
 from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 
-@login_required
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def lista_productos(request):
     """Vista para listar todos los productos"""
-    productos = Producto.objects.all().order_by('orden', '-fecha_creacion')
+    productos = Producto.objects.all().select_related('categoria').order_by('orden', '-fecha_creacion')
     
     context = {
         'productos': productos,
@@ -19,7 +19,7 @@ def lista_productos(request):
     return render(request, 'administracion/productos_lista.html', context)
 
 
-@login_required
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def crear_producto(request):
     """Vista para crear un nuevo producto"""
     if request.method == 'POST':
@@ -71,7 +71,7 @@ def crear_producto(request):
     })
 
 
-@login_required
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def editar_producto(request, producto_id):
     """Vista para editar un producto existente"""
     producto = get_object_or_404(Producto, id=producto_id)
@@ -117,7 +117,7 @@ def editar_producto(request, producto_id):
     return render(request, 'administracion/producto_form.html', context)
 
 
-@login_required
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def eliminar_producto(request, producto_id):
     """Vista para eliminar (desactivar) un producto"""
     producto = get_object_or_404(Producto, id=producto_id)

@@ -1,18 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django_ratelimit.decorators import ratelimit
 from django.contrib import messages
-from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.http import JsonResponse
 from .models import Cotizacion, Cita
 from .utils.pdf_generator import generate_quote_pdf
+from .utils.email_service import send_async_email
 import os
 from django.conf import settings
-from email.mime.image import MIMEImage
 
 
+@ratelimit(key='ip', rate='5/m', method='POST', block=True)
 def admin_login(request):
     """Vista de login para el panel de administración"""
     if request.user.is_authenticated:
@@ -41,7 +42,7 @@ def admin_logout(request):
     return redirect('admin_login')
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def admin_dashboard(request):
     """Dashboard principal del panel de administración"""
     from productos.models import Producto
@@ -53,7 +54,7 @@ def admin_dashboard(request):
     productos_activos = Producto.objects.filter(activo=True).count()
     
     # Obtener registros recientes
-    cotizaciones_recientes = Cotizacion.objects.filter(estado='pendiente_aprobacion').order_by('-fecha_solicitud')[:5]
+    cotizaciones_recientes = Cotizacion.objects.filter(estado='pendiente_aprobacion').select_related('producto', 'cliente').order_by('-fecha_solicitud')[:5]
     citas_recientes = Cita.objects.filter(estado='pendiente_aprobacion').order_by('-fecha_creacion')[:5]
     
     context = {
@@ -68,12 +69,12 @@ def admin_dashboard(request):
     return render(request, 'admin_panel/dashboard.html', context)
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def admin_cotizaciones_pendientes(request):
     """Vista de cotizaciones pendientes de aprobación"""
     from .utils.pricing import calcular_precio_estimado
     
-    cotizaciones = Cotizacion.objects.filter(estado='pendiente_aprobacion').order_by('-fecha_solicitud')
+    cotizaciones = Cotizacion.objects.filter(estado='pendiente_aprobacion').select_related('producto', 'cliente').order_by('-fecha_solicitud')
     
     # Calcular precio sugerido para cada cotización
     for cot in cotizaciones:
@@ -90,7 +91,7 @@ def admin_cotizaciones_pendientes(request):
     return render(request, 'admin_panel/cotizaciones_pendientes.html', context)
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def admin_citas_pendientes(request):
     """Vista de citas pendientes de aprobación"""
     citas = Cita.objects.filter(estado='pendiente_aprobacion').order_by('-fecha_creacion')
@@ -102,7 +103,7 @@ def admin_citas_pendientes(request):
     return render(request, 'admin_panel/citas_pendientes.html', context)
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def aprobar_cotizacion(request, cotizacion_id):
     """Aprobar una cotización y enviar email al cliente"""
     if request.method != 'POST':
@@ -121,7 +122,7 @@ def aprobar_cotizacion(request, cotizacion_id):
         
     cotizacion.save()
     
-    # Generar PDF
+    # Generar PDF y enviar correo asíncrono
     try:
         producto_nombre = cotizacion.producto.nombre if cotizacion.producto else "Diseño Personalizado"
         pdf_buffer = generate_quote_pdf(cotizacion)
@@ -137,38 +138,19 @@ def aprobar_cotizacion(request, cotizacion_id):
             'material': cotizacion.get_material_preferido_display(),
         })
         
-        email = EmailMessage(
-            subject=f'Cotización Aprobada - Folio {cotizacion.folio}',
-            body=html_content,
-            from_email='contacto@mueblesbarguay.cl',
-            to=[cotizacion.email],
-        )
-        email.content_subtype = 'html'
+        subject = f'Cotización Aprobada - Folio {cotizacion.folio}'
+        attachments = [(f'Cotizacion_{cotizacion.folio}.pdf', pdf_buffer.getvalue(), 'application/pdf')]
         
-        # Adjuntar PDF desde buffer
-        email.attach(f'Cotizacion_{cotizacion.folio}.pdf', pdf_buffer.getvalue(), 'application/pdf')
-        
-        # Adjuntar Logo
-        logo_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'logo.jpg')
-        if os.path.exists(logo_path):
-            with open(logo_path, 'rb') as f:
-                logo_data = f.read()
-            logo = MIMEImage(logo_data)
-            logo.add_header('Content-ID', '<logo>')
-            email.attach(logo)
-        
-        # Enviar email
-        email.send(fail_silently=False)
-        
-        messages.success(request, f'Cotización {cotizacion.folio} aprobada y enviada al cliente.')
+        send_async_email(subject, html_content, cotizacion.email, attachments=attachments, attach_logo=True)
+        messages.success(request, f'Cotización {cotizacion.folio} aprobada. El correo está siendo enviado en segundo plano.')
         
     except Exception as e:
-        messages.warning(request, f'Cotización aprobada pero hubo un error al enviar el email: {str(e)}')
+        messages.warning(request, f'Cotización aprobada pero hubo un error al preparar el email: {str(e)}')
     
     return redirect('admin_cotizaciones')
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def rechazar_cotizacion(request, cotizacion_id):
     """Rechazar una cotización"""
     if request.method != 'POST':
@@ -194,32 +176,15 @@ def rechazar_cotizacion(request, cotizacion_id):
                 'motivo_rechazo': admin_notas,
             })
             
-            email = EmailMessage(
-                subject=f'Actualización sobre su Cotización - Folio {cotizacion.folio}',
-                body=html_content,
-                from_email='contacto@mueblesbarguay.cl',
-                to=[cotizacion.email],
-            )
-            email.content_subtype = 'html'
-            
-            # Adjuntar Logo
-            logo_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'logo.jpg')
-            if os.path.exists(logo_path):
-                with open(logo_path, 'rb') as f:
-                    logo_data = f.read()
-                logo = MIMEImage(logo_data)
-                logo.add_header('Content-ID', '<logo>')
-                email.attach(logo)
-            
-            email.send(fail_silently=False)
-            
-            messages.success(request, f'Cotización {cotizacion.folio} rechazada y notificación enviada al cliente.')
+            subject = f'Actualización sobre su Cotización - Folio {cotizacion.folio}'
+            send_async_email(subject, html_content, cotizacion.email, attach_logo=True)
+            messages.success(request, f'Cotización {cotizacion.folio} rechazada. La notificación está siendo enviada al cliente en segundo plano.')
         except Exception as e:
-            messages.warning(request, f'Cotización rechazada pero hubo un error al enviar el email: {str(e)}')
+            messages.warning(request, f'Cotización rechazada pero hubo un error al preparar el email: {str(e)}')
     return redirect('admin_cotizaciones')
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def preview_quote_pdf(request, cotizacion_id):
     """Vista previa del PDF de cotización para el admin"""
     from django.http import HttpResponse
@@ -236,7 +201,7 @@ def preview_quote_pdf(request, cotizacion_id):
         return redirect('admin_cotizaciones')
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def aprobar_cita(request, cita_id):
     """Aprobar una cita y enviar email de confirmación al cliente"""
     if request.method != 'POST':
@@ -255,7 +220,7 @@ def aprobar_cita(request, cita_id):
         
     cita.save()
     
-    # Enviar email de confirmación
+    # Enviar email de confirmación asíncrono
     try:
         html_content = render_to_string('emails/confirmacion_cita.html', {
             'nombre_cliente': cita.nombre_completo,
@@ -263,45 +228,29 @@ def aprobar_cita(request, cita_id):
             'fecha': cita.fecha.strftime('%d/%m/%Y'),
             'hora': cita.hora.strftime('%H:%M'),
             'direccion': cita.direccion if cita.tipo_reunion == 'presencial' else 'Online',
-            'meeting_link': cita.meeting_link,  # Agregamos el link al contexto
+            'meeting_link': cita.meeting_link,
         })
         
-        email = EmailMessage(
-            subject='Reunión Confirmada - Muebles Barguay',
-            body=html_content,
-            from_email='contacto@mueblesbarguay.cl',
-            to=[cita.email],
-        )
-        email.content_subtype = 'html'
-        
-        # Adjuntar Logo
-        logo_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'logo.jpg')
-        if os.path.exists(logo_path):
-            with open(logo_path, 'rb') as f:
-                logo_data = f.read()
-            logo = MIMEImage(logo_data)
-            logo.add_header('Content-ID', '<logo>')
-            email.attach(logo)
-            
+        attachments = []
         # Generar y adjuntar archivo .ics (Calendario)
         try:
             from .utils.calendar import generate_ics_content
             ics_content = generate_ics_content(cita)
-            email.attach(f'cita_muebles_barguay_{cita.id}.ics', ics_content, 'text/calendar')
+            attachments.append((f'cita_muebles_barguay_{cita.id}.ics', ics_content, 'text/calendar'))
         except Exception as e:
             print(f"Error generando calendario: {e}")
             
-        email.send(fail_silently=False)
-        
-        messages.success(request, f'Cita de {cita.nombre_completo} aprobada y confirmación enviada.')
+        subject = 'Reunión Confirmada - Muebles Barguay'
+        send_async_email(subject, html_content, cita.email, attachments=attachments, attach_logo=True)
+        messages.success(request, f'Cita de {cita.nombre_completo} aprobada. La confirmación está siendo enviada en segundo plano.')
         
     except Exception as e:
-        messages.warning(request, f'Cita aprobada pero hubo un error al enviar el email: {str(e)}')
+        messages.warning(request, f'Cita aprobada pero hubo un error al preparar el email: {str(e)}')
     
     return redirect('admin_citas')
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def rechazar_cita(request, cita_id):
     """Rechazar una cita"""
     if request.method != 'POST':
@@ -328,28 +277,11 @@ def rechazar_cita(request, cita_id):
                 'motivo_rechazo': admin_notas,
             })
             
-            email = EmailMessage(
-                subject='Actualización sobre su Solicitud de Reunión - Muebles Barguay',
-                body=html_content,
-                from_email='contacto@mueblesbarguay.cl',
-                to=[cita.email],
-            )
-            email.content_subtype = 'html'
-            
-            # Adjuntar Logo
-            logo_path = os.path.join(settings.BASE_DIR, 'static', 'img', 'logo.jpg')
-            if os.path.exists(logo_path):
-                with open(logo_path, 'rb') as f:
-                    logo_data = f.read()
-                logo = MIMEImage(logo_data)
-                logo.add_header('Content-ID', '<logo>')
-                email.attach(logo)
-                
-            email.send(fail_silently=False)
-            
-            messages.success(request, f'Cita de {cita.nombre_completo} rechazada y notificación enviada.')
+            subject = 'Actualización sobre su Solicitud de Reunión - Muebles Barguay'
+            send_async_email(subject, html_content, cita.email, attach_logo=True)
+            messages.success(request, f'Cita de {cita.nombre_completo} rechazada. La notificación está siendo enviada al cliente en segundo plano.')
         except Exception as e:
-            messages.warning(request, f'Cita rechazada pero hubo un error al enviar el email: {str(e)}')
+            messages.warning(request, f'Cita de {cita.nombre_completo} rechazada pero hubo un error al preparar la notificación: {str(e)}')
     else:
         messages.success(request, f'Cita de {cita.nombre_completo} rechazada.')
     
@@ -360,7 +292,7 @@ def rechazar_cita(request, cita_id):
 # NUEVAS FUNCIONALIDADES - ADMIN PANEL ENHANCEMENTS
 # ==============================================================================
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def admin_scraper_precios(request):
     """Vista para buscar precios de materiales en tiendas externas"""
     from .utils.scraper import buscar_precios, STORES_CONFIG
@@ -385,7 +317,7 @@ def admin_scraper_precios(request):
     return render(request, 'admin_panel/scraper_view.html', context)
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def admin_cotizaciones_historial(request):
     """Vista de historial completo de cotizaciones con filtros"""
     from django.db.models import Q
@@ -413,13 +345,24 @@ def admin_cotizaciones_historial(request):
     # Ordenar por fecha
     cotizaciones = cotizaciones.order_by('-fecha_solicitud')
     
+    # Paginación (20 por página)
+    from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+    paginator = Paginator(cotizaciones, 20)
+    page_number = request.GET.get('page')
+    try:
+        cotizaciones_paginadas = paginator.page(page_number)
+    except PageNotAnInteger:
+        cotizaciones_paginadas = paginator.page(1)
+    except EmptyPage:
+        cotizaciones_paginadas = paginator.page(paginator.num_pages)
+    
     # Calcular estadísticas
     total_cotizaciones = Cotizacion.objects.count()
     total_aprobadas = Cotizacion.objects.filter(estado='aprobada').count()
     total_pendientes = Cotizacion.objects.filter(estado='pendiente_aprobacion').count()
     
     context = {
-        'cotizaciones': cotizaciones,
+        'cotizaciones': cotizaciones_paginadas,
         'estado_filter': estado_filter,
         'search_query': search_query,
         'total_cotizaciones': total_cotizaciones,
@@ -431,7 +374,7 @@ def admin_cotizaciones_historial(request):
     return render(request, 'admin_panel/cotizaciones_historial.html', context)
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def admin_citas_historial(request):
     """Vista de historial completo de citas con filtros"""
     from django.db.models import Q
@@ -458,6 +401,17 @@ def admin_citas_historial(request):
     # Ordenar por fecha
     citas = citas.order_by('-fecha', '-hora')
     
+    # Paginación (20 por página)
+    from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+    paginator = Paginator(citas, 20)
+    page_number = request.GET.get('page')
+    try:
+        citas_paginadas = paginator.page(page_number)
+    except PageNotAnInteger:
+        citas_paginadas = paginator.page(1)
+    except EmptyPage:
+        citas_paginadas = paginator.page(paginator.num_pages)
+    
     # Calcular estadísticas
     total_citas = Cita.objects.count()
     total_aprobadas = Cita.objects.filter(estado='aprobada').count()
@@ -473,7 +427,7 @@ def admin_citas_historial(request):
         })
 
     context = {
-        'citas': citas,
+        'citas': citas_paginadas,
         'estado_filter': estado_filter,
         'search_query': search_query,
         'total_citas': total_citas,
@@ -485,7 +439,7 @@ def admin_citas_historial(request):
     return render(request, 'admin_panel/citas_historial.html', context)
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def admin_cotizacion_detalle(request, cotizacion_id):
     """Vista detallada de una cotización específica"""
     from .utils.pricing import calcular_precio_estimado
@@ -509,7 +463,7 @@ def admin_cotizacion_detalle(request, cotizacion_id):
     return render(request, 'admin_panel/cotizacion_detalle.html', context)
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def admin_crear_cotizacion(request):
     """Vista para crear una cotización desde el admin panel"""
     from .forms import CotizacionForm
@@ -616,7 +570,7 @@ def admin_crear_cotizacion(request):
     return render(request, 'admin_panel/cotizacion_crear.html', context)
 
 
-@login_required(login_url='admin_login')
+@user_passes_test(lambda u: u.is_active and u.is_staff, login_url='admin_login')
 def admin_editar_cotizacion(request, cotizacion_id):
     """Vista para editar una cotización existente"""
     from .utils.pricing import calcular_precio_estimado

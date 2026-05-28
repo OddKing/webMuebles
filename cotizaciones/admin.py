@@ -75,6 +75,7 @@ class CotizacionAdmin(admin.ModelAdmin):
     search_fields = ['nombre_completo', 'email', 'descripcion_proyecto', 'folio']
     # date_hierarchy = 'fecha_solicitud'  # Comentado temporalmente por error
     ordering = ['-fecha_solicitud']
+    list_select_related = ['producto', 'cliente']
     
     fieldsets = [
         ('Cliente', {
@@ -151,6 +152,7 @@ class ConsentimientoLegalAdmin(admin.ModelAdmin):
     search_fields = ['cita__nombre_completo', 'cotizacion__nombre_completo', 'ip_address']
     # date_hierarchy = 'fecha_aceptacion'
     ordering = ['-fecha_aceptacion']
+    list_select_related = ['cita', 'cotizacion']
     
     fieldsets = [
         ('Relación', {

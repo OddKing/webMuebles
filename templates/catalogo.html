@@ -154,6 +154,47 @@
       </div>
       {% endfor %}
     </div>
+
+    <!-- Paginación -->
+    {% if productos.has_other_pages %}
+    <nav aria-label="Navegación de catálogo" class="d-flex justify-content-center mt-5">
+      <ul class="pagination">
+        {% if productos.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ productos.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if categoria_actual %}&categoria={{ categoria_actual.slug }}{% endif %}" aria-label="Anterior">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">&laquo;</span>
+        </li>
+        {% endif %}
+
+        {% for i in productos.paginator.page_range %}
+        {% if productos.number == i %}
+        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+        {% else %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}{% if categoria_actual %}&categoria={{ categoria_actual.slug }}{% endif %}">{{ i }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+
+        {% if productos.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ productos.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if categoria_actual %}&categoria={{ categoria_actual.slug }}{% endif %}" aria-label="Siguiente">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">&raquo;</span>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
     {% else %}
     <!-- Empty State -->
     <div class="empty-catalog text-center py-5">

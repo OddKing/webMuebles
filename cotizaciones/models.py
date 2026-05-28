@@ -45,6 +45,11 @@ class Cita(models.Model):
         verbose_name = "Cita"
         verbose_name_plural = "Citas"
         ordering = ['fecha', 'hora']
+        indexes = [
+            models.Index(fields=['fecha']),
+            models.Index(fields=['hora']),
+            models.Index(fields=['estado']),
+        ]
     
     def __str__(self):
         return f"{self.nombre_completo} - {self.fecha} {self.hora}"
@@ -163,6 +168,10 @@ class Cotizacion(models.Model):
         verbose_name = "Cotización"
         verbose_name_plural = "Cotizaciones"
         ordering = ['-fecha_solicitud']
+        indexes = [
+            models.Index(fields=['estado']),
+            models.Index(fields=['-fecha_solicitud']),
+        ]
     
     def __str__(self):
         producto_nombre = self.producto.nombre if self.producto else "Diseño Personalizado"

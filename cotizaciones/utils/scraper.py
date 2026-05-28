@@ -1,6 +1,7 @@
 import requests
 import json
 import re
+from django.core.cache import cache
 try:
     from bs4 import BeautifulSoup
 except ImportError:
@@ -57,18 +58,31 @@ STORES_CONFIG = {
 
 def buscar_precios(query, store_key='sodimac'):
     """
-    Función principal de búsqueda. Despacha al scraper específico según la tienda.
+    Función principal de búsqueda con caché. Despacha al scraper específico según la tienda.
     """
+    query_clean = query.strip().lower()
+    cache_key = f"scraper_{store_key}_{query_clean}"
+    
+    # Intentar obtener desde caché
+    cached_results = cache.get(cache_key)
+    if cached_results is not None:
+        return cached_results
+        
     store_config = STORES_CONFIG.get(store_key)
     if not store_config:
         return []
         
+    resultados = []
     if store_config['type'] == 'sodimac_api':
-        return buscar_sodimac(query, store_config)
+        resultados = buscar_sodimac(query, store_config)
     elif store_config['type'] == 'wordpress':
-        return buscar_wordpress(query, store_config)
-    else:
-        return []
+        resultados = buscar_wordpress(query, store_config)
+        
+    # Almacenar en caché por 30 minutos (1800 segundos) si hay resultados
+    if resultados:
+        cache.set(cache_key, resultados, 1800)
+        
+    return resultados
 
 def buscar_sodimac(query, config):
     """Scraper específico para Sodimac (Next.js JSON)"""
@@ -77,7 +91,7 @@ def buscar_sodimac(query, config):
     resultados = []
     
     try:
-        response = requests.get(url, headers=headers, timeout=10)
+        response = requests.get(url, headers=headers, timeout=3)
         if response.status_code != 200: return []
         
         match = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>', response.text)
@@ -129,7 +143,7 @@ def buscar_wordpress(query, config):
     resultados = []
     
     try:
-        response = requests.get(url, headers=headers, timeout=10)
+        response = requests.get(url, headers=headers, timeout=3)
         if response.status_code != 200: return []
         
         # Extracción básica con Regex (ya que bs4 podría no estar instalado o fallar)

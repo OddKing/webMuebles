@@ -1521,3 +1521,29 @@ body {
     font-size: 1.8rem;
   }
 }
+
+/* ============================================
+   HOVER & TRANSITION OPTIMIZATIONS (CSP & Performance)
+   ============================================ */
+
+.navbar-custom img {
+  transition: transform 0.3s ease;
+}
+.navbar-custom img:hover {
+  transform: scale(1.1);
+}
+
+.whatsapp-option-link {
+  transition: background 0.2s ease;
+}
+.whatsapp-option-link:hover {
+  background-color: #f0f0f0 !important;
+}
+
+#whatsapp-btn {
+  transition: all 0.3s ease;
+}
+#whatsapp-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6) !important;
+}

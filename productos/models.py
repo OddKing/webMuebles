@@ -1,4 +1,7 @@
 from django.db import models
+from io import BytesIO
+from django.core.files.base import ContentFile
+from PIL import Image
 
 # Create your models here.
 
@@ -16,6 +19,22 @@ class Categoria(models.Model):
         
     def __str__(self):
         return self.nombre
+
+    def save(self, *args, **kwargs):
+        if self.imagen and not self.imagen.name.lower().endswith('.webp'):
+            try:
+                img = Image.open(self.imagen)
+                img.thumbnail((1200, 1200))
+                output = BytesIO()
+                img.save(output, format='WEBP', quality=80)
+                output.seek(0)
+                original_name = self.imagen.name.split('/')[-1]
+                name_without_ext = original_name.rsplit('.', 1)[0]
+                new_name = f"{name_without_ext}.webp"
+                self.imagen.save(new_name, ContentFile(output.read()), save=False)
+            except Exception as e:
+                print(f"Error compressing category image: {e}")
+        super().save(*args, **kwargs)
 
 class Producto(models.Model):
     """Modelo para productos del catálogo"""
@@ -52,3 +71,19 @@ class Producto(models.Model):
     
     def __str__(self):
         return self.nombre
+
+    def save(self, *args, **kwargs):
+        if self.imagen and not self.imagen.name.lower().endswith('.webp'):
+            try:
+                img = Image.open(self.imagen)
+                img.thumbnail((1200, 1200))
+                output = BytesIO()
+                img.save(output, format='WEBP', quality=80)
+                output.seek(0)
+                original_name = self.imagen.name.split('/')[-1]
+                name_without_ext = original_name.rsplit('.', 1)[0]
+                new_name = f"{name_without_ext}.webp"
+                self.imagen.save(new_name, ContentFile(output.read()), save=False)
+            except Exception as e:
+                print(f"Error compressing product image: {e}")
+        super().save(*args, **kwargs)

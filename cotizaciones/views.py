@@ -5,7 +5,9 @@ from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.conf import settings
 from .models import Cita, Cotizacion, ConsentimientoLegal
-from .forms import CotizacionForm
+from .forms import CotizacionForm, CitaForm
+from django_ratelimit.decorators import ratelimit
+from .utils.email_service import send_async_email
 from .utils.folio import generar_folio
 from .utils.pdf_generator import generate_quote_pdf
 from datetime import datetime, timedelta, time
@@ -17,6 +19,7 @@ import string
 
 # Create your views here.
 
+@ratelimit(key='ip', rate='10/m', method='GET', block=True)
 def get_horarios_disponibles(request):
     """Endpoint AJAX para obtener horarios disponibles de una fecha específica"""
     if request.method == 'GET':
@@ -58,71 +61,44 @@ def get_horarios_disponibles(request):
     
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
+@ratelimit(key='ip', rate='5/m', method='POST', block=True)
 def agendar_reunion(request):
     if request.method == 'POST':
-        # Obtener datos del formulario
-        nombre_completo = request.POST.get('nombre_completo')
-        telefono = request.POST.get('telefono')
-        direccion = request.POST.get('direccion')
-        email = request.POST.get('email')
-        tipo_reunion = request.POST.get('tipo_reunion')
-        fecha_str = request.POST.get('fecha')
-        hora_str = request.POST.get('hora')
-        
-        # Validar que todos los campos estén presentes
-        if all([nombre_completo, telefono, direccion, email, tipo_reunion, fecha_str, hora_str]):
-            # VALIDAR CONSENTIMIENTO
-            acepto_terminos = request.POST.get('acepto_terminos')
-            if not acepto_terminos:
-                messages.error(request, 'Debes aceptar los Términos y Condiciones y la Política de Privacidad para continuar.')
+        form = CitaForm(request.POST)
+        if form.is_valid():
+            cita = form.save(commit=False)
+            fecha = cita.fecha
+            hora = cita.hora
+            
+            # Validaciones de negocio
+            hoy = datetime.now().date()
+            
+            # Validar que la fecha sea mínimo mañana
+            if fecha <= hoy:
+                messages.error(request, 'La fecha debe ser al menos un día después de hoy.')
+                return redirect('agendar_reunion')
+            
+            # Validar que no sea fin de semana (0=Monday, 6=Sunday)
+            if fecha.weekday() >= 5:
+                messages.error(request, 'Solo se pueden agendar reuniones de lunes a viernes.')
+                return redirect('agendar_reunion')
+            
+            # Validar horario (10:00 - 18:00)
+            hora_inicio = time(10, 0)
+            hora_fin = time(18, 0)
+            if not (hora_inicio <= hora <= hora_fin):
+                messages.error(request, 'El horario debe estar entre 10:00 AM y 6:00 PM.')
+                return redirect('agendar_reunion')
+            
+            # Verificar que el horario no esté ocupado
+            if Cita.objects.filter(fecha=fecha, hora=hora).exists():
+                messages.error(request, f'Lo sentimos, el horario {hora.strftime("%H:%M")} del día {fecha.strftime("%d/%m/%Y")} ya está reservado. Por favor selecciona otro horario.')
                 return redirect('agendar_reunion')
             
             try:
-                print(f"DEBUG: fecha_str='{fecha_str}', hora_str='{hora_str}'")
-                
-                # Convertir fecha y hora
-                fecha = datetime.strptime(fecha_str.strip(), '%Y-%m-%d').date()
-                hora = datetime.strptime(hora_str.strip(), '%H:%M').time()
-                
-                # Validaciones de negocio
-                hoy = datetime.now().date()
-                
-                # Validar que la fecha sea mínimo mañana
-                if fecha <= hoy:
-                    messages.error(request, 'La fecha debe ser al menos un día después de hoy.')
-                    return redirect('agendar_reunion')
-                
-                # Validar que no sea fin de semana (0=Monday, 6=Sunday)
-                if fecha.weekday() >= 5:
-                    messages.error(request, 'Solo se pueden agendar reuniones de lunes a viernes.')
-                    return redirect('agendar_reunion')
-                
-                # Validar horario (10:00 - 18:00)
-                hora_inicio = time(10, 0)
-                hora_fin = time(18, 0)
-                if not (hora_inicio <= hora <= hora_fin):
-                    messages.error(request, 'El horario debe estar entre 10:00 AM y 6:00 PM.')
-                    return redirect('agendar_reunion')
-                
-                # NUEVA VALIDACIÓN: Verificar que el horario no esté ocupado
-                if Cita.objects.filter(fecha=fecha, hora=hora).exists():
-                    messages.error(request, f'Lo sentimos, el horario {hora.strftime("%H:%M")} del día {fecha.strftime("%d/%m/%Y")} ya está reservado. Por favor selecciona otro horario.')
-                    return redirect('agendar_reunion')
-                
-                # Crear la cita
-                cita = Cita.objects.create(
-                    nombre_completo=nombre_completo,
-                    telefono=telefono,
-                    direccion=direccion,
-                    email=email,
-                    tipo_reunion=tipo_reunion,
-                    fecha=fecha,
-                    hora=hora
-                )
+                cita.save()
                 
                 # REGISTRAR CONSENTIMIENTO LEGAL
-                from .models import ConsentimientoLegal
-                
                 # Obtener IP del cliente
                 x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
                 if x_forwarded_for:
@@ -130,8 +106,8 @@ def agendar_reunion(request):
                 else:
                     ip_address = request.META.get('REMOTE_ADDR')
                 
-                # Obtener User-Agent
-                user_agent = request.META.get('HTTP_USER_AGENT', 'Unknown')
+                # Obtener User-Agent y truncar
+                user_agent = request.META.get('HTTP_USER_AGENT', 'Unknown')[:500]
                 
                 # Crear registro de consentimiento
                 ConsentimientoLegal.objects.create(
@@ -144,48 +120,36 @@ def agendar_reunion(request):
                     user_agent=user_agent
                 )
                 
-                # Notificar al administrador por email
+                # Notificar al administrador por email en segundo plano
                 print(f"📧 Intentando enviar notificación de cita al admin...")
-                try:
-                    email_admin = EmailMessage(
-                        subject=f'Nueva Cita Agendada - {cita.nombre_completo}',
-                        body=f'Se ha agendado una nueva cita.\n\nCliente: {cita.nombre_completo}\nEmail Cliente: {cita.email}\nTeléfono: {cita.telefono}\nFecha: {cita.fecha}\nHora: {cita.hora}\nTipo: {cita.get_tipo_reunion_display()}\n\nPor favor revisa el panel de administración para aprobarla.https://server.mueblesbarguay.cl/admin-panel/citas/',
-                        from_email='contacto@mueblesbarguay.cl',
-                        to=['contacto@mueblesbarguay.cl'],
-                        reply_to=[cita.email]
-                    )
-                    email_admin.send(fail_silently=False)
-                    print("✅ Notificación de cita enviada al admin")
-                except Exception as e:
-                    print(f"❌ Error enviando notificación al admin: {e}")
+                subject = f'Nueva Cita Agendada - {cita.nombre_completo}'
+                body = f'Se ha agendado una nueva cita.\n\nCliente: {cita.nombre_completo}\nEmail Cliente: {cita.email}\nTeléfono: {cita.telefono}\nFecha: {cita.fecha}\nHora: {cita.hora}\nTipo: {cita.get_tipo_reunion_display()}\n\nPor favor revisa el panel de administración para aprobarla. https://server.mueblesbarguay.cl/admin-panel/citas/'
+                send_async_email(subject, body, 'contacto@mueblesbarguay.cl', reply_to=[cita.email], attach_logo=False)
                 
-                # Email será enviado después de la aprobación del administrador
-                messages.success(request, f'¡Solicitud de reunión recibida! Nuestro equipo revisará su solicitud y le enviará una confirmación a {email}')
-                
+                messages.success(request, f'¡Solicitud de reunión recibida! Nuestro equipo revisará su solicitud y le enviará una confirmación a {cita.email}')
                 return redirect('agendar_reunion')
                 
-            except ValueError as e:
-                print(f"ERROR PARSING DATE/TIME: {e}")
-                messages.error(request, f'Error en el formato de fecha u hora: {str(e)}')
+            except Exception as e:
+                messages.error(request, f'Error al guardar la cita: {str(e)}')
                 return redirect('agendar_reunion')
         else:
-            messages.error(request, 'Por favor complete todos los campos.')
+            # Si el formulario no es válido, mostrar errores
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{error}')
             return redirect('agendar_reunion')
     
     # GET request - mostrar formulario
-    # Generar horarios disponibles (de 10:00 a 18:00 en intervalos de 30 minutos)
     horarios = []
     hora_actual = time(10, 0)
     hora_final = time(18, 0)
     
     while hora_actual <= hora_final:
         horarios.append(hora_actual.strftime('%H:%M'))
-        # Sumar 30 minutos
         dt = datetime.combine(datetime.today(), hora_actual)
         dt += timedelta(minutes=30)
         hora_actual = dt.time()
     
-    # Calcular fecha mínima (mañana)
     fecha_minima = (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d')
     
     context = {
@@ -208,6 +172,7 @@ def get_client_ip(request):
     return ip
 
 
+@ratelimit(key='ip', rate='5/m', method='POST', block=True)
 def solicitar_cotizacion(request, producto_id):
     """
     Vista para solicitar cotización de un producto específico
@@ -244,20 +209,11 @@ def solicitar_cotizacion(request, producto_id):
                 user_agent=request.META.get('HTTP_USER_AGENT', '')[:500]
             )
             
-            # Notificar al administrador por email a contacto@mueblesbarguay.cl
+            # Notificar al administrador por email en segundo plano
             print(f"📧 Intentando enviar notificación de cotización al admin...")
-            try:
-                email_admin = EmailMessage(
-                    subject=f'Nueva Cotización Solicitada - Folio {cotizacion.folio}',
-                    body=f'Se ha solicitado una nueva cotización.\n\nFolio: {cotizacion.folio}\nCliente: {cotizacion.nombre_completo}\nEmail Cliente: {cotizacion.email}\nProducto: {cotizacion.producto.nombre if cotizacion.producto else "Personalizado"}\n\nPor favor revisa el panel de administración para gestionarla. https://server.mueblesbarguay.cl/admin-panel/cotizaciones/',
-                    from_email='contacto@mueblesbarguay.cl',
-                    to=['contacto@mueblesbarguay.cl'],
-                    reply_to=[cotizacion.email]
-                )
-                email_admin.send(fail_silently=False)
-                print("✅ Notificación de cotización enviada al admin")
-            except Exception as e:
-                print(f"❌ Error enviando notificación al admin: {e}")
+            subject = f'Nueva Cotización Solicitada - Folio {cotizacion.folio}'
+            body = f'Se ha solicitado una nueva cotización.\n\nFolio: {cotizacion.folio}\nCliente: {cotizacion.nombre_completo}\nEmail Cliente: {cotizacion.email}\nProducto: {cotizacion.producto.nombre if cotizacion.producto else "Personalizado"}\n\nPor favor revisa el panel de administración para gestionarla. https://server.mueblesbarguay.cl/admin-panel/cotizaciones/'
+            send_async_email(subject, body, 'contacto@mueblesbarguay.cl', reply_to=[cotizacion.email], attach_logo=False)
             
             # PDF y email serán generados después de la aprobación del administrador
             messages.success(
